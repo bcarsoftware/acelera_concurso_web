@@ -25,6 +25,10 @@ export default function Index() {
             <form id="login-form">
                 <h2><p>Acelera Concurso</p><p>Login</p></h2>
 
+                <div className="back-link">
+                    <nav><a href="/">Voltar ao Inicio.</a></nav>
+                </div>
+
                 <div className="input-group">
                     <label htmlFor="email">E-mail/Usuário*</label>
                     <input type="email" id="email" name="email" placeholder="seuemail@exemplo.com" required/>
@@ -74,7 +78,7 @@ export default function Index() {
                 <button type="submit" className="login-button">Entrar</button>
 
                 <div className="register-link">
-                    <p>Não tem uma conta? <a href="#">Cadastre-se</a></p>
+                    <p>Não tem uma conta? <a href="/register">Cadastre-se</a></p>
                 </div>
             </form>
         </div>
