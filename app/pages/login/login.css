@@ -40,7 +40,7 @@ body {
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 
     /* Define uma largura máxima para o container */
-    max-width: 400px;
+    max-width: 512px;
     /* Faz o container ocupar 100% da largura disponível até o max-width */
     width: 100%;
 

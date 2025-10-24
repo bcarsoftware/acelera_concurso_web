@@ -5,21 +5,11 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
-/* (Estilos básicos apenas para o botão parecer clicável) */
-.next-button, .login-button {
-    width: 100%;
-    padding: 10px 15px;
-    font-size: 18px;
-    color: white;
-    background-color: #088ac7;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
-    font-weight: bold;
-}
-.next-button:hover, .login-button:hover {
-    background-color: #066a9c;
+:root {
+    --color-green: #279c10;
+    --color-green-dark: #198204;
+    --color-blue: #066a9c;
+    --color-blue-light: #088ac7;
 }
 
 /* Em React, o componente 'App' é renderizado dentro do <body>,
@@ -29,9 +19,16 @@ body, html {
     width: 100%;
 }
 
+/*Link Voltar*/
+.back-link {
+    color: var(--color-blue-light);
+    text-decoration: none;
+    font-weight: bold;
+}
+
 body {
     /* Cor de fundo solicitada */
-    background-color: #088ac7;
+    background-color: var(--color-blue-light);
 
     /* Usamos Flexbox para centralizar o card de login vertical e horizontalmente */
     display: flex;
@@ -91,23 +88,7 @@ body {
 /* Efeito de foco para o input */
 .input-group input:focus {
     outline: none;
-    border-color: #088ac7; /* Usa a cor principal no foco */
-    box-shadow: 0 0 8px rgba(8, 138, 199, 0.3);
-}
-
-.input-group select {
-    width: 100%; /* Ocupa toda a largura do container */
-    padding: 12px 15px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 16px;
-    transition: border-color 0.3s, box-shadow 0.3s;
-}
-
-/* Efeito de foco para o input */
-.input-group select:focus {
-    outline: none;
-    border-color: #088ac7; /* Usa a cor principal no foco */
+    border-color: var(--color-blue-light); /* Usa a cor principal no foco */
     box-shadow: 0 0 8px rgba(8, 138, 199, 0.3);
 }
 
@@ -118,7 +99,7 @@ body {
 }
 
 .options a {
-    color: #088ac7;
+    color: var(--color-blue-light);
     text-decoration: none;
     font-size: 14px;
 }
@@ -129,9 +110,10 @@ body {
 
 /* --- Botão de Login --- */
 .login-button {
+    margin-top: 20px;
     width: 100%;
     padding: 12px;
-    background-color: #088ac7;
+    background-color: var(--color-blue-light);
     color: white;
     border: none;
     border-radius: 6px;
@@ -142,25 +124,18 @@ body {
 }
 
 .login-button:hover {
-    background-color: #066a9c; /* Um tom mais escuro para o hover */
-}
-
-/*Link Voltar*/
-.back-link {
-    color: #088ac7;
-    text-decoration: none;
-    font-weight: bold;
+    background-color: var(--color-blue); /* Um tom mais escuro para o hover */
 }
 
 /* --- Link de Cadastro --- */
 .register-link {
-    margin-top: 15px;
+    margin-top: 30px;
     font-size: 14px;
     color: #555;
 }
 
 .register-link a {
-    color: #088ac7;
+    color: var(--color-blue-light);
     text-decoration: none;
     font-weight: bold;
 }
@@ -205,7 +180,7 @@ body {
 
 .password-toggle-btn:focus {
     outline: none;
-    color: #088ac7; /* Destaque no foco */
+    color: var(--color-blue-light); /* Destaque no foco */
 }
 
 .password-toggle-btn svg {
@@ -214,3 +189,17 @@ body {
 }
 
 /* --- FIM DOS ESTILOS NOVOS --- */
+
+#ConfirmButton {
+    background-color: var(--color-green);
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+}
+
+#ConfirmButton:hover {
+    background-color: var(--color-green-dark);
+}

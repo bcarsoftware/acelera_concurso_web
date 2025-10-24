@@ -4,7 +4,7 @@ import {link} from "node:fs";
 
 export function meta({}: Route.MetaArgs) {
     return [
-        { title: "Index Acelera Concurso" },
+        { title: "Recuperar Acesso" },
         { name: "description", content: "Sua melhor preparação!" },
     ];
 }
@@ -23,14 +23,20 @@ export default function Index() {
 
         <div className="login-container">
             <form id="login-form">
-                <h2><p>Acelera Concurso</p><p>Login</p></h2>
+                <h2><p>Acelera Concurso</p><p>Recuperar Acesso</p></h2>
 
                 <div className="back-link">
-                    <nav><a href="/">Voltar ao Inicio.</a></nav>
+                    <nav><a href="/login">Voltar à tela de acesso..</a></nav>
                 </div>
 
                 <div className="input-group">
-                    <label htmlFor="email">E-mail/Usuário*</label>
+                    <label htmlFor="email">E-mail*</label>
+                    <input type="email" id="email" name="email" placeholder="seuemail@exemplo.com" required/>
+                    <input type="button" id="ConfirmButton" value="Enviar Código"/>
+                </div>
+
+                <div className="input-group">
+                    <label htmlFor="email">Código de Verificação*</label>
                     <input type="email" id="email" name="email" placeholder="seuemail@exemplo.com" required/>
                 </div>
 
@@ -71,10 +77,6 @@ export default function Index() {
                 </div>
                 {/* --- FIM DA MODIFICAÇÃO --- */}
 
-                <div className="options">
-                    <a href="/recovery">Esqueceu a senha?</a>
-                </div>
-
                 <button type="submit" className="login-button">Entrar</button>
 
                 <div className="register-link">
@@ -89,5 +91,5 @@ export default function Index() {
 }
 
 const LoginStyles = () => {
-    return (<link rel="stylesheet" href="app/pages/login/login.css"></link>);
+    return (<link rel="stylesheet" href="app/pages/recovery/recovery.css"></link>);
 };
