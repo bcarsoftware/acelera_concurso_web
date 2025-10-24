@@ -57,6 +57,8 @@ export default function Index() {
                     <div id="ContentTwice">
                         <div id="PublicTender">
                             <h1>Concursos Cadastrados</h1>
+                            <input type="button" className="button-add" value="Adicionar" />
+
                             <div className="class-content-wide-square">
                                 <div className="class-div-content">
                                     <section><p className="text-section">Concurso 1</p></section>
@@ -68,9 +70,15 @@ export default function Index() {
                         </div>
                         <div id="TipsHit">
                             <h1>Dicas de Estudo</h1>
+                            <input type="button" className="button-add" value="Nova" />
+                            <input type="button" className="button-delete" value="Excluir" />
+
                             <div className="class-content-wide-square">
                                 <div className="class-div-content">
-                                    <section><p className="text-section">Dica 1</p></section>
+                                    <div className="check-tip">
+                                        <input className="check-btn-tip" type="checkbox" />
+                                        <section><p className="text-section">Dica 1</p></section>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -78,6 +86,7 @@ export default function Index() {
                     <div id="SubjectTopicNote">
                         <div className="class-content-square">
                             <h2>Disciplinas</h2>
+                            <input type="button" className="button-add" value="Adicionar" />
 
                             <div className="class-div-content">
                                 <section><p className="text-section">Disciplina 1</p></section>
@@ -88,6 +97,7 @@ export default function Index() {
                         </div>
                         <div className="class-content-square">
                             <h2>Assuntos</h2>
+                            <input type="button" className="button-add" value="Adicionar" />
 
                             <div className="class-div-content">
                                 <section><p className="text-section">Assunto 1</p></section>
@@ -98,6 +108,7 @@ export default function Index() {
                         </div>
                         <div className="class-content-square">
                             <h2>Notas de Atenção</h2>
+                            <input type="button" className="button-add" value="Adicionar" />
 
                             <div className="class-div-content">
                                 <div id="NoteCheck">
