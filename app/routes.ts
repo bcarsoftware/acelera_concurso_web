@@ -5,4 +5,5 @@ export default [
     route("/login", "pages/access/login/index.tsx"),
     route("/register", "pages/access/register/index.tsx"),
     route("/recovery", "pages/access/recovery/index.tsx"),
+    route("/dashboard", "pages/dashboard/index.tsx"),
 ] satisfies RouteConfig;

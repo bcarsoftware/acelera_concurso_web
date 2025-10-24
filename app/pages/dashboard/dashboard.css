@@ -1,0 +1,279 @@
+/* --- Variáveis de Cor (Fornecidas) --- */
+:root {
+    --color-blue-ligth: #088ac7;
+    --color-blue-dark: #066a9c;
+    --color-blue-dark-dark: #09607d;
+    --color-green: #279c10;
+    --color-green-dark: #198204;
+    --color-white: #ffffff;
+    --color-white-ice: #d1c8c8; /* Usado como fundo da página */
+    --color-black: #000000;
+
+    --color-red-hash-b51702: #b51702;
+
+    /* Adicionando cores neutras para texto e fundos */
+    --color-page-bg: #f4f7f6;
+    --color-text-dark: #333;
+    --color-text-light: #f1f1f1;
+    --color-border-light: #e0e0e0;
+
+    /* Font Inter*/
+    --font-inter: "Inter", sans-serif;
+}
+
+/* --- Reset Básico e Padrões Globais --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Melhora o controle de layout */
+    font-family: var(--font-inter) serif;
+}
+
+body, html {
+    width: 100%;
+    height: 100%; /* Garante que o html ocupe 100% */
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Garante que o body ocupe pelo menos a altura da tela */
+    font-family: var(--font-inter), serif;
+    background-color: var(--color-page-bg); /* Fundo da página mais suave */
+    color: var(--color-text-dark);
+}
+
+h1 {
+    font-family: var(--font-inter), serif;
+    font-size: 2rem;
+    font-weight: bolder;
+}
+
+h2 {
+    font-family: var(--font-inter), serif;
+    font-size: 1.5rem;
+    font-weight: bolder;
+}
+
+h4 {
+    font-family: var(--font-inter), serif;
+    font-size: 1.1rem;
+    font-weight: bolder;
+}
+
+/* --- Layout Principal (Header, Footer) --- */
+header, footer {
+    background-color: var(--color-blue-dark);
+    color: var(--color-white);
+    padding: 1rem 1.5rem;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 10; /* Garante que o header fique sobre o conteúdo se houver sobreposição */
+}
+
+header {
+    display: flex;
+    align-items: center;
+}
+
+footer {
+    margin-top: auto; /* Empurra o footer para o final */
+    background-color: var(--color-blue-dark-dark);
+    display: flex;
+    font-size: 1.25rem;
+}
+
+/* --- Conteúdo do Dashboard --- */
+#Dashboard {
+    display: flex;
+    flex: 1; /* Faz o dashboard ocupar todo o espaço entre header e footer */
+    overflow: hidden; /* Evita barras de rolagem desnecessárias */
+}
+
+/* --- Painel Lateral (Navegação) --- */
+#LeftPanel {
+    width: 250px;
+    background-color: var(--color-blue-ligth);
+    color: var(--color-text-light);
+    padding: 0.8rem;
+    transition: width 0.3s ease;
+}
+
+#LeftPanel nav {
+    font-size: 1.1rem;
+    padding-left: 0.8rem;
+}
+
+#Profile {
+    border-radius: 12px;
+    padding: 18px 0 18px 0;
+    cursor: pointer;
+    font-weight: bold;
+}
+#Profile:hover {
+    background-color: var(--color-blue-dark);
+}
+
+.nav-item {
+    border-radius: 12px;
+    padding: 18px 0 18px 0;
+    cursor: pointer;
+}
+.nav-item:hover {
+    background-color: var(--color-blue-dark);
+    font-weight: bold;
+}
+
+.nav-item-logout {
+    border-radius: 12px;
+    padding: 18px 0 18px 0;
+    cursor: pointer;
+}
+.nav-item-logout:hover {
+    background-color: var(--color-red-hash-b51702);
+    font-weight: bold;
+}
+
+.padding-check-button {
+    padding-left: 0.5rem;
+    padding-right: 1rem;
+}
+
+/* --- Área de Conteúdo Principal --- */
+#Content {
+    flex: 1; /* Ocupa o restante do espaço */
+    padding: 2rem;
+    overflow-y: auto; /* Permite rolar apenas o conteúdo, se for grande */
+    margin-bottom: 2rem;
+}
+
+/* Divisão do Cabeçalho*/
+
+#ContentTwice {
+    display: flex;
+}
+
+/* --- Seções de Conteúdo --- */
+#PublicTender {
+    width: 100%;
+    margin-bottom: 2rem;
+    margin-right: 2rem;
+}
+
+#TipsHit {
+    width: 100%;
+}
+
+#SubjectTopicNote {
+    display: flex;
+    flex-wrap: wrap; /* Permite que os itens quebrem para a próxima linha */
+    gap: 1.5rem; /* Espaçamento moderno entre os 'cards' */
+}
+
+/* --- Notes CheckButtons ---*/
+#NoteCheck {
+    font-size: 1.2em;
+    margin-bottom: 12px;
+    display: flex;
+}
+
+#NoteCheck input {
+    width: 15px;
+    height: 15px;
+}
+
+/* --- Estilos dos 'Cards' --- */
+.class-content-square {
+    flex: 1; /* Faz os 'cards' crescerem igualmente */
+    min-width: 280px; /* Largura mínima antes de quebrar a linha */
+}
+
+.class-content-wide-square {
+    width: 100%;
+}
+
+/* O 'card' real, com sombra e bordas */
+.class-div-content {
+    background-color: var(--color-white);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 1.5rem;
+    height: 100%;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.class-div-content:hover {
+    /*transform: translateY(-5px);*/
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* --- Área de Seção (Placeholder) --- */
+section {
+    min-height: 48px;
+    display: grid;
+    justify-items: left;
+    background-color: #f9f9f9;
+    border: 2px dashed var(--color-border-light);
+    border-radius: 8px;
+    color: #aaa;
+    cursor: pointer;
+}
+
+section:hover {
+    transform: translateY(-5px);
+}
+
+.text-section {
+    color: var(--color-black);
+    text-align: justify;
+    font-weight: bold;
+}
+
+.text-section:hover {
+    color: var(--color-blue-ligth);
+}
+
+.div-width-50-percent-left {
+    width: 50%;
+    text-align: left;
+}
+
+.div-width-50-percent-right {
+    width: 50%;
+    text-align: right;
+}
+
+.div-width-100-percent {
+    width: 100%;
+}
+
+.link-format {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* --- Design Responsivo (Mobile) --- */
+@media (max-width: 768px) {
+    #Dashboard {
+        flex-direction: column; /* Empilha o painel e o conteúdo */
+    }
+
+    #LeftPanel {
+        width: 100%; /* Ocupa 100% da largura */
+        height: auto; /* Altura automática */
+        text-align: center;
+    }
+
+    #Content {
+        padding: 1rem; /* Reduz o padding em telas menores */
+    }
+
+    #SubjectTopicNote {
+        flex-direction: column; /* Empilha os 'cards' menores */
+        gap: 1rem;
+    }
+
+    .class-content-square {
+        min-width: 100%; /* Garante que ocupem a largura total */
+    }
+}
