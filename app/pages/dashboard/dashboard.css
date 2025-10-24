@@ -9,6 +9,10 @@
     --color-white-ice: #d1c8c8; /* Usado como fundo da página */
     --color-black: #000000;
 
+    --color-golden-hash-fcba03: #fcba03;
+    --color-golden-hash-dba40b: #dba40b;
+
+
     --color-red-hash-b51702: #b51702;
 
     /* Adicionando cores neutras para texto e fundos */
@@ -270,25 +274,29 @@ section:hover {
     transition: 100ms;
 }
 
-.button-delete {
-    background-color: var(--color-red-hash-b51702);
-    padding: 5px 12px 5px 12px;
-    color: var(--color-white);
-    font-family: var(--font-inter) serif;
-    font-weight: bolder;
-    border-radius: 12px;
-    margin-bottom: 12px;
-    cursor: pointer;
+.color-black {
+    color: var(--color-black);
 }
 
-.button-delete:hover {
+.bg-red {
+    background-color: var(--color-red-hash-b51702);
+}
+.bg-red:hover {
     background-color: #ff0000;
-    transition: 100ms;
+}
+.bg-golden {
+    background-color: var(--color-golden-hash-fcba03);
+}
+.bg-golden:hover {
+    background-color: var(--color-golden-hash-dba40b);
+}
+
+.section-tip {
+    width: 100%;
 }
 
 .check-tip {
     display: flex;
-    padding-right: 14px;
 }
 
 .check-btn-tip {

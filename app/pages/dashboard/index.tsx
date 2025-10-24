@@ -71,13 +71,22 @@ export default function Index() {
                         <div id="TipsHit">
                             <h1>Dicas de Estudo</h1>
                             <input type="button" className="button-add" value="Nova" />
-                            <input type="button" className="button-delete" value="Excluir" />
+                            <input type="button" className="button-add bg-red" value="Excluir" />
+                            <input type="button" className="button-add bg-golden color-black" value="Motiva AI" />
 
                             <div className="class-content-wide-square">
                                 <div className="class-div-content">
                                     <div className="check-tip">
                                         <input className="check-btn-tip" type="checkbox" />
-                                        <section><p className="text-section">Dica 1</p></section>
+                                        <section className="section-tip"><p className="text-section">Dica 1</p></section>
+                                    </div>
+                                    <div className="check-tip">
+                                        <input className="check-btn-tip" type="checkbox" />
+                                        <section className="section-tip"><p className="text-section">Dica 1</p></section>
+                                    </div>
+                                    <div className="check-tip">
+                                        <input className="check-btn-tip" type="checkbox" />
+                                        <section className="section-tip"><p className="text-section">Dica 1</p></section>
                                     </div>
                                 </div>
                             </div>
