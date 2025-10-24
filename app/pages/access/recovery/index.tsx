@@ -1,19 +1,23 @@
 import {useState} from "react";
-import type {Route} from "../../../.react-router/types/app/routes/+types/home";
-import {link} from "node:fs";
+import type {Route} from "../../../../.react-router/types/app/routes/+types/home";
 
 export function meta({}: Route.MetaArgs) {
     return [
-        { title: "Index Acelera Concurso" },
+        { title: "Recuperar Acesso" },
         { name: "description", content: "Sua melhor preparação!" },
     ];
 }
 
 export default function Index() {
     const [showPassword, setShowPassword] = useState(false);
+    const [codeSent, setCodeSent] = useState(false);
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword); // Inverte o valor (true -> false, false -> true)
+    };
+
+    const sendCodeToEmail = () => {
+        setCodeSent(true)
     };
 
     return (
@@ -23,14 +27,22 @@ export default function Index() {
 
         <div className="login-container">
             <form id="login-form">
-                <h2><p>Acelera Concurso</p><p>Login</p></h2>
+                <h2><p>Acelera Concurso</p><p>Recuperar Acesso</p></h2>
 
                 <div className="back-link">
-                    <nav><a href="/">Voltar ao Inicio.</a></nav>
+                    <nav><a href="/login">Voltar à tela de acesso..</a></nav>
                 </div>
 
                 <div className="input-group">
-                    <label htmlFor="email">E-mail/Usuário*</label>
+                    <label htmlFor="email">E-mail*</label>
+                    <input type="email" id="email" name="email" placeholder="seuemail@exemplo.com" required/>
+                    <input type="button" id="ConfirmButton" value="Enviar Código" onClick={sendCodeToEmail} hidden={codeSent} />
+                </div>
+
+                <div className="options" hidden={!codeSent}>Código de confirmação enviado! Verifique seu e-mail!</div>
+
+                <div className="input-group">
+                    <label htmlFor="email">Código de Verificação*</label>
                     <input type="email" id="email" name="email" placeholder="seuemail@exemplo.com" required/>
                 </div>
 
@@ -71,11 +83,7 @@ export default function Index() {
                 </div>
                 {/* --- FIM DA MODIFICAÇÃO --- */}
 
-                <div className="options">
-                    <a href="/recovery">Esqueceu a senha?</a>
-                </div>
-
-                <button type="submit" className="login-button">Entrar</button>
+                <button type="submit" className="login-button">Atualizar Senha</button>
 
                 <div className="register-link">
                     <p>Não tem uma conta? <a href="/register">Cadastre-se</a></p>
@@ -89,5 +97,5 @@ export default function Index() {
 }
 
 const LoginStyles = () => {
-    return (<link rel="stylesheet" href="app/pages/login/login.css"></link>);
+    return (<link rel="stylesheet" href="app/pages/access/recovery/recovery.css"></link>);
 };

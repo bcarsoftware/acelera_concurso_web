@@ -1,10 +1,9 @@
 import {useState} from "react";
-import type {Route} from "../../../.react-router/types/app/routes/+types/home";
-import {link} from "node:fs";
+import type {Route} from "../../../../.react-router/types/app/routes/+types/home";
 
 export function meta({}: Route.MetaArgs) {
     return [
-        { title: "Recuperar Acesso" },
+        { title: "Index Acelera Concurso" },
         { name: "description", content: "Sua melhor preparação!" },
     ];
 }
@@ -23,20 +22,14 @@ export default function Index() {
 
         <div className="login-container">
             <form id="login-form">
-                <h2><p>Acelera Concurso</p><p>Recuperar Acesso</p></h2>
+                <h2><p>Acelera Concurso</p><p>Login</p></h2>
 
                 <div className="back-link">
-                    <nav><a href="/login">Voltar à tela de acesso..</a></nav>
+                    <nav><a href="/public">Voltar ao Inicio.</a></nav>
                 </div>
 
                 <div className="input-group">
-                    <label htmlFor="email">E-mail*</label>
-                    <input type="email" id="email" name="email" placeholder="seuemail@exemplo.com" required/>
-                    <input type="button" id="ConfirmButton" value="Enviar Código"/>
-                </div>
-
-                <div className="input-group">
-                    <label htmlFor="email">Código de Verificação*</label>
+                    <label htmlFor="email">E-mail/Usuário*</label>
                     <input type="email" id="email" name="email" placeholder="seuemail@exemplo.com" required/>
                 </div>
 
@@ -77,6 +70,10 @@ export default function Index() {
                 </div>
                 {/* --- FIM DA MODIFICAÇÃO --- */}
 
+                <div className="options">
+                    <a href="/recovery">Esqueceu a senha?</a>
+                </div>
+
                 <button type="submit" className="login-button">Entrar</button>
 
                 <div className="register-link">
@@ -91,5 +88,5 @@ export default function Index() {
 }
 
 const LoginStyles = () => {
-    return (<link rel="stylesheet" href="app/pages/recovery/recovery.css"></link>);
+    return (<link rel="stylesheet" href="app/pages/access/login/login.css"></link>);
 };

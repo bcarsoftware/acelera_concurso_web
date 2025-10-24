@@ -1,5 +1,5 @@
 import {useState} from "react";
-import type {Route} from "../../../.react-router/types/app/routes/+types/home";
+import type {Route} from "../../../../.react-router/types/app/routes/+types/home";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -35,7 +35,7 @@ export default function Index() {
 
         <div className="login-container">
             <form id="login-form">
-                <h2><p>Acelera Concurso - Cadastro</p></h2>
+                <h2><p>Acelera Concurso</p><p>Cadastro</p></h2>
 
                 <form>
                     <div id="BasicInfo" hidden={currentStage !== "BasicInfo"}>
@@ -167,5 +167,5 @@ export default function Index() {
 }
 
 const LoginStyles = () => {
-    return (<link rel="stylesheet" href="/app/pages/register/register.css"></link>);
+    return (<link rel="stylesheet" href="/app/pages/access/register/register.css"></link>);
 };
