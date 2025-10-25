@@ -306,6 +306,10 @@ section:hover {
     margin-left: 12px;
 }
 
+#DashboardTitle {
+    cursor: pointer;
+}
+
 /* --- Design Responsivo (Mobile) --- */
 @media (max-width: 768px) {
     #Dashboard {
