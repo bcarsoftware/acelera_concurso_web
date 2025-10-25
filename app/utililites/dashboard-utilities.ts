@@ -42,20 +42,6 @@ export const swapScreenHiddenOthers = (
 
 /* functions privates those looks like a utility */
 
-class Props {
-    private static instance: any
-
-    static setInstance(newInstance: AllScreens) {
-        if (!this.instance) {
-            this.instance = newInstance
-        }
-    }
-
-    static getInstance(): AllScreens {
-        return this.instance;
-    }
-}
-
 const setAllScreensFalse = (
     screens: { [x: string]: (arg: boolean) => void; }
 ) => {
@@ -67,69 +53,66 @@ const setAllScreensFalse = (
 };
 
 const switchPageShown = (
-    screenName: ScreenNames
+    screenName: ScreenNames,
+    props: AllScreens
 ) => {
     swapScreenHiddenOthers(
         screenName,
         {
-            setMainPage: Props.getInstance().setMainPage,
-            setPublicTender: Props.getInstance().setPublicTender,
-            setSubject: Props.getInstance().setSubject,
-            setTopic: Props.getInstance().setTopic,
-            setQuestions: Props.getInstance().setQuestions,
-            setSettings: Props.getInstance().setSettings,
-            setPomodoro: Props.getInstance().setPomodoro,
-            setLogout: Props.getInstance().setLogout,
+            setMainPage: props.setMainPage,
+            setPublicTender: props.setPublicTender,
+            setSubject: props.setSubject,
+            setTopic: props.setTopic,
+            setQuestions: props.setQuestions,
+            setSettings: props.setSettings,
+            setPomodoro: props.setPomodoro,
+            setLogout: props.setLogout,
         }
     );
 };
 
-const accessingMainPage = () => {
-    switchPageShown(ScreenNames.START);
+const accessingMainPage = (props: AllScreens) => {
+    switchPageShown(ScreenNames.START, props);
 };
-const accessingPublicTenderPage = () => {
-    switchPageShown(ScreenNames.PUBLIC_TENDER);
+const accessingPublicTenderPage = (props: AllScreens) => {
+    switchPageShown(ScreenNames.PUBLIC_TENDER, props);
 }
-const accessingSubjectPage = () => {
-    switchPageShown(ScreenNames.SUBJECT);
+const accessingSubjectPage = (props: AllScreens) => {
+    switchPageShown(ScreenNames.SUBJECT, props);
 }
-const accessingTopicPage = () => {
-    switchPageShown(ScreenNames.TOPIC);
+const accessingTopicPage = (props: AllScreens) => {
+    switchPageShown(ScreenNames.TOPIC, props);
 }
-const accessingQuestionPage = () => {
-    switchPageShown(ScreenNames.QUESTIONS);
+const accessingQuestionPage = (props: AllScreens) => {
+    switchPageShown(ScreenNames.QUESTIONS, props);
 }
-const accessingPomodoroPage = () => {
-    switchPageShown(ScreenNames.POMODORO);
+const accessingPomodoroPage = (props: AllScreens) => {
+    switchPageShown(ScreenNames.POMODORO, props);
 }
-const accessingSettingPage = () => {
-    switchPageShown(ScreenNames.SETTINGS);
+const accessingSettingPage = (props: AllScreens) => {
+    switchPageShown(ScreenNames.SETTINGS, props);
 }
-const accessingLogoutPage = () => {
-    switchPageShown(ScreenNames.LOGOUT);
+const accessingLogoutPage = (props: AllScreens) => {
+    switchPageShown(ScreenNames.LOGOUT, props);
 }
 
 /* get accessing functions */
 
 export const getAccessFunctions = (props: AllScreens) => {
-    Props.setInstance(props);
-
     return {
-        accessingMainPage,
-        accessingPublicTenderPage,
-        accessingSubjectPage,
-        accessingTopicPage,
-        accessingQuestionPage,
-        accessingPomodoroPage,
-        accessingSettingPage,
-        accessingLogoutPage
+        accessingMainPage: () => accessingMainPage(props),
+        accessingPublicTenderPage: () => accessingPublicTenderPage(props),
+        accessingSubjectPage: () => accessingSubjectPage(props),
+        accessingTopicPage: () => accessingTopicPage(props),
+        accessingQuestionPage: () => accessingQuestionPage(props),
+        accessingPomodoroPage: () => accessingPomodoroPage(props),
+        accessingSettingPage: () => accessingSettingPage(props),
+        accessingLogoutPage: () => accessingLogoutPage(props)
     };
 };
 
 export const getStartHeader = (props: StartScreen) => {
-    Props.setInstance(props as AllScreens);
-
     return {
-        accessingMainPage,
+        accessingMainPage: () => accessingMainPage(props as AllScreens),
     };
 };
