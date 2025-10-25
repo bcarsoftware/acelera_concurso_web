@@ -121,12 +121,12 @@ export default function Index() {
 
                             <div className="class-div-content">
                                 <div id="NoteCheck">
-                                    <div onClick={checkNoteSubject}>
-                                        <input type="checkbox" name="subject" id="subject"/>
+                                    <div>
+                                        <input type="checkbox" checked={noteSubjectChecked} onChange={checkNoteSubject} name="subject" id="subject"/>
                                         <label htmlFor="subject" className="padding-check-button">Disciplina</label>
                                     </div>
-                                    <div onClick={checkNoteTopic}>
-                                        <input type="checkbox" name="topic" id="topic"/>
+                                    <div>
+                                        <input type="checkbox" checked={noteTopicChecked} onChange={checkNoteTopic} name="topic" id="topic"/>
                                         <label htmlFor="topic" className="padding-check-button">Assunto</label>
                                     </div>
                                 </div>
