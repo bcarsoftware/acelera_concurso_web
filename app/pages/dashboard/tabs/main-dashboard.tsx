@@ -2,8 +2,11 @@ import {ContentWide} from "~/pages/dashboard/components/content-wide";
 import {ContentCard} from "~/pages/dashboard/components/content-card";
 import {ContentSquare} from "~/pages/dashboard/components/content-square";
 import {useState} from "react";
+import type {DataFunctionsScreen} from "../../../../types/data-functions-screen";
 
-export const MainDashboardPage = () => {
+export const MainDashboardPage = (
+    props: DataFunctionsScreen
+) => {
     const [noteSubjectChecked, setNoteSubjectChecked] = useState<boolean>(true);
     const [noteTopicChecked, setNoteTopicChecked] = useState<boolean>(true);
 
@@ -15,12 +18,35 @@ export const MainDashboardPage = () => {
         setNoteTopicChecked(!noteTopicChecked);
     }
 
+    /* REGISTERS SCREENS */
+    const showPublicTenderNew = () => {
+        props.setMainPage(false);
+        props.setShowSubjectNew(false);
+        props.setShowTopicNew(false);
+        props.setShowPublicTenderNew(true);
+    }
+    const showSubjectNew = () => {
+        props.setMainPage(false);
+        props.setShowPublicTenderNew(false);
+        props.setShowTopicNew(false);
+        props.setShowSubjectNew(true)
+    }
+    const showTopicNew = () => {
+        props.setMainPage(false);
+        props.setShowPublicTenderNew(false);
+        props.setShowSubjectNew(false);
+        props.setShowTopicNew(true);
+    }
+    /* REGISTERS SCREENS */
+
     return (
         <>
             <div id="ContentTwice">
                 <div id="PublicTender">
                     <h1>Concursos Cadastrados</h1>
-                    <input type="button" className="button-add" value="Adicionar" />
+                    <input type="button" className="button-add" value="Adicionar"
+                    onClick={showPublicTenderNew}
+                    />
 
                     <ContentWide>
                         <ContentCard>
@@ -58,7 +84,9 @@ export const MainDashboardPage = () => {
             <div id="SubjectTopicNote">
                 <ContentSquare>
                     <h2>Disciplinas</h2>
-                    <input type="button" className="button-add" value="Adicionar" />
+                    <input type="button" className="button-add" value="Adicionar"
+                    onClick={showSubjectNew}
+                    />
 
                     <ContentCard>
                         <section><p className="text-section">Disciplina 1</p></section>
@@ -69,7 +97,8 @@ export const MainDashboardPage = () => {
                 </ContentSquare>
                 <ContentSquare>
                     <h2>Assuntos</h2>
-                    <input type="button" className="button-add" value="Adicionar" />
+                    <input type="button" className="button-add" value="Adicionar"
+                    onClick={showTopicNew}/>
 
                     <ContentCard>
                         <section><p className="text-section">Assunto 1</p></section>

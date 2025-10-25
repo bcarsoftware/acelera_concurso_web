@@ -112,7 +112,18 @@ export const getAccessFunctions = (props: AllScreens) => {
 };
 
 export const getStartHeader = (props: StartScreen) => {
+    const allScreens: AllScreens = {
+        setMainPage: props.setMainPage,
+        setPublicTender: () => false,
+        setSubject: () => false,
+        setTopic: () => false,
+        setQuestions: () => false,
+        setPomodoro: () => false,
+        setSettings: () => false,
+        setLogout: () => false,
+    };
+
     return {
-        accessingMainPage: () => accessingMainPage(props as AllScreens),
+        accessingMainPage: () => accessingMainPage(allScreens),
     };
 };

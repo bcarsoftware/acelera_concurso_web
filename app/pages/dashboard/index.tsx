@@ -5,6 +5,7 @@ import {LeftPanel} from "~/pages/dashboard/components/left-panel";
 import {Content} from "~/pages/dashboard/components/content";
 import {MainDashboardPage} from "~/pages/dashboard/tabs/main-dashboard";
 import {useState} from "react";
+import {PublicTenderNew} from "~/pages/dashboard/data/public-tender/public-tender-new";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -23,8 +24,24 @@ export default function Index() {
     const [pomodoro, setPomodoro] = useState<boolean>(false);
     const [logout, setLogout] = useState<boolean>(false);
 
+    /* REGISTER NEW REGISTER */
+    const [showPublicTenderNew, setShowPublicTenderNew] = useState<boolean>(false);
+    const [showSubjectNew, setShowSubjectNew] = useState<boolean>(true);
+    const [showTopicNew, setShowTopicNew] = useState(false);
+    /* REGISTER NEW REGISTER */
+    /* SHOW REGISTERS SCREENS */
+    const showNewScreenPublicTender = () => (<PublicTenderNew />);
+    const showNewScreenSubject = () => {return;}
+    const showNewScreenTopic = () => {return;}
+    /* SHOW REGISTERS SCREENS */
+
     const accessMainPage = () => {
-        return (<MainDashboardPage />);
+        return (<MainDashboardPage
+            setMainPage={setMainPage}
+            setShowPublicTenderNew={setShowPublicTenderNew}
+            setShowSubjectNew={setShowSubjectNew}
+            setShowTopicNew={setShowTopicNew}
+        />);
     };
 
     return (
@@ -48,6 +65,7 @@ export default function Index() {
                 />
                 <Content>
                     {mainPage && (accessMainPage())}
+                    {showPublicTenderNew && (showNewScreenPublicTender())}
                 </Content >
             </main>
 
