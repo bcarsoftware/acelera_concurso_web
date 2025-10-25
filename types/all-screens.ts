@@ -7,4 +7,5 @@ export interface AllScreens {
     setPomodoro: (arg: boolean) => void;
     setSettings: (arg: boolean) => void;
     setLogout: (arg: boolean) => void;
+    hiddenNewRegisters: () => void;
 }

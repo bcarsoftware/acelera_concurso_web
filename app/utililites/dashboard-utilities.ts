@@ -72,6 +72,7 @@ const switchPageShown = (
 };
 
 const accessingMainPage = (props: AllScreens) => {
+    props.hiddenNewRegisters();
     switchPageShown(ScreenNames.START, props);
 };
 const accessingPublicTenderPage = (props: AllScreens) => {
@@ -107,7 +108,7 @@ export const getAccessFunctions = (props: AllScreens) => {
         accessingQuestionPage: () => accessingQuestionPage(props),
         accessingPomodoroPage: () => accessingPomodoroPage(props),
         accessingSettingPage: () => accessingSettingPage(props),
-        accessingLogoutPage: () => accessingLogoutPage(props)
+        accessingLogoutPage: () => accessingLogoutPage(props),
     };
 };
 
@@ -121,6 +122,7 @@ export const getStartHeader = (props: StartScreen) => {
         setPomodoro: () => false,
         setSettings: () => false,
         setLogout: () => false,
+        hiddenNewRegisters: props.hiddenNewRegisters,
     };
 
     return {

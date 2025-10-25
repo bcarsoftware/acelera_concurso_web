@@ -6,6 +6,7 @@ import {Content} from "~/pages/dashboard/components/content";
 import {MainDashboardPage} from "~/pages/dashboard/tabs/main-dashboard";
 import {useState} from "react";
 import {PublicTenderNew} from "~/pages/dashboard/data/public-tender/public-tender-new";
+import {SubjectNew} from "~/pages/dashboard/data/subject/subject-new";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -31,9 +32,17 @@ export default function Index() {
     /* REGISTER NEW REGISTER */
     /* SHOW REGISTERS SCREENS */
     const showNewScreenPublicTender = () => (<PublicTenderNew />);
-    const showNewScreenSubject = () => {return;}
+    const showNewScreenSubject = () => (<SubjectNew />);
     const showNewScreenTopic = () => {return;}
     /* SHOW REGISTERS SCREENS */
+
+    /* HIDDEN REGISTERS AND SEE MAIN PAGE */
+    const hiddenNewRegisters = () => {
+        setShowPublicTenderNew(false);
+        setShowSubjectNew(false);
+        setShowTopicNew(false);
+    }
+    /* HIDDEN REGISTERS AND SEE MAIN PAGE */
 
     const accessMainPage = () => {
         return (<MainDashboardPage
@@ -50,6 +59,7 @@ export default function Index() {
             <body>
             <HeaderDashboard
                 setMainPage={setMainPage}
+                hiddenNewRegisters={hiddenNewRegisters}
             />
 
             <main id="Dashboard">
@@ -62,10 +72,12 @@ export default function Index() {
                     setPomodoro={setPomodoro}
                     setSettings={setSettings}
                     setLogout={setLogout}
+                    hiddenNewRegisters={hiddenNewRegisters}
                 />
                 <Content>
                     {mainPage && (accessMainPage())}
                     {showPublicTenderNew && (showNewScreenPublicTender())}
+                    {showSubjectNew && (showNewScreenSubject())}
                 </Content >
             </main>
 

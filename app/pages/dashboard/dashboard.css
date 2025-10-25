@@ -364,4 +364,19 @@ section:hover {
     border-color: #088ac7;
     box-shadow: 0 0 8px rgba(8, 138, 199, 0.3);
 }
+
+.input-group select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.input-group select:focus {
+    outline: none;
+    border-color: #088ac7;
+    box-shadow: 0 0 8px rgba(8, 138, 199, 0.3);
+}
 /* INPUT TEXT CSS STYLE */
