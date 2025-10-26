@@ -17,42 +17,48 @@ export const PublicTenderNew = () => {
                         name={"public-tender-name"}
                         placeholder={"Nome do Concurso"}
                         required={true}
+                        disabled={false}
                     />
                     <InputText
                         labelContent={"Banca do Concurso*"}
                         name={"public-tender-board"}
                         placeholder={"Nome da Banca do Concurso"}
                         required={true}
+                        disabled={false}
                     />
                     <InputText
                         labelContent={"Carggo Pretendido*"}
                         name={"public-tender-work-title"}
                         placeholder={"Função que deseja exercer"}
                         required={true}
+                        disabled={false}
                     />
                     <InputText
                         labelContent={"Instituição Solicitante*"}
                         name={"public-tender-institute"}
                         placeholder={"Instituição que solicitou o centame"}
                         required={true}
+                        disabled={false}
                     />
                     <InputText
                         labelContent={"Link do Edital"}
                         name={"public-tender-notice-link"}
                         placeholder={"https://www.institutodeconcurso.com.br/edital/edital-mes-dia-ano.pdf"}
                         required={false}
+                        disabled={false}
                     />
                     <InputDate
                         labelContent={"Data do Concurso"}
                         name={"public-tender-date"}
                         placeholder={""}
                         required={false}
+                        disabled={false}
                     />
 
                     <Button
                         buttonContent={"Cadastrar Novo Concurso"}
                         buttonType={HtmlType.SUBMIT}
-                        name={"new-public-tender"}
+                        name={"new-public-tender-button"}
                         styles={{
                             bg_color: Colors.GREEN,
                             bg_hover: Colors.GREEN_HOVER,

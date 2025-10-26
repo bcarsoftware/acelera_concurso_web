@@ -7,6 +7,7 @@ import {MainDashboardPage} from "~/pages/dashboard/tabs/main-dashboard";
 import {useState} from "react";
 import {PublicTenderNew} from "~/pages/dashboard/data/public-tender/public-tender-new";
 import {SubjectNew} from "~/pages/dashboard/data/subject/subject-new";
+import {TopicNew} from "~/pages/dashboard/data/topic/topic-new";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -33,7 +34,7 @@ export default function Index() {
     /* SHOW REGISTERS SCREENS */
     const showNewScreenPublicTender = () => (<PublicTenderNew />);
     const showNewScreenSubject = () => (<SubjectNew />);
-    const showNewScreenTopic = () => {return;}
+    const showNewScreenTopic = () => (<TopicNew />);
     /* SHOW REGISTERS SCREENS */
 
     /* HIDDEN REGISTERS AND SEE MAIN PAGE */
@@ -78,6 +79,7 @@ export default function Index() {
                     {mainPage && (accessMainPage())}
                     {showPublicTenderNew && (showNewScreenPublicTender())}
                     {showSubjectNew && (showNewScreenSubject())}
+                    {showTopicNew && (showNewScreenTopic())}
                 </Content >
             </main>
 

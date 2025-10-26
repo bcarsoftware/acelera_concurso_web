@@ -7,7 +7,7 @@ export const HeaderDashboard = (props: StartScreen) => {
     return (
         <header>
             <div className="div-width-50-percent-left">
-                <a href="" className="link-format">
+                <a href="/" className="link-format">
                     <h4>
                         <p>Acelera</p><p>Concurso</p>
                     </h4>
@@ -17,7 +17,7 @@ export const HeaderDashboard = (props: StartScreen) => {
                 <h1 onClick={functions.accessingMainPage} id="DashboardTitle">Dashboard Acelera Concurso</h1>
             </div>
             <div className="div-width-50-percent-right">
-                <a href="" className="link-format">
+                <a href="/" className="link-format">
                     <h4>SAIR  .</h4>
                 </a>
             </div>

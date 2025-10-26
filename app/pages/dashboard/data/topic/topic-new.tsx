@@ -1,40 +1,45 @@
 import {ContentWide} from "~/pages/dashboard/components/content-wide";
 import {ContentCard} from "~/pages/dashboard/components/content-card";
-import {InputText} from "~/pages/dashboard/components/input-text";
 import {InputNumber} from "~/pages/dashboard/components/input-number";
-import {SelectCategory} from "~/pages/dashboard/components/select-category";
+import {InputText} from "~/pages/dashboard/components/input-text";
 import {SelectStatus} from "~/pages/dashboard/components/select-status";
 import {HtmlType} from "../../../../../enums/html-type";
 import {Colors} from "../../../../../enums/colors";
 import {Button} from "~/pages/dashboard/components/button";
 
-export const SubjectNew = () => {
+export const TopicNew = () => {
     return (
         <form>
-            <h1>Cadastro Nova Disciplina</h1>
+            <h1>Cadastro Novo Assunto</h1>
             <ContentWide>
                 <ContentCard>
                     <InputNumber
-                        labelContent={"ID Concurso*"}
-                        name={"public-tender-id"}
+                        labelContent={"ID Disciplina*"}
+                        name={"subject-id"}
                         placeholder={"123"}
                         required={true}
                         disabled={false}
                     />
                     <InputText
-                        labelContent={"Nome da Disciplina*"}
-                        name={"subject-name"}
-                        placeholder={"Nome da Disciplina"}
+                        labelContent={"Nome do Assunto*"}
+                        name={"topic-name"}
+                        placeholder={"Nome do Assunto"}
                         required={true}
                         disabled={false}
                     />
-                    <SelectCategory disable={false} />
+                    <InputText
+                        labelContent={"Descrição do Assunto"}
+                        name={"topic-description"}
+                        placeholder={"Descrição sobre o Assunto"}
+                        required={false}
+                        disabled={false}
+                    />
                     <SelectStatus disable={false} />
 
                     <Button
-                        buttonContent={"Cadastrar Nova Disciplina"}
+                        buttonContent={"Cadastrar Novo Assunto"}
                         buttonType={HtmlType.SUBMIT}
-                        name={"new-subject-button"}
+                        name={"new-topic-button"}
                         styles={{
                             bg_color: Colors.GREEN,
                             bg_hover: Colors.GREEN_HOVER,

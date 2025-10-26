@@ -3,4 +3,5 @@ export interface InputParams {
     name: string;
     placeholder: string;
     required: boolean;
+    disabled: boolean;
 }
