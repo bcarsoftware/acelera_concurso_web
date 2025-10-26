@@ -3,4 +3,6 @@ export interface DataFunctionsScreen {
     setShowPublicTenderNew: (arg: boolean) => void;
     setShowSubjectNew: (arg: boolean) => void;
     setShowTopicNew: (arg: boolean) => void;
+    setShowNoteSubjectNew: (arg: boolean) => void;
+    setShowNoteTopicNew: (arg: boolean) => void;
 }

@@ -9,34 +9,74 @@ export const MainDashboardPage = (
 ) => {
     const [noteSubjectChecked, setNoteSubjectChecked] = useState<boolean>(true);
     const [noteTopicChecked, setNoteTopicChecked] = useState<boolean>(true);
+    const [noteAllChecked, setNoteAllChecked] = useState<boolean>(true);
 
     const checkNoteSubject = () => {
         setNoteSubjectChecked(!noteSubjectChecked);
+        setNoteTopicChecked(noteSubjectChecked);
     };
 
     const checkNoteTopic = () => {
         setNoteTopicChecked(!noteTopicChecked);
+        setNoteSubjectChecked(noteTopicChecked);
     }
 
+    const checkAllNotes = () => {
+        setNoteAllChecked(!noteAllChecked);
+        setNoteSubjectChecked(!noteAllChecked);
+        setNoteTopicChecked(!noteAllChecked);
+    };
+
     /* REGISTERS SCREENS */
-    const showPublicTenderNew = () => {
+    const settingAllFalse = () => {
+        props.setShowNoteSubjectNew(false);
+        props.setShowNoteTopicNew(false);
         props.setMainPage(false);
         props.setShowSubjectNew(false);
         props.setShowTopicNew(false);
+        props.setShowPublicTenderNew(false);
+    }
+
+    const showPublicTenderNew = () => {
+        settingAllFalse();
         props.setShowPublicTenderNew(true);
     }
     const showSubjectNew = () => {
-        props.setMainPage(false);
-        props.setShowPublicTenderNew(false);
-        props.setShowTopicNew(false);
-        props.setShowSubjectNew(true)
+        settingAllFalse();
+        props.setShowSubjectNew(true);
     }
     const showTopicNew = () => {
-        props.setMainPage(false);
-        props.setShowPublicTenderNew(false);
-        props.setShowSubjectNew(false);
+        settingAllFalse();
         props.setShowTopicNew(true);
     }
+    const showNoteSubjectNew = () => {
+        settingAllFalse();
+        props.setShowNoteSubjectNew(true);
+    };
+    const showNoteTopicNew = () => {
+        settingAllFalse();
+        props.setShowNoteTopicNew(true);
+    };
+    const selectNote = () => {
+        const msg = "Escolha um tipo de nota a criar!";
+
+        if (noteAllChecked) {
+            alert(msg);
+            settingAllFalse();
+            props.setMainPage(true);
+        }
+        else if (noteSubjectChecked) {
+            return showNoteSubjectNew();
+        }
+        else if (noteTopicChecked) {
+            return showNoteTopicNew();
+        }
+        else {
+            alert(msg);
+            settingAllFalse();
+            props.setMainPage(true);
+        }
+    };
     /* REGISTERS SCREENS */
 
     return (
@@ -109,7 +149,7 @@ export const MainDashboardPage = (
                 </ContentSquare>
                 <ContentSquare>
                     <h2>Notas de Atenção</h2>
-                    <input type="button" className="button-add" value="Adicionar" />
+                    <input type="button" className="button-add" value="Adicionar" onClick={selectNote}/>
 
                     <ContentCard>
                         <div id="NoteCheck">
@@ -120,6 +160,10 @@ export const MainDashboardPage = (
                             <div>
                                 <input type="checkbox" checked={noteTopicChecked} onChange={checkNoteTopic} name="topic" id="topic"/>
                                 <label htmlFor="topic" className="padding-check-button">Assunto</label>
+                            </div>
+                            <div>
+                                <input type="checkbox" checked={noteAllChecked} onChange={checkAllNotes} name="all-notes" id="all-notes"/>
+                                <label htmlFor="all-notes" className="padding-check-button">Todos</label>
                             </div>
                         </div>
 

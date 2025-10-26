@@ -8,6 +8,8 @@ import {useState} from "react";
 import {PublicTenderNew} from "~/pages/dashboard/data/public-tender/public-tender-new";
 import {SubjectNew} from "~/pages/dashboard/data/subject/subject-new";
 import {TopicNew} from "~/pages/dashboard/data/topic/topic-new";
+import {NoteSubjectNew} from "~/pages/dashboard/data/note-subject/note-subject-new";
+import {NoteTopicNew} from "~/pages/dashboard/data/note-topic/note-topic-new";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -29,12 +31,16 @@ export default function Index() {
     /* REGISTER NEW REGISTER */
     const [showPublicTenderNew, setShowPublicTenderNew] = useState<boolean>(false);
     const [showSubjectNew, setShowSubjectNew] = useState<boolean>(true);
-    const [showTopicNew, setShowTopicNew] = useState(false);
+    const [showTopicNew, setShowTopicNew] = useState<boolean>(false);
+    const [showNoteTopicNew, setShowNoteTopicNew] = useState<boolean>(false);
+    const [showNoteSubjectNew, setShowNoteSubjectNew] = useState<boolean>(false);
     /* REGISTER NEW REGISTER */
     /* SHOW REGISTERS SCREENS */
     const showNewScreenPublicTender = () => (<PublicTenderNew />);
     const showNewScreenSubject = () => (<SubjectNew />);
     const showNewScreenTopic = () => (<TopicNew />);
+    const showNewScreenNoteSubject = () => (<NoteSubjectNew />);
+    const showNewScreenNoteTopic = () => (<NoteTopicNew />);
     /* SHOW REGISTERS SCREENS */
 
     /* HIDDEN REGISTERS AND SEE MAIN PAGE */
@@ -42,6 +48,8 @@ export default function Index() {
         setShowPublicTenderNew(false);
         setShowSubjectNew(false);
         setShowTopicNew(false);
+        setShowNoteSubjectNew(false);
+        setShowNoteTopicNew(false);
     }
     /* HIDDEN REGISTERS AND SEE MAIN PAGE */
 
@@ -51,6 +59,8 @@ export default function Index() {
             setShowPublicTenderNew={setShowPublicTenderNew}
             setShowSubjectNew={setShowSubjectNew}
             setShowTopicNew={setShowTopicNew}
+            setShowNoteSubjectNew={setShowNoteSubjectNew}
+            setShowNoteTopicNew={setShowNoteTopicNew}
         />);
     };
 
@@ -80,6 +90,8 @@ export default function Index() {
                     {showPublicTenderNew && (showNewScreenPublicTender())}
                     {showSubjectNew && (showNewScreenSubject())}
                     {showTopicNew && (showNewScreenTopic())}
+                    {showNoteTopicNew && (showNewScreenNoteTopic())}
+                    {showNoteSubjectNew && (showNewScreenNoteSubject())}
                 </Content >
             </main>
 
