@@ -3,6 +3,7 @@ import {ContentCard} from "~/pages/dashboard/components/content-card";
 import {ContentSquare} from "~/pages/dashboard/components/content-square";
 import {useState} from "react";
 import type {DataFunctionsScreen} from "../../../../types/data-functions-screen";
+import {Dialog} from "~/dialog/dialog";
 
 export const MainDashboardPage = (
     props: DataFunctionsScreen
@@ -10,6 +11,10 @@ export const MainDashboardPage = (
     const [noteSubjectChecked, setNoteSubjectChecked] = useState<boolean>(true);
     const [noteTopicChecked, setNoteTopicChecked] = useState<boolean>(true);
     const [noteAllChecked, setNoteAllChecked] = useState<boolean>(true);
+    const [openDialog, setOpenDialog] = useState<boolean>(false);
+
+    const [titleDialog, setTitleDialog] = useState<string>("");
+    const [messageDialog, setMessageDialog] = useState<string>("");
 
     const checkNoteSubject = () => {
         setNoteSubjectChecked(!noteSubjectChecked);
@@ -63,10 +68,11 @@ export const MainDashboardPage = (
         props.setShowStudyTipsNew(true);
     };
     const selectNote = () => {
-        const msg = "Escolha um tipo de nota a criar!";
+        setMessageDialog("Selecione apenas um tipo de Nota!");
+        setTitleDialog("Erro no Cadastro de Nota");
 
         if (noteAllChecked) {
-            alert(msg);
+            setOpenDialog(true);
             settingAllFalse();
             props.setMainPage(true);
         }
@@ -77,7 +83,7 @@ export const MainDashboardPage = (
             return showNoteTopicNew();
         }
         else {
-            alert(msg);
+            setOpenDialog(true);
             settingAllFalse();
             props.setMainPage(true);
         }
@@ -155,6 +161,10 @@ export const MainDashboardPage = (
                 <ContentSquare>
                     <h2>Notas de Atenção</h2>
                     <input type="button" className="button-add" value="Adicionar" onClick={selectNote}/>
+
+                    {openDialog && (
+                        <Dialog title={titleDialog} message={messageDialog} buttonText={"Fechar"} closeFunction={setOpenDialog} />
+                    )}
 
                     <ContentCard>
                         <div id="NoteCheck">
