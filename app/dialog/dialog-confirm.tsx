@@ -4,12 +4,12 @@ import {DialogStyle} from "~/dialog/dialog-style";
 interface DialogParams {
     title: string;
     message: string;
-    buttonText: string;
     isOpen: boolean;
+    yesFunction: () => void;
 }
 
-export const Dialog = ({
-    title, message, buttonText, isOpen
+export const DialogConfirm = ({
+   title, message, isOpen, yesFunction,
 }: DialogParams) => {
     const [open, setOpen] = useState<boolean>(isOpen);
 
@@ -29,7 +29,8 @@ export const Dialog = ({
                             </div>
                             <p>{message}</p>
                             <div id={"ButtonDiv"}>
-                                <button className={"button-general"} onClick={close}>{buttonText}</button>
+                                <button className={"button-yes"} onClick={yesFunction}>SIM</button>
+                                <button className={"button-not"} onClick={close}>NÃO</button>
                             </div>
                         </div>
                     </div>
