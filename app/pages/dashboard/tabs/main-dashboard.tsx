@@ -35,6 +35,7 @@ export const MainDashboardPage = (
         props.setShowSubjectNew(false);
         props.setShowTopicNew(false);
         props.setShowPublicTenderNew(false);
+        props.setShowStudyTipsNew(false);
     }
 
     const showPublicTenderNew = () => {
@@ -56,6 +57,10 @@ export const MainDashboardPage = (
     const showNoteTopicNew = () => {
         settingAllFalse();
         props.setShowNoteTopicNew(true);
+    };
+    const showStudyTipsNew = () => {
+        settingAllFalse();
+        props.setShowStudyTipsNew(true);
     };
     const selectNote = () => {
         const msg = "Escolha um tipo de nota a criar!";
@@ -99,7 +104,7 @@ export const MainDashboardPage = (
                 </div>
                 <div id="TipsHit">
                     <h1>Dicas de Estudo</h1>
-                    <input type="button" className="button-add" value="Nova" />
+                    <input type="button" className="button-add" value="Nova" onClick={showStudyTipsNew} />
                     <input type="button" className="button-add bg-red" value="Excluir" />
                     <input type="button" className="button-add bg-golden color-black" value="Motiva AI" />
 

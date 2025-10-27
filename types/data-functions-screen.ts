@@ -5,4 +5,5 @@ export interface DataFunctionsScreen {
     setShowTopicNew: (arg: boolean) => void;
     setShowNoteSubjectNew: (arg: boolean) => void;
     setShowNoteTopicNew: (arg: boolean) => void;
+    setShowStudyTipsNew: (arg: boolean) => void;
 }

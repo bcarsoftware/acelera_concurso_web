@@ -10,6 +10,7 @@ import {SubjectNew} from "~/pages/dashboard/data/subject/subject-new";
 import {TopicNew} from "~/pages/dashboard/data/topic/topic-new";
 import {NoteSubjectNew} from "~/pages/dashboard/data/note-subject/note-subject-new";
 import {NoteTopicNew} from "~/pages/dashboard/data/note-topic/note-topic-new";
+import {StudyTipsNew} from "~/pages/dashboard/data/study-tips/study-tips-new";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -34,6 +35,7 @@ export default function Index() {
     const [showTopicNew, setShowTopicNew] = useState<boolean>(false);
     const [showNoteTopicNew, setShowNoteTopicNew] = useState<boolean>(false);
     const [showNoteSubjectNew, setShowNoteSubjectNew] = useState<boolean>(false);
+    const [showStudyTipsNew, setShowStudyTipsNew] = useState<boolean>(false);
     /* REGISTER NEW REGISTER */
     /* SHOW REGISTERS SCREENS */
     const showNewScreenPublicTender = () => (<PublicTenderNew />);
@@ -41,6 +43,7 @@ export default function Index() {
     const showNewScreenTopic = () => (<TopicNew />);
     const showNewScreenNoteSubject = () => (<NoteSubjectNew />);
     const showNewScreenNoteTopic = () => (<NoteTopicNew />);
+    const showNewScreenStudyTips = () => (<StudyTipsNew />);
     /* SHOW REGISTERS SCREENS */
 
     /* HIDDEN REGISTERS AND SEE MAIN PAGE */
@@ -50,6 +53,7 @@ export default function Index() {
         setShowTopicNew(false);
         setShowNoteSubjectNew(false);
         setShowNoteTopicNew(false);
+        setShowStudyTipsNew(false);
     }
     /* HIDDEN REGISTERS AND SEE MAIN PAGE */
 
@@ -61,6 +65,7 @@ export default function Index() {
             setShowTopicNew={setShowTopicNew}
             setShowNoteSubjectNew={setShowNoteSubjectNew}
             setShowNoteTopicNew={setShowNoteTopicNew}
+            setShowStudyTipsNew={setShowStudyTipsNew}
         />);
     };
 
@@ -92,6 +97,7 @@ export default function Index() {
                     {showTopicNew && (showNewScreenTopic())}
                     {showNoteTopicNew && (showNewScreenNoteTopic())}
                     {showNoteSubjectNew && (showNewScreenNoteSubject())}
+                    {showStudyTipsNew && (showNewScreenStudyTips())}
                 </Content >
             </main>
 
