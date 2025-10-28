@@ -82,6 +82,8 @@ export class Pomodoro {
     private continuing?: any;
     private pomodoro: PomodoroData;
     private readonly setPomodoroTimer: (timer: string) => void;
+    public isShortInterval: boolean;
+    public isLongInterval: boolean;
 
     constructor(pomodoro: PomodoroData, setPomodoroTimer: (timer: string) => void) {
         this.minutes = 0;
@@ -90,33 +92,12 @@ export class Pomodoro {
         this.continuing = null;
         this.pomodoro = pomodoro;
         this.setPomodoroTimer = setPomodoroTimer;
-    }
-
-    private updateTimer(): void {
-        this.seconds += 1;
-
-        if (this.seconds === 60) {
-            this.seconds = 0;
-            this.minutes += 1;
-        }
-
-        const minutesFormated = String(this.minutes).padStart(2, "0");
-        const secondsFormated = String(this.seconds).padStart(2, "0");
-
-        this.pomodoro.watcher = `${minutesFormated}:${secondsFormated}`;
-
-        this.setPomodoroTimer(this.pomodoro.watcher);
+        this.isShortInterval = false;
+        this.isLongInterval = false;
     }
 
     public play(): void {
-        console.log("Playing Pomodoro...");
-        this.pomodoro.watcher = "00:00";
-        clearInterval(this.continuing);
-        this.continuing = null;
-        this.seconds = 0;
-        this.minutes = 0;
-
-        console.log("playing");
+        this.resetInterval();
 
         if (this.pomodoro.paused) {
             this.pomodoro.paused = false;
@@ -160,14 +141,8 @@ export class Pomodoro {
         this.pomodoro.reset();
     }
 
-    public runShortBreak(): void {
-        this.pomodoro.watcher = "00:00";
-        clearInterval(this.continuing);
-        this.continuing = null;
-        this.seconds = 0;
-        this.minutes = 0;
-
-        console.log("interval")
+    private runShortBreak(): void {
+        this.resetInterval();
 
         const sopped = this.rounds === this.pomodoro.rounds;
 
@@ -175,6 +150,7 @@ export class Pomodoro {
 
         else if (this.pomodoro.paused) {
             this.pomodoro.paused = false;
+            this.isShortInterval = true;
 
             this.continuing = setInterval(() => {
                 this.updateTimer();
@@ -183,24 +159,20 @@ export class Pomodoro {
                     this.pomodoro.paused = true;
                     clearInterval(this.continuing);
                     this.continuing = null;
+                    this.isShortInterval = false;
                     this.play();
                 }
             }, 1000);
         }
     }
 
-    public runLongBreak(): void {
-        this.pomodoro.watcher = "00:00";
-        clearInterval(this.continuing);
-        this.continuing = null;
-        this.seconds = 0;
-        this.minutes = 0;
+    private runLongBreak(): void {
+        this.resetInterval();
         this.rounds = 0;
-
-        console.log("long interval")
 
         if (this.pomodoro.paused) {
             this.pomodoro.paused = false;
+            this.isLongInterval = true;
 
             this.continuing = setInterval(() => {
                 this.updateTimer();
@@ -209,10 +181,35 @@ export class Pomodoro {
                     this.pomodoro.paused = true;
                     clearInterval(this.continuing);
                     this.continuing = null;
+                    this.isLongInterval = false;
                     this.play();
                 }
             }, 1000);
         }
+    }
+
+    private resetInterval(): void {
+        this.pomodoro.watcher = "00:00";
+        clearInterval(this.continuing);
+        this.continuing = null;
+        this.seconds = 0;
+        this.minutes = 0;
+    }
+
+    private updateTimer(): void {
+        this.seconds += 1;
+
+        if (this.seconds === 60) {
+            this.seconds = 0;
+            this.minutes += 1;
+        }
+
+        const minutesFormated = String(this.minutes).padStart(2, "0");
+        const secondsFormated = String(this.seconds).padStart(2, "0");
+
+        this.pomodoro.watcher = `${minutesFormated}:${secondsFormated}`;
+
+        this.setPomodoroTimer(this.pomodoro.watcher);
     }
 }
 /* POMODORO ZONE */
