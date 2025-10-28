@@ -1,4 +1,42 @@
 import {clearInterval} from "node:timers";
+import {readFileSync, writeFileSync} from "node:fs";
+
+
+interface IPomodoro {
+    focusMinutes: number;
+    shortBreak: number;
+    longBreak: number;
+    rounds: number;
+    paused: boolean;
+    watcher: string;
+}
+
+function writeSyncFile(content: IPomodoro): void {
+    const filename = "default-pomodoro.json";
+
+    try {
+        const contentJson = JSON.stringify(content, null, 2);
+        writeFileSync(filename, contentJson, "utf-8");
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+function readSyncFile(): IPomodoro | undefined{
+    const filename = "default-pomodoro.json";
+
+    try {
+        const content = readFileSync(filename, "utf-8");
+
+        const json: IPomodoro = JSON.parse(content)
+
+        if (!json) {return undefined;}
+
+        return json;
+    } catch (error) {
+        console.error(error);
+    }
+}
 
 /* POMODORO ZONE */
 export class PomodoroData {
@@ -18,6 +56,35 @@ export class PomodoroData {
         this._watcher = "00:00";
     }
 
+    public json(): IPomodoro {
+        return {
+            focusMinutes: this.focusMinutes,
+            shortBreak: this.shortBreak,
+            longBreak: this.longBreak,
+            rounds: this.rounds,
+            paused: this.paused,
+            watcher: this.watcher
+        };
+    }
+
+    public save(): void {
+        writeSyncFile(this.json());
+    }
+
+    public load(): void {
+        const content = readSyncFile();
+
+        if (content) {
+            this.focusMinutes = content.focusMinutes;
+            this.shortBreak = content.shortBreak;
+            this.longBreak = content.longBreak;
+            this.rounds = content.rounds;
+            this.paused = content.paused;
+            this.watcher = content.watcher;
+        }
+        else this.reset();
+    }
+
     public reset(): void {
         this.focusMinutes = 25;
         this.shortBreak = 5;
@@ -25,6 +92,8 @@ export class PomodoroData {
         this.rounds = 4;
         this.paused = true;
         this.watcher = "00:00";
+
+        writeSyncFile(this.json());
     }
 
     get focusMinutes(): number {
