@@ -4,8 +4,13 @@ export enum Colors {
     DART_BLUE = "#09607d",
     WHITE = "#ffffff",
     BLACK = "#000000",
+    BLACK_HOVER = "#403f3e",
     GREEN = "#279c10",
     GREEN_HOVER = "#198204",
     RED = "#ff0000",
     RED_HOVER = "#b51702",
+    GOLDEN = "#fcba03",
+    GOLDEN_HOVER = "#dba40b",
+    ORANGE = "#ff6200",
+    ORANGE_HOVER = "#c95e06",
 }

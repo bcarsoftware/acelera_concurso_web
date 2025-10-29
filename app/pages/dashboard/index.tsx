@@ -11,6 +11,7 @@ import {TopicNew} from "~/pages/dashboard/data/topic/topic-new";
 import {NoteSubjectNew} from "~/pages/dashboard/data/note-subject/note-subject-new";
 import {NoteTopicNew} from "~/pages/dashboard/data/note-topic/note-topic-new";
 import {StudyTipsNew} from "~/pages/dashboard/data/study-tips/study-tips-new";
+import {PomodoroDashboardPage} from "~/pages/dashboard/tabs/pomodoro-dashboard";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -31,7 +32,7 @@ export default function Index() {
 
     /* REGISTER NEW REGISTER */
     const [showPublicTenderNew, setShowPublicTenderNew] = useState<boolean>(false);
-    const [showSubjectNew, setShowSubjectNew] = useState<boolean>(true);
+    const [showSubjectNew, setShowSubjectNew] = useState<boolean>(false);
     const [showTopicNew, setShowTopicNew] = useState<boolean>(false);
     const [showNoteTopicNew, setShowNoteTopicNew] = useState<boolean>(false);
     const [showNoteSubjectNew, setShowNoteSubjectNew] = useState<boolean>(false);
@@ -57,6 +58,7 @@ export default function Index() {
     }
     /* HIDDEN REGISTERS AND SEE MAIN PAGE */
 
+    /* TABS PAGES */
     const accessMainPage = () => {
         return (<MainDashboardPage
             setMainPage={setMainPage}
@@ -68,6 +70,8 @@ export default function Index() {
             setShowStudyTipsNew={setShowStudyTipsNew}
         />);
     };
+    const accessPomodoroPage = () => (<PomodoroDashboardPage />);
+    /* TABS PAGES */
 
     return (
         <>
@@ -92,6 +96,8 @@ export default function Index() {
                 />
                 <Content>
                     {mainPage && (accessMainPage())}
+                    {pomodoro && (accessPomodoroPage())}
+
                     {showPublicTenderNew && (showNewScreenPublicTender())}
                     {showSubjectNew && (showNewScreenSubject())}
                     {showTopicNew && (showNewScreenTopic())}

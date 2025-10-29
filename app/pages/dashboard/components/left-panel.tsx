@@ -1,4 +1,4 @@
-import {getAccessFunctions} from "~/utililites/dashboard-utilities";
+import {getAccessFunctions} from "~/utilities/dashboard-utilities";
 import type {AllScreens} from "../../../../types/all-screens";
 
 export const LeftPanel = (

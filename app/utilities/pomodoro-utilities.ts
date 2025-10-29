@@ -1,99 +1,34 @@
-import {clearInterval} from "node:timers";
-import {readFileSync, writeFileSync} from "node:fs";
-
-
-interface IPomodoro {
-    focusMinutes: number;
-    shortBreak: number;
-    longBreak: number;
-    rounds: number;
-    paused: boolean;
-    watcher: string;
-}
-
-function writeSyncFile(content: IPomodoro): void {
-    const filename = "default-pomodoro.json";
-
-    try {
-        const contentJson = JSON.stringify(content, null, 2);
-        writeFileSync(filename, contentJson, "utf-8");
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-function readSyncFile(): IPomodoro | undefined{
-    const filename = "default-pomodoro.json";
-
-    try {
-        const content = readFileSync(filename, "utf-8");
-
-        const json: IPomodoro = JSON.parse(content)
-
-        if (!json) {return undefined;}
-
-        return json;
-    } catch (error) {
-        console.error(error);
-    }
-}
-
 /* POMODORO ZONE */
-export class PomodoroData {
+class PomodoroData {
     private _focusMinutes: number;
+    private _focusSeconds: number;
     private _shortBreak: number;
     private _longBreak: number;
     private _rounds: number;
     private _paused: boolean;
     private _watcher: string;
+    private _title: string;
 
     constructor() {
         this._focusMinutes = 25;
+        this._focusSeconds = 0;
         this._shortBreak = 5;
         this._longBreak = 20;
         this._rounds = 4;
         this._paused = true;
         this._watcher = "00:00";
-    }
-
-    public json(): IPomodoro {
-        return {
-            focusMinutes: this.focusMinutes,
-            shortBreak: this.shortBreak,
-            longBreak: this.longBreak,
-            rounds: this.rounds,
-            paused: this.paused,
-            watcher: this.watcher
-        };
-    }
-
-    public save(): void {
-        writeSyncFile(this.json());
-    }
-
-    public load(): void {
-        const content = readSyncFile();
-
-        if (content) {
-            this.focusMinutes = content.focusMinutes;
-            this.shortBreak = content.shortBreak;
-            this.longBreak = content.longBreak;
-            this.rounds = content.rounds;
-            this.paused = content.paused;
-            this.watcher = content.watcher;
-        }
-        else this.reset();
+        this._title = "Em Espera...";
     }
 
     public reset(): void {
         this.focusMinutes = 25;
+        this.focusSeconds = 0;
         this.shortBreak = 5;
         this.longBreak = 20;
         this.rounds = 4;
         this.paused = true;
         this.watcher = "00:00";
-
-        writeSyncFile(this.json());
+        this.title = "Em Espera...";
     }
 
     get focusMinutes(): number {
@@ -102,6 +37,14 @@ export class PomodoroData {
 
     set focusMinutes(value: number) {
         this._focusMinutes = value;
+    }
+
+    get focusSeconds(): number {
+        return this._focusSeconds;
+    }
+
+    set focusSeconds(value: number) {
+        this._focusSeconds = value;
     }
 
     get shortBreak(): number {
@@ -143,24 +86,45 @@ export class PomodoroData {
     set watcher(value: string) {
         this._watcher = value;
     }
+
+    get title(): string {
+        return this._title;
+    }
+
+    set title(value: string) {
+        this._title = value;
+    }
 }
 export class Pomodoro {
     private minutes: number;
     private seconds: number;
-    private rounds: number;
+    private _rounds: number;
     private continuing?: any;
-    private pomodoro: PomodoroData;
+    private readonly _pomodoro: PomodoroData;
     private readonly setPomodoroTimer: (timer: string) => void;
+    private readonly setPomodoroTitle: (title: string) => void;
     public isShortInterval: boolean;
     public isLongInterval: boolean;
 
-    constructor(pomodoro: PomodoroData, setPomodoroTimer: (timer: string) => void) {
+    get pomodoro(): PomodoroData {
+        return this._pomodoro;
+    }
+
+    get rounds(): number {
+        return this._rounds;
+    }
+
+    constructor(
+        setPomodoroTimer: (timer: string) => void,
+        setPomodoroTitle: (title: string) => void,
+    ) {
         this.minutes = 0;
         this.seconds = 0;
-        this.rounds = 0;
+        this._rounds = 0;
         this.continuing = null;
-        this.pomodoro = pomodoro;
+        this._pomodoro = new PomodoroData();
         this.setPomodoroTimer = setPomodoroTimer;
+        this.setPomodoroTitle = setPomodoroTitle;
         this.isShortInterval = false;
         this.isLongInterval = false;
     }
@@ -168,58 +132,70 @@ export class Pomodoro {
     public play(): void {
         this.resetInterval();
 
-        if (this.pomodoro.paused) {
-            this.pomodoro.paused = false;
-
-            this.continuing = setInterval(() => {
-                this.updateTimer();
-
-                if (this.minutes === this.pomodoro.focusMinutes) {
-                    this.rounds += 1;
-                    this.pomodoro.paused = true;
-                    console.log("fim do round", this.rounds);
-                    this.runShortBreak();
-                }
-
-                if (this.rounds === this.pomodoro.rounds) {
-                    this.pomodoro.paused = true;
-                    this.runLongBreak();
-                }
-            }, 1000);
-        }
+        this.playing();
     };
 
     public pause(): void {
         clearInterval(this.continuing);
         this.pomodoro.paused = true;
         this.continuing = null;
+        this.pomodoro.title = "Em Espera...";
+        this.setPomodoroTitle(this.pomodoro.title);
+    }
+
+    public resume(): void {
+        if (this.isShortInterval) this.runShortBreak(true);
+        else if (this.isLongInterval) this.runLongBreak(true);
+        else this.playing();
     }
 
     public reset(): void {
         clearInterval(this.continuing);
         this.continuing = null;
-        this.rounds = 0;
+        this._rounds = 0;
         this.minutes = 0;
         this.seconds = 0;
         this.pomodoro.watcher = "00:00";
         this.pomodoro.paused = true;
+
+        this.setPomodoroTimer(this.pomodoro.watcher);
     }
 
-    public resetAll(): void {
-        this.reset();
-        this.pomodoro.reset();
-    }
+    private playing(): void {
+        if (this.pomodoro.paused) {
+            this.pomodoro.paused = false;
 
-    private runShortBreak(): void {
-        this.resetInterval();
+            this.continuing = setInterval(() => {
+                this.updateTimer();
+                this.pomodoro.title = "Foco Total! Vai!"
+                this.setPomodoroTitle(this.pomodoro.title);
 
-        const sopped = this.rounds === this.pomodoro.rounds;
+                if (this.minutes === this.pomodoro.focusMinutes) {
+                    this._rounds += 1;
+                    this.pomodoro.paused = true;
+                    this.runShortBreak(false);
+                }
+
+                if (this._rounds === this.pomodoro.rounds) {
+                    this.pomodoro.paused = true;
+                    this.runLongBreak(false);
+                }
+            }, 1000);
+        }
+    };
+
+    private runShortBreak(isResume: boolean): void {
+        if (!isResume) this.resetInterval();
+
+        const sopped = this._rounds === this.pomodoro.rounds;
 
         if (sopped) {}
 
         else if (this.pomodoro.paused) {
             this.pomodoro.paused = false;
             this.isShortInterval = true;
+            this.pomodoro.title = "Pausa Rápida!"
+            this.setPomodoroTitle(this.pomodoro.title);
 
             this.continuing = setInterval(() => {
                 this.updateTimer();
@@ -235,13 +211,15 @@ export class Pomodoro {
         }
     }
 
-    private runLongBreak(): void {
-        this.resetInterval();
-        this.rounds = 0;
+    private runLongBreak(isResume: boolean): void {
+        if (!isResume) this.resetInterval();
+        this._rounds = 0;
 
         if (this.pomodoro.paused) {
             this.pomodoro.paused = false;
             this.isLongInterval = true;
+            this.pomodoro.title = "Intervalo entre Rounds!";
+            this.setPomodoroTitle(this.pomodoro.title);
 
             this.continuing = setInterval(() => {
                 this.updateTimer();
@@ -259,6 +237,7 @@ export class Pomodoro {
 
     private resetInterval(): void {
         this.pomodoro.watcher = "00:00";
+        this.setPomodoroTimer(this.pomodoro.watcher);
         clearInterval(this.continuing);
         this.continuing = null;
         this.seconds = 0;

@@ -21,6 +21,41 @@ export const Button = (props: ButtonParams) => {
     );
 };
 
+export const ButtonNew = (props: ButtonParams) => {
+    const style = `
+        .class-${props.name} {
+            width: 100%;
+            padding: 12px;
+            background-color: ${props.styles.bg_color};
+            color: ${props.styles.font_color};
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .class-${props.name}:hover {
+            background-color: ${props.styles.bg_hover};
+        }
+    `;
+
+    return (
+        <>
+            <style>{style}</style>
+            <button
+                className={`class-${props.name}`}
+                type={props.buttonType}
+                name={props.name}
+                id={props.name}
+                onClick={props.onClickFunction}
+            >{props.buttonContent}
+            </button>
+        </>
+    );
+};
+
 const ButtonStyle = (props: {
     bg_color: Colors;
     bg_hover: Colors;

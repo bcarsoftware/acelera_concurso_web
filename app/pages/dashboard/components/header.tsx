@@ -1,5 +1,5 @@
 import type {StartScreen} from "../../../../types/start-screen";
-import {getStartHeader} from "~/utililites/dashboard-utilities";
+import {getStartHeader} from "~/utilities/dashboard-utilities";
 
 export const HeaderDashboard = (props: StartScreen) => {
     const functions = getStartHeader(props);

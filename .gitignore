@@ -164,3 +164,6 @@ package-lock.json
 # React Router
 /.react-router/
 /build/
+
+# Default Pododoro Params
+app/utilities/default-pomodoro.json
