@@ -101,6 +101,9 @@ footer {
     color: var(--color-text-light);
     padding: 0.8rem;
     transition: width 0.3s ease;
+
+    overflow-y: auto;
+    scrollbar-width: none;
 }
 
 #LeftPanel nav {
