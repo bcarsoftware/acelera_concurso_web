@@ -37,13 +37,23 @@ export const PomodoroNew = ({
         setPomodoroRegisterScreen(false);
     }
 
-    const handleSave = (e: React.FormEvent) => {
+    const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!pomodoroName) {
             setOpenDialogPomodoro(true);
             setDialogTitlePomodoro("Nome do Pomodoro");
             setDialogMessagePomodoro("Digite um Nome para esse Pomodoro");
         }
+
+        const pomodoro = {
+            user_id: userID,
+            pomodoro_name: pomodoroName,
+            focus_minutes: focusMinutes,
+            focus_seconds: focusSeconds,
+            break_short: breakShort,
+            break_long: breakLong,
+            rounds: rounds,
+        };
     }
 
     const seePomodoroDialog = () => {
@@ -96,19 +106,6 @@ export const PomodoroNew = ({
                             />
 
                             <div className={"div-display-flex"}>
-                                <Div100Percent>
-                                    <InputTime
-                                        name={"user"}
-                                        label={"ID Usuário"}
-                                        value={userID}
-                                        required={true}
-                                        disabled={true}
-                                        minValue={PomodoroConstats.SECONDS_MIN}
-                                        maxValue={PomodoroConstats.SECONDS_MAX}
-                                        updateValue={setUserID}
-                                    />
-                                </Div100Percent>
-
                                 <Div100Percent>
                                     <InputTime
                                         name={"minutes"}

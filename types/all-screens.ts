@@ -1,4 +1,5 @@
 export interface AllScreens {
+    setProfilePage: (arg: boolean) => void;
     setMainPage: (arg: boolean) => void;
     setPublicTender: (arg: boolean) => void;
     setSubject: (arg: boolean) => void;

@@ -12,6 +12,7 @@ import {NoteSubjectNew} from "~/pages/dashboard/data/note-subject/note-subject-n
 import {NoteTopicNew} from "~/pages/dashboard/data/note-topic/note-topic-new";
 import {StudyTipsNew} from "~/pages/dashboard/data/study-tips/study-tips-new";
 import {PomodoroDashboardPage} from "~/pages/dashboard/tabs/pomodoro-dashboard";
+import {ProfileDashboardPage} from "~/pages/dashboard/tabs/profile-dashboard";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -22,6 +23,7 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Index() {
     const [mainPage, setMainPage] = useState<boolean>(true);
+    const [profilePage, setProfilePage] = useState<boolean>(false);
     const [publicTender, setPublicTender] = useState<boolean>(false);
     const [subject, setSubject] = useState<boolean>(false);
     const [topic, setTopic] = useState<boolean>(false);
@@ -70,6 +72,7 @@ export default function Index() {
             setShowStudyTipsNew={setShowStudyTipsNew}
         />);
     };
+    const accessProfilePage = () => (<ProfileDashboardPage />);
     const accessPomodoroPage = () => (<PomodoroDashboardPage />);
     /* TABS PAGES */
 
@@ -84,6 +87,7 @@ export default function Index() {
 
             <main id="Dashboard">
                 <LeftPanel
+                    setProfilePage={setProfilePage}
                     setMainPage={setMainPage}
                     setPublicTender={setPublicTender}
                     setSubject={setSubject}
@@ -95,6 +99,7 @@ export default function Index() {
                     hiddenNewRegisters={hiddenNewRegisters}
                 />
                 <Content>
+                    {profilePage && (accessProfilePage())}
                     {mainPage && (accessMainPage())}
                     {pomodoro && (accessPomodoroPage())}
 

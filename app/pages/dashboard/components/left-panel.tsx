@@ -8,7 +8,7 @@ export const LeftPanel = (
 
     return (
         <div id="LeftPanel">
-            <nav id="Profile"><p>Primeiro Nome</p><p>@username</p></nav>
+            <nav id="Profile" onClick={functions.accessingProfilePage}><p>Primeiro Nome</p><p>@username</p></nav>
             <nav className="nav-item" onClick={functions.accessingMainPage}>Inicio</nav>
             <nav className="nav-item" onClick={functions.accessingPublicTenderPage}>Concurso</nav>
             <nav className="nav-item" onClick={functions.accessingSubjectPage}>Disciplina</nav>

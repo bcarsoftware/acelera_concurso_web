@@ -2,6 +2,7 @@ import type {AllScreens} from "../../types/all-screens";
 import type {StartScreen} from "../../types/start-screen";
 
 export enum ScreenNames {
+    PROFILE = "PROFILE",
     START = "START",
     PUBLIC_TENDER = "PUBLIC_TENDER",
     SUBJECT = "SUBJECT",
@@ -15,6 +16,7 @@ export enum ScreenNames {
 export const swapScreenHiddenOthers = (
     screenName: ScreenNames,
     func: {
+        setProfilePage: (arg: boolean) => void;
         setMainPage: (arg: boolean) => void;
         setPublicTender: (arg: boolean) => void;
         setSubject: (arg: boolean) => void;
@@ -27,6 +29,7 @@ export const swapScreenHiddenOthers = (
 ) => {
     const screens = {...Object(ScreenNames)};
 
+    screens.PROFILE = func.setProfilePage
     screens.START = func.setMainPage
     screens.PUBLIC_TENDER = func.setPublicTender;
     screens.SUBJECT = func.setSubject;
@@ -59,6 +62,7 @@ const switchPageShown = (
     swapScreenHiddenOthers(
         screenName,
         {
+            setProfilePage: props.setProfilePage,
             setMainPage: props.setMainPage,
             setPublicTender: props.setPublicTender,
             setSubject: props.setSubject,
@@ -70,7 +74,9 @@ const switchPageShown = (
         }
     );
 };
-
+const accessingProfilePage = (props: AllScreens) => {
+    switchPageShown(ScreenNames.PROFILE, props);
+}
 const accessingMainPage = (props: AllScreens) => {
     props.hiddenNewRegisters();
     switchPageShown(ScreenNames.START, props);
@@ -101,6 +107,7 @@ const accessingLogoutPage = (props: AllScreens) => {
 
 export const getAccessFunctions = (props: AllScreens) => {
     return {
+        accessingProfilePage: () => accessingProfilePage(props),
         accessingMainPage: () => accessingMainPage(props),
         accessingPublicTenderPage: () => accessingPublicTenderPage(props),
         accessingSubjectPage: () => accessingSubjectPage(props),
@@ -115,6 +122,7 @@ export const getAccessFunctions = (props: AllScreens) => {
 export const getStartHeader = (props: StartScreen) => {
     const allScreens: AllScreens = {
         setMainPage: props.setMainPage,
+        setProfilePage: () => false,
         setPublicTender: () => false,
         setSubject: () => false,
         setTopic: () => false,
