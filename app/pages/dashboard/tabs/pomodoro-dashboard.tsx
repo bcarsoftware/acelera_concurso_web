@@ -5,8 +5,12 @@ import {ContentCard} from "~/pages/dashboard/components/content-card";
 import {ButtonNew} from "~/pages/dashboard/components/button";
 import {HtmlType} from "../../../../enums/html-type";
 import {Pomodoro} from "~/utilities/pomodoro-utilities";
+import {Dialog} from "~/dialog/dialog";
+import {DialogConfirm} from "~/dialog/dialog-confirm";
+import {PomodoroConstats} from "../../../../enums/constants";
+import {PomodoroNew} from "~/pages/dashboard/data/pomodoro/pomodoro-new";
 
-const fnStr = (str: string) => {str = "";};
+const fnStr = (str: string) => {};
 
 export const PomodoroDashboardPage = () => {
     const [pomodoro, setPomodoro] = useState<Pomodoro>(new Pomodoro(fnStr, fnStr));
@@ -30,6 +34,14 @@ export const PomodoroDashboardPage = () => {
     const [pomodoroTitle, setPomodoroTitle] = useState<string>("");
     const [pomodoroTimer, setPomodoroTimer] = useState<string>("");
 
+    const [openDialog, setOpenDialog] = useState<boolean>(false);
+    const [openDialogConfirm, setOpenDialogConfirm] = useState<boolean>(false);
+
+    const [dialogTitle, setDialogTitle] = useState<string>("");
+    const [dialogMessage, setDialogMessage] = useState<string>("");
+
+    const [pomodoroRegisterScreen, setPomodoroRegisterScreen] = useState(false);
+
     useEffect(() => {
         setPomodoro(new Pomodoro(setPomodoroTimer, setPomodoroTitle));
 
@@ -42,6 +54,25 @@ export const PomodoroDashboardPage = () => {
 
         setPomodoroTitle(pomodoro.pomodoro.title);
     }, []);
+
+    const seeDialog = () => {
+        return (<Dialog
+            name={"pomodoro-dashboard-dialog"}
+            title={dialogTitle}
+            message={dialogMessage}
+            buttonText={"Fechar"}
+            closeFunction={setOpenDialog}
+        />);
+    };
+    const seeConfirmDialog = () => {
+        return (<DialogConfirm
+            name={"pomodoro-dashboard-dialog-confirm"}
+            title={dialogTitle}
+            message={dialogMessage}
+            yesFunction={toPlay}
+            closeFunction={setOpenDialogConfirm}
+        />);
+    };
 
     const updateMinutes = (value: number) => {
         setMinutes(value);
@@ -100,10 +131,24 @@ export const PomodoroDashboardPage = () => {
         pomodoro?.resume();
     };
 
+    const showPomodoroNewScreen = () => (<PomodoroNew
+        minutesPomodoro={minute}
+        secondsPomodoro={second}
+        shortBreakPomodoro={interShort}
+        longBreakPomodoro={interLong}
+        roundsNumberPomodoro={round}
+        setPomodoroRegisterScreen={setPomodoroRegisterScreen}
+    />);
+
+    const openPomodoroNew = () => {
+        setPomodoroRegisterScreen(true);
+    }
+
     return (
         <>
             <PomodoroStyle />
             <form>
+                {pomodoroRegisterScreen && (showPomodoroNewScreen())}
                 <h1>Ferramenta de Pomodoro</h1>
                 <ContentWide>
                     <ContentCard>
@@ -114,8 +159,8 @@ export const PomodoroDashboardPage = () => {
                                     label={"Minutos*"}
                                     value={minute}
                                     required={true}
-                                    minValue={0}
-                                    maxValue={120}
+                                    minValue={PomodoroConstats.MINUTES_MIN}
+                                    maxValue={PomodoroConstats.MINUTES_MAX}
                                     updateValue={updateMinutes}
                                 />
                             </Div100Percent>
@@ -125,8 +170,8 @@ export const PomodoroDashboardPage = () => {
                                     label={"Segundos*"}
                                     value={second}
                                     required={true}
-                                    minValue={0}
-                                    maxValue={59}
+                                    minValue={PomodoroConstats.SECONDS_MIN}
+                                    maxValue={PomodoroConstats.SECONDS_MAX}
                                     updateValue={updateSeconds}
                                 />
                             </Div100Percent>
@@ -136,8 +181,8 @@ export const PomodoroDashboardPage = () => {
                                     label={"Rounds*"}
                                     value={round}
                                     required={true}
-                                    minValue={0}
-                                    maxValue={10}
+                                    minValue={PomodoroConstats.ROUNDS_MIN}
+                                    maxValue={PomodoroConstats.ROUNDS_MAX}
                                     updateValue={updateRound}
                                 />
                             </Div100Percent>
@@ -147,8 +192,8 @@ export const PomodoroDashboardPage = () => {
                                     label={"Intervalo*"}
                                     value={interShort}
                                     required={true}
-                                    minValue={0}
-                                    maxValue={30}
+                                    minValue={PomodoroConstats.BREAK_SHORT_MIN}
+                                    maxValue={PomodoroConstats.BREAK_SHORT_MAX}
                                     updateValue={updateInterShort}
                                 />
                             </Div100Percent>
@@ -158,8 +203,8 @@ export const PomodoroDashboardPage = () => {
                                     label={"Descanso*"}
                                     value={interLong}
                                     required={true}
-                                    minValue={0}
-                                    maxValue={30}
+                                    minValue={PomodoroConstats.BREAK_LONG_MIN}
+                                    maxValue={PomodoroConstats.BREAK_LONG_MAX}
                                     updateValue={updateInterLong}
                                 />
                             </Div100Percent>
@@ -186,6 +231,8 @@ export const PomodoroDashboardPage = () => {
                         </div>
                     </ContentCard>
                     <ContentCard>
+                        {openDialog && (seeDialog())}
+                        {openDialogConfirm && (seeConfirmDialog())}
                         <div id={"InputDivButtons"} className={"center-items"}>
                             <Div100Percent>
                                 <ButtonNew buttonContent={(() => play ? playBtn : "INICIAR")()} buttonType={HtmlType.BUTTON} name={"start"} styles={{
@@ -224,6 +271,16 @@ export const PomodoroDashboardPage = () => {
                                     font_color: Colors.WHITE
                                 }}
                                 onClickFunction={toReset}
+                                />
+                            </Div100Percent>
+
+                            <Div100Percent>
+                                <ButtonNew buttonContent={"SALVAR"} buttonType={HtmlType.BUTTON} name={"save-pomodoro"} styles={{
+                                    bg_color: Colors.GREEN,
+                                    bg_hover: Colors.GREEN_HOVER,
+                                    font_color: Colors.WHITE
+                                }}
+                                onClickFunction={openPomodoroNew}
                                 />
                             </Div100Percent>
                         </div>

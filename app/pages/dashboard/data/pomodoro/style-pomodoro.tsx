@@ -1,19 +1,34 @@
-import {Colors} from "../../enums/colors";
+import {Colors} from "../../../../../enums/colors";
+import React from "react";
 
-export const DialogStyle = () => {
-    return `
-    #DivTitle {
+export const StylePomodoro = () => {
+    const style = `
+    #TitleDiv {
         display: flex;
         text-align: left;
     }
-    #TextTitle {
+    #TitleText {
         width: 100%;
         justify-content: left;
     }
-    #CloseDiv h2 {
+    #DivClose h2 {
         font-weight: normal;
     }
-    .popup-overlay-main {
+    #Div100Percent {
+        width: 100%;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+    #ButtonDiv {
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .div-display-flex {
+        display: flex;
+    }
+    
+    .popup-overlay {
         position: fixed;
         top: 0;
         left: 0;
@@ -28,7 +43,7 @@ export const DialogStyle = () => {
         z-index: 1000;
     }
     
-    .dialog-container-main {
+    .dialog-container {
         background-color: #ffffff;
         padding: 30px 40px;
         border-radius: 12px;
@@ -40,24 +55,23 @@ export const DialogStyle = () => {
         position: relative;
     }
     
-    .dialog-container-main p {
+    .dialog-container p {
         text-align: left;
         font-size: 1.2rem;
         margin-bottom: 20px;
     }
     
-    .dialog-container-main h2 {
+    .dialog-container h2 {
         margin-bottom: 15px;
         color: #333;
         font-size: 2em;
     }
     
-    #DivButton {
-        display: flex;
-        justify-content: end;
+    .button-width-100-percent {
+        width: 100%;
     }
     
-    .button-general-main {
+    .button-general {
         font-weight: bold; 
         background-color: ${Colors.LIGHT_BLUE};
         color: ${Colors.WHITE};
@@ -67,11 +81,11 @@ export const DialogStyle = () => {
         font-size: 1.5em;
     }
     
-    .button-general-main:hover {
+    .button-general:hover {
         background-color: ${Colors.LIGHT_BLUE_HOVER}
     }
     
-    .button-main-yes {
+    .button-yes {
         font-weight: bold; 
         margin-left: 8px;
         background-color: ${Colors.LIGHT_BLUE};
@@ -82,13 +96,12 @@ export const DialogStyle = () => {
         font-size: 1.5em;
     }
     
-    .button-yes-main:hover {
+    .button-yes:hover {
         background-color: ${Colors.LIGHT_BLUE_HOVER}
     }
     
-    .button-not-main {
+    .button-not {
         font-weight: bold; 
-        margin-left: 8px;
         background-color: ${Colors.RED};
         color: ${Colors.WHITE};
         padding: 8px 20px;
@@ -97,8 +110,14 @@ export const DialogStyle = () => {
         font-size: 1.5em;
     }
     
-    .button-not-main:hover {
+    .margin-top-15 {
+        margin-top: 15px;
+    }
+    
+    .button-not:hover {
         background-color: ${Colors.RED_HOVER}
     }
     `;
+
+    return (<style>{style}</style>);
 };

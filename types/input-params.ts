@@ -4,4 +4,6 @@ export interface InputParams {
     placeholder: string;
     required: boolean;
     disabled: boolean;
+    value?: string;
+    updateValue?: (value: string) => void;
 }

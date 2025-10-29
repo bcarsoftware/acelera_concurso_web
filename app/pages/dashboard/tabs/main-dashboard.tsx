@@ -163,7 +163,7 @@ export const MainDashboardPage = (
                     <input type="button" className="button-add" value="Adicionar" onClick={selectNote}/>
 
                     {openDialog && (
-                        <Dialog title={titleDialog} message={messageDialog} buttonText={"Fechar"} closeFunction={setOpenDialog} />
+                        <Dialog name={"main-dashboard-dialog"} title={titleDialog} message={messageDialog} buttonText={"Fechar"} closeFunction={setOpenDialog} />
                     )}
 
                     <ContentCard>
