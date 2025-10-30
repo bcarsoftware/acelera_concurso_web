@@ -4,6 +4,8 @@ import React, {useEffect, useState} from "react";
 import {StylePomodoro} from "~/pages/dashboard/data/pomodoro/style-pomodoro";
 import {HtmlType} from "../../../../../enums/html-type";
 import {Dialog} from "~/dialog/dialog";
+import {Div100Percent} from "~/pages/dashboard/components/div-hundrend-percent";
+import {InputTime} from "~/pages/dashboard/components/input-time";
 
 interface PomodoroSaveParams {
     minutesPomodoro: number;
@@ -180,55 +182,5 @@ export const PomodoroNew = ({
                 </div>
             </>)}
         </form>
-    );
-};
-
-interface IElement {
-    children: React.ReactNode;
-}
-
-const Div100Percent = ({children}: IElement) => {
-    return (
-        <div id={"Div100Percent"}>{children}</div>
-    );
-};
-
-interface IInputSave {
-    name: string;
-    label: string;
-    value: number;
-    required: boolean;
-    minValue: number;
-    disabled?: boolean;
-    maxValue?: number;
-    updateValue: (valueNumber: number) => void;
-}
-
-const InputTime = ({
-   name, label, minValue, maxValue, required, value, updateValue, disabled
-}: IInputSave) => {
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const valueStr = e.target.value;
-
-        const numberValue = Number(valueStr);
-
-        updateValue(numberValue);
-    }
-
-    return (
-        <div className="data-group">
-            <label htmlFor={name}>{label}</label>
-            <input
-                type={"number"}
-                name={name}
-                id={name}
-                value={value}
-                required={required}
-                disabled={disabled}
-                min={minValue}
-                max={maxValue}
-                onChange={handleChange}
-            />
-        </div>
     );
 };

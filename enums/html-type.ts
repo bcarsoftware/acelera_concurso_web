@@ -3,3 +3,9 @@ export enum HtmlType {
     SUBMIT = "submit",
     RESET = "reset",
 }
+
+export enum HtmlFont {
+    BOLD = "bold",
+    BOLDER = "bolder",
+}
+

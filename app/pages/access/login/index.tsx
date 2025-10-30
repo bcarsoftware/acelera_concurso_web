@@ -1,5 +1,17 @@
 import {useState} from "react";
 import type {Route} from "../../../../.react-router/types/app/routes/+types/home";
+import {LoginDiv} from "~/pages/access/components/login-div";
+import {Body} from "~/pages/access/components/body";
+import {LoginForm} from "~/pages/access/components/login-form";
+import {DivBackLink} from "~/pages/access/components/div-back-link";
+import {DivInputGroup} from "~/pages/access/components/div-input-group";
+import {HtmlFont, HtmlType} from "../../../../enums/html-type";
+import {ButtonPassword} from "~/pages/access/components/button-password";
+import {DivOptions} from "~/pages/access/components/div-options";
+import {ButtonElement} from "~/pages/access/components/button-element";
+import {Colors} from "../../../../enums/colors";
+import {DivRegisterLink} from "~/pages/access/components/div-register-link";
+import {InputPassword} from "~/pages/access/components/input-password";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -11,82 +23,49 @@ export function meta({}: Route.MetaArgs) {
 export default function Index() {
     const [showPassword, setShowPassword] = useState(false);
 
-    const togglePasswordVisibility = () => {
-        setShowPassword(!showPassword); // Inverte o valor (true -> false, false -> true)
-    };
+    const handleLogin = async (): Promise<void> => {};
 
     return (
         <>
-        <LoginStyles />
-        <body>
+        <Body>
 
-        <div className="login-container">
-            <form id="login-form">
+        <LoginDiv>
+            <LoginForm>
                 <h2><p>Acelera Concurso</p><p>Login</p></h2>
 
-                <div className="back-link">
+                <DivBackLink>
                     <nav><a href="/public">Voltar ao Inicio.</a></nav>
-                </div>
+                </DivBackLink>
 
-                <div className="input-group">
+                <DivInputGroup>
                     <label htmlFor="email">E-mail/Usuário*</label>
                     <input type="email" id="email" name="email" placeholder="seuemail@exemplo.com" required/>
-                </div>
+                </DivInputGroup>
 
-                {/* --- CAMPO DE SENHA MODIFICADO --- */}
-                <div className="input-group">
-                    <label htmlFor="password">Senha</label>
-                    <input
-                        // 3. O 'type' agora é dinâmico:
-                        type={showPassword ? 'text' : 'password'}
-                        id="password"
-                        name="password"
-                        placeholder="Sua senha"
-                        required
-                    />
+                <DivInputGroup>
+                    <InputPassword labelName={"Digite a Senha*"} showPassword={showPassword} required={true} />
 
-                    {/* 4. O botão para mostrar/ocultar a senha */}
-                    <button
-                        type="button" // 'type="button"' impede que o botão envie o formulário
-                        className="password-toggle-btn"
-                        onClick={togglePasswordVisibility}
-                        aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"} // Para acessibilidade
-                    >
-                        {/* Usamos SVGs como ícones, que funcionam muito bem em React */}
-                        {showPassword ? (
-                            // Ícone "Olho Aberto" (clique para Ocultar)
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                <circle cx="12" cy="12" r="3"></circle>
-                            </svg>
-                        ) : (
-                            // Ícone "Olho Cortado" (clique para Mostrar)
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                                <line x1="1" y1="1" x2="23" y2="23"></line>
-                            </svg>
-                        )}
-                    </button>
-                </div>
-                {/* --- FIM DA MODIFICAÇÃO --- */}
+                    <ButtonPassword buttonType={HtmlType.BUTTON} showPassword={showPassword} functionShow={setShowPassword} />
+                </DivInputGroup>
 
-                <div className="options">
+                <DivOptions>
                     <a href="/recovery">Esqueceu a senha?</a>
-                </div>
+                </DivOptions>
 
-                <button type="submit" className="login-button">Entrar</button>
+                <ButtonElement typeName={HtmlType.SUBMIT} styles={{
+                    font_color: Colors.WHITE,
+                    font_weight: HtmlFont.BOLD,
+                    bg_color: Colors.GREEN,
+                    bg_hover: Colors.GREEN_HOVER
+                }} functionBtn={handleLogin}>Entrar</ButtonElement>
 
-                <div className="register-link">
+                <DivRegisterLink>
                     <p>Não tem uma conta? <a href="/register">Cadastre-se</a></p>
-                </div>
-            </form>
-        </div>
+                </DivRegisterLink>
+            </LoginForm>
+        </LoginDiv>
 
-        </body>
+        </Body>
         </>
     );
 }
-
-const LoginStyles = () => {
-    return (<link rel="stylesheet" href="app/pages/access/login/login.css"></link>);
-};

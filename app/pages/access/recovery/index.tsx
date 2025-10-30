@@ -1,5 +1,19 @@
-import {useState} from "react";
+import React, {useState} from "react";
 import type {Route} from "../../../../.react-router/types/app/routes/+types/home";
+import {DivCardContainer} from "~/pages/access/components/div-card-container";
+import {Body} from "~/pages/access/components/body";
+import {Form} from "react-router";
+import {DivBackLink} from "~/pages/access/components/div-back-link";
+import {DivInputGroup} from "~/pages/access/components/div-input-group";
+import {InputText} from "~/pages/dashboard/components/input-text";
+import {DivOptions} from "~/pages/access/components/div-options";
+import {InputPassword} from "~/pages/access/components/input-password";
+import {ButtonPassword} from "~/pages/access/components/button-password";
+import {HtmlFont, HtmlType} from "../../../../enums/html-type";
+import {DivRegisterLink} from "~/pages/access/components/div-register-link";
+import {ButtonElement} from "~/pages/access/components/button-element";
+import {Colors} from "../../../../enums/colors";
+import {InputButton} from "~/pages/access/components/input-button";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -12,90 +26,61 @@ export default function Index() {
     const [showPassword, setShowPassword] = useState(false);
     const [codeSent, setCodeSent] = useState(false);
 
-    const togglePasswordVisibility = () => {
-        setShowPassword(!showPassword); // Inverte o valor (true -> false, false -> true)
-    };
-
     const sendCodeToEmail = () => {
         setCodeSent(true)
     };
 
+    const handleUpdatePassword = () => {};
+
     return (
         <>
-        <LoginStyles />
-        <body>
+        <Body>
 
-        <div className="login-container">
-            <form id="login-form">
+        <DivCardContainer widthDiv={"720px"}>
+            <Form>
                 <h2><p>Acelera Concurso</p><p>Recuperar Acesso</p></h2>
 
-                <div className="back-link">
+                <DivBackLink>
                     <nav><a href="/login">Voltar à tela de acesso..</a></nav>
-                </div>
+                </DivBackLink>
 
-                <div className="input-group">
-                    <label htmlFor="email">E-mail*</label>
-                    <input type="email" id="email" name="email" placeholder="seuemail@exemplo.com" required/>
-                    <input type="button" id="ConfirmButton" value="Enviar Código" onClick={sendCodeToEmail} hidden={codeSent} />
-                </div>
+                <DivInputGroup>
+                    <InputText labelContent={"Digite o E-mail*"} name={"email"} placeholder={"seuemail@exemplo.com"} required={true} disabled={false} />
 
-                <div className="options" hidden={!codeSent}>Código de confirmação enviado! Verifique seu e-mail!</div>
+                    <InputButton name={"ConfirmButton"} value={"Enviar Codigo"} hidden={codeSent} html_type={HtmlType.BUTTON}
+                     styles={{
+                         font_color: Colors.BLACK,
+                         bg_hover: Colors.GOLDEN_HOVER,
+                         bg_color: Colors.GOLDEN
+                     }} functionCall={sendCodeToEmail} />
+                </DivInputGroup>
 
-                <div className="input-group">
-                    <label htmlFor="email">Código de Verificação*</label>
-                    <input type="email" id="email" name="email" placeholder="seuemail@exemplo.com" required/>
-                </div>
+                <DivOptions hidden={!codeSent}>Código de confirmação enviado! Verifique seu e-mail!</DivOptions>
 
-                {/* --- CAMPO DE SENHA MODIFICADO --- */}
-                <div className="input-group">
-                    <label htmlFor="password">Senha</label>
-                    <input
-                        // 3. O 'type' agora é dinâmico:
-                        type={showPassword ? 'text' : 'password'}
-                        id="password"
-                        name="password"
-                        placeholder="Sua senha"
-                        required
-                    />
+                <DivInputGroup>
+                    <InputText labelContent={"Código de Confirmação*"} name={"confirmation-code"} placeholder={"LLLNLNN"} required={true} disabled={false} />
+                </DivInputGroup>
 
-                    {/* 4. O botão para mostrar/ocultar a senha */}
-                    <button
-                        type="button" // 'type="button"' impede que o botão envie o formulário
-                        className="password-toggle-btn"
-                        onClick={togglePasswordVisibility}
-                        aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"} // Para acessibilidade
-                    >
-                        {/* Usamos SVGs como ícones, que funcionam muito bem em React */}
-                        {showPassword ? (
-                            // Ícone "Olho Aberto" (clique para Ocultar)
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                <circle cx="12" cy="12" r="3"></circle>
-                            </svg>
-                        ) : (
-                            // Ícone "Olho Cortado" (clique para Mostrar)
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                                <line x1="1" y1="1" x2="23" y2="23"></line>
-                            </svg>
-                        )}
-                    </button>
-                </div>
-                {/* --- FIM DA MODIFICAÇÃO --- */}
+                <DivInputGroup>
+                    <InputPassword labelName={"Digite uma Nova Senha*"} showPassword={showPassword} required={true} />
 
-                <button type="submit" className="login-button">Atualizar Senha</button>
+                    <ButtonPassword buttonType={HtmlType.BUTTON} showPassword={showPassword} functionShow={setShowPassword} />
+                </DivInputGroup>
 
-                <div className="register-link">
+                <ButtonElement typeName={HtmlType.SUBMIT} styles={{
+                    font_color: Colors.WHITE,
+                    font_weight: HtmlFont.BOLD,
+                    bg_color: Colors.GREEN,
+                    bg_hover: Colors.GREEN_HOVER
+                }} functionBtn={handleUpdatePassword}>Atualizar Senha</ButtonElement>
+
+                <DivRegisterLink>
                     <p>Não tem uma conta? <a href="/register">Cadastre-se</a></p>
-                </div>
-            </form>
-        </div>
+                </DivRegisterLink>
+            </Form>
+        </DivCardContainer>
 
-        </body>
+        </Body>
         </>
     );
 }
-
-const LoginStyles = () => {
-    return (<link rel="stylesheet" href="app/pages/access/recovery/recovery.css"></link>);
-};

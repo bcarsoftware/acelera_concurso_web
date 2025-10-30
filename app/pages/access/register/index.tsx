@@ -1,5 +1,21 @@
-import {useState} from "react";
+import React, {useState} from "react";
 import type {Route} from "../../../../.react-router/types/app/routes/+types/home";
+import {Form} from "react-router";
+import {DivCardContainer} from "~/pages/access/components/div-card-container";
+import {DivBackLink} from "~/pages/access/components/div-back-link";
+import {DivInputGroup} from "~/pages/access/components/div-input-group";
+import {Select} from "~/pages/dashboard/components/select";
+import {InputDate} from "~/pages/dashboard/components/input-date";
+import {InputText} from "~/pages/dashboard/components/input-text";
+import {ButtonElement} from "~/pages/access/components/button-element";
+import {HtmlFont, HtmlType} from "../../../../enums/html-type";
+import {Colors} from "../../../../enums/colors";
+import {ButtonPassword} from "~/pages/access/components/button-password";
+import {InputPassword} from "~/pages/access/components/input-password";
+import {DivOptions} from "~/pages/access/components/div-options";
+import {DivRegisterLink} from "~/pages/access/components/div-register-link";
+import {Body} from "~/pages/access/components/body";
+import {ButtonNext} from "~/pages/access/components/button-next";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -11,10 +27,6 @@ export function meta({}: Route.MetaArgs) {
 export default function Index() {
     const [showPassword, setShowPassword] = useState(false);
     const [currentStage, setCurrentStage] = useState("BasicInfo");
-
-    const togglePasswordVisibility = () => {
-        setShowPassword(!showPassword); // Inverte o valor (true -> false, false -> true)
-    };
 
     const seeBasicInfo = () => {
         setCurrentStage("BasicInfo");
@@ -28,144 +40,106 @@ export default function Index() {
         setCurrentStage("ConfirmationInfo");
     }
 
+    const handleSubmitUser = () => {};
+
     return (
         <>
-        <LoginStyles />
-        <body>
-
-        <div className="login-container">
-            <form id="login-form">
+        <Body>
+        <DivCardContainer widthDiv={"720px"}>
+            <Form>
                 <h2><p>Acelera Concurso</p><p>Cadastro</p></h2>
 
-                <form>
+                <Form>
                     <div id="BasicInfo" hidden={currentStage !== "BasicInfo"}>
-                        <div className="back-link">
+                        <DivBackLink>
                             Seja bem vindo(a) ao Acelera Concurso!
-                        </div>
-                        <div className="input-group">
-                            <label htmlFor="first_name">Nome*</label>
-                            <input type="text" id="first_name" name="first_name" placeholder="Fulano" required/>
-                        </div>
+                        </DivBackLink>
+                        <DivInputGroup>
+                            <InputText labelContent={"Nome*"} name={"first-name"} placeholder={"Fulano"} required={true} disabled={false} />
+                        </DivInputGroup>
 
-                        <div className="input-group">
-                            <label htmlFor="last_name">Sobrenome*</label>
-                            <input type="text" id="last_name" name="last_name" placeholder="Sicrano" required/>
-                        </div>
+                        <DivInputGroup>
+                            <InputText labelContent={"Sobrenome"} name={"last-name"} placeholder={"Sicrano"} required={true} disabled={false} />
+                        </DivInputGroup>
 
-                        <div className="input-group">
-                            <label htmlFor="date_born">Data De Nascimento*</label>
-                            <input type="date" id="date_born" name="date_born" placeholder="DD/MM/AAAA" required/>
-                        </div>
+                        <DivInputGroup>
+                            <InputDate labelContent={"Data de Nascimento*"} name={"date-born"} placeholder={"DD/MM/AAAA"} required={true} disabled={false} />
+                        </DivInputGroup>
 
-                        <div className="input-group">
-                            <label htmlFor="gender">Gênero*</label>
-
-                            <select id="gender" name="gender" required>
+                        <DivInputGroup>
+                            <Select name={"gender"} required={true} disabled={false} label={"Gênero*"}>
                                 <option>Selecione</option>
                                 <option value="FEMALE">Mulher</option>
                                 <option value="MALE">Homem</option>
                                 <option value="NOT_BINARY">Não Binário</option>
                                 <option value="NOT_SAY">Não Dizer</option>
-                            </select>
-                        </div>
+                            </Select>
+                        </DivInputGroup>
 
-                        <button type="button" className="next-button" onClick={seeAccessInfo} style={{ position: 'relative', zIndex: 9999 }}>
-                            Próximo
-                        </button>
+                        <ButtonNext font_color={Colors.WHITE} bg_color={Colors.LIGHT_BLUE} bg_hover={Colors.LIGHT_BLUE_HOVER}
+                                    functionOpera={seeAccessInfo}>Próximo</ButtonNext>
                     </div>
 
                     <div id="AccessInfo" hidden={currentStage !== "AccessInfo"}>
-                        <div className="back-link">
+                        <DivBackLink>
                             <nav onClick={seeBasicInfo}><a href="">Voltar às Informações Básicas</a></nav>
-                        </div>
+                        </DivBackLink>
 
-                        <div className="input-group">
-                            <label htmlFor="username">Nome de Usuário*</label>
-                            <input type="text" id="username" name="username" placeholder="usuario" required/>
-                        </div>
+                        <DivInputGroup>
+                            <InputText labelContent={"Nome de Usuário*"} name={"username"} placeholder={"nomedeusuario"} required={true} disabled={false} />
+                        </DivInputGroup>
 
-                        <div className="input-group">
-                            <label htmlFor="email">Email*</label>
-                            <input type="text" id="email" name="email" placeholder="example@service.com" required/>
-                        </div>
+                        <DivInputGroup>
+                            <InputText labelContent={"Digite o E-Mail*"} name={"email"} placeholder={"exemplo@provedor.com"} required={true} disabled={false} />
+                        </DivInputGroup>
 
-                        {/* --- CAMPO DE SENHA MODIFICADO --- */}
-                        <div className="input-group">
-                            <label htmlFor="password">Senha*</label>
-                            <input
-                                // 3. O 'type' agora é dinâmico:
-                                type={showPassword ? 'text' : 'password'}
-                                id="password"
-                                name="password"
-                                placeholder="Sua senha"
-                                required
-                            />
+                        <DivInputGroup>
+                            <InputPassword labelName={"Digite a Senha*"} showPassword={showPassword} required={true} />
 
-                            {/* 4. O botão para mostrar/ocultar a senha */}
-                            <button
-                                type="button" // 'type="button"' impede que o botão envie o formulário
-                                className="password-toggle-btn"
-                                onClick={togglePasswordVisibility}
-                                aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"} // Para acessibilidade
-                            >
-                                {/* Usamos SVGs como ícones, que funcionam muito bem em React */}
-                                {showPassword ? (
-                                    // Ícone "Olho Aberto" (clique para Ocultar)
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                        <circle cx="12" cy="12" r="3"></circle>
-                                    </svg>
-                                ) : (
-                                    // Ícone "Olho Cortado" (clique para Mostrar)
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                                        <line x1="1" y1="1" x2="23" y2="23"></line>
-                                    </svg>
-                                )}
-                            </button>
-                        </div>
-                        {/* --- FIM DA MODIFICAÇÃO --- */}
+                            <ButtonPassword buttonType={HtmlType.BUTTON} showPassword={showPassword} functionShow={setShowPassword} />
+                        </DivInputGroup>
 
-                        <div className="options">
-                            <a href="#">Esqueceu a senha?</a>
-                        </div>
+                        <DivOptions>
+                            <a href="/recovery">Esqueceu a senha?</a>
+                        </DivOptions>
 
-                        <button type="button" className="next-button" onClick={seeConfirmationCode}>Verificar</button>
+                        <ButtonNext font_color={Colors.WHITE} bg_color={Colors.LIGHT_BLUE} bg_hover={Colors.LIGHT_BLUE_HOVER}
+                                    functionOpera={seeConfirmationCode}>Verificar</ButtonNext>
                     </div>
 
                     <div id="ConfirmationInfo" hidden={currentStage !== "ConfirmationInfo"}>
-                        <div className="back-link">
+                        <DivBackLink>
                             <nav onClick={seeBasicInfo}><a href="">Voltar às Informações Básicas.</a></nav>
-                        </div>
+                        </DivBackLink>
 
-                        <div className="input-group">
+                        <DivInputGroup>
                             <label htmlFor="email-check">Atenção!</label>
                             <p>Foi enviado um código de confirmação para o email:</p>
                             <p>username@example.com</p>
                             <p>.</p>
                             <p>Pedimos que você acesse a sua caixa de entrada e confirme o código no campo abaixo.</p>
-                        </div>
+                        </DivInputGroup>
 
-                        <div className="input-group">
-                            <label htmlFor="confirmation_code">Código de Confirmação*</label>
-                            <input type="text" id="confirmation_code" name="confirmation_code" placeholder="LLLNLNN" required/>
-                        </div>
+                        <DivInputGroup>
+                            <InputText labelContent={"Código de Confirmação*"} name={"confirmation-code"} placeholder={"LLLNLNN"} required={true} disabled={false} />
+                        </DivInputGroup>
 
-                        <button type="submit" className="login-button">Confirmar e Cadastrar</button>
+                        <ButtonElement typeName={HtmlType.SUBMIT} styles={{
+                            font_color: Colors.WHITE,
+                            font_weight: HtmlFont.BOLD,
+                            bg_color: Colors.GREEN,
+                            bg_hover: Colors.GREEN_HOVER
+                        }} functionBtn={handleSubmitUser}>Confirmar e Cadastrar</ButtonElement>
                     </div>
-                </form>
+                </Form>
 
-                <div className="register-link">
+                <DivRegisterLink>
                     <p>Já tem uma conta? <a href="/login">Acesse aqui!</a></p>
-                </div>
-            </form>
-        </div>
+                </DivRegisterLink>
+            </Form>
+        </DivCardContainer>
 
-        </body>
+        </Body>
         </>
     );
 }
-
-const LoginStyles = () => {
-    return (<link rel="stylesheet" href="/app/pages/access/register/register.css"></link>);
-};

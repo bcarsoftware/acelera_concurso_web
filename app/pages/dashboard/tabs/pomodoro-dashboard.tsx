@@ -9,6 +9,8 @@ import {Dialog} from "~/dialog/dialog";
 import {DialogConfirm} from "~/dialog/dialog-confirm";
 import {PomodoroConstats} from "../../../../enums/constants";
 import {PomodoroNew} from "~/pages/dashboard/data/pomodoro/pomodoro-new";
+import {Div100Percent} from "~/pages/dashboard/components/div-hundrend-percent";
+import {InputTime} from "~/pages/dashboard/components/input-time";
 
 const fnStr = (str: string) => {};
 
@@ -290,46 +292,6 @@ export const PomodoroDashboardPage = () => {
         </>
     );
 }
-
-interface IInput {
-    name: string;
-    label: string;
-    value: number;
-    required: boolean;
-    minValue: number;
-    maxValue?: number;
-    updateValue: (valueNumber: number) => void;
-}
-
-const InputTime = ({
-    name, label, minValue, maxValue, required, value, updateValue
-}: IInput) => {
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const valueStr = e.target.value;
-
-        const numberValue = Number(valueStr);
-
-        updateValue(numberValue);
-    }
-
-    return (
-        <div className="data-group">
-            <label htmlFor={name}>{label}</label>
-            <input type="number" id={name} name={name} value={value}
-            min={minValue} max={maxValue} required={required} onChange={handleChange}/>
-        </div>
-    );
-};
-
-interface IElement {
-    children: React.ReactNode;
-}
-
-const Div100Percent = ({children}: IElement) => {
-    return (
-        <div id={"Div100Percent"}>{children}</div>
-    );
-};
 
 const PomodoroStyle = () => {
     const style = `
