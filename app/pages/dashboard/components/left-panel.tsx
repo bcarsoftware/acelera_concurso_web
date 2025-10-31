@@ -49,7 +49,7 @@ const StyleLeftPanel = () => {
             cursor: pointer;
         }
         .nav-item:hover {
-            background-color: var(--color-blue-dark);
+            background-color: ${Colors.DARK_BLUE};
             font-weight: bold;
             transition: 100ms;
         }

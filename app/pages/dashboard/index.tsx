@@ -15,6 +15,8 @@ import {PomodoroDashboardPage} from "~/pages/dashboard/tabs/pomodoro-dashboard";
 import {ProfileDashboardPage} from "~/pages/dashboard/tabs/profile-dashboard";
 import {BodyDashboard} from "~/pages/dashboard/components/body-dashboard";
 import {MainDashboardTag} from "~/pages/dashboard/components/main-dashboard";
+import {SettingsDashboardPage} from "~/pages/dashboard/tabs/settings-dashboard";
+import {Colors} from "../../../enums/colors";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -76,6 +78,7 @@ export default function Index() {
     };
     const accessProfilePage = () => (<ProfileDashboardPage />);
     const accessPomodoroPage = () => (<PomodoroDashboardPage />);
+    const accessSettingsPage = () => (<SettingsDashboardPage />)
     /* TABS PAGES */
 
     return (
@@ -104,6 +107,7 @@ export default function Index() {
                     {profilePage && (accessProfilePage())}
                     {mainPage && (accessMainPage())}
                     {pomodoro && (accessPomodoroPage())}
+                    {settings && (accessSettingsPage())}
 
                     {showPublicTenderNew && (showNewScreenPublicTender())}
                     {showSubjectNew && (showNewScreenSubject())}
@@ -122,6 +126,15 @@ export default function Index() {
 
 const StyleDashboard = () => {
     return (<style>{`
+    #Profile {
+        border-radius: 12px;
+        padding: 18px 0 18px 0;
+        cursor: pointer;
+        font-weight: bold;
+    }
+    #Profile:hover {
+        background-color: ${Colors.DARK_BLUE};
+    }
     .checkbutton {
         width: 18px;
         height: 48px;
@@ -132,5 +145,17 @@ const StyleDashboard = () => {
         padding-left: 0.5rem;
         padding-right: 1rem;
     }
+    .info-container {
+        margin-bottom: 15px;
+    }
+    .info-container ul {
+        margin-left: 15px;
+    }
+    .info-container li {
+        list-style-type: disc;
+        margin-left: 15px;
+    }
+    .margin-bottom-10 { margin-bottom: 10px }
+    .margin-top-10 { margin-top: 10px }
     `}</style>);
 }

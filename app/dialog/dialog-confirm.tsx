@@ -1,9 +1,11 @@
 import {DialogStyle} from "~/dialog/dialog-style";
+import React from "react";
+import {HtmlType} from "../../enums/html-type";
 
 interface DialogParams {
     name: string;
     title: string;
-    message: string;
+    message: string | React.ReactNode;
     yesFunction: () => void;
     closeFunction: (arg: boolean) => void;
 }
@@ -23,8 +25,8 @@ export const DialogConfirm = ({
                     </div>
                     <p>{message}</p>
                     <div id={"DivButton"}>
-                        <button className={"button-yes-main"} onClick={yesFunction}>SIM</button>
-                        <button className={"button-not-main"} onClick={() => closeFunction(false)}>NÃO</button>
+                        <button type={HtmlType.BUTTON} className={"button-yes-main"} onClick={yesFunction}>SIM</button>
+                        <button type={HtmlType.BUTTON} className={"button-not-main"} onClick={() => closeFunction(false)}>NÃO</button>
                     </div>
                 </div>
             </div>

@@ -1,4 +1,5 @@
 import {Colors} from "../../enums/colors";
+import {HtmlFont} from "../../enums/html-type";
 
 export const DialogStyle = () => {
     return `
@@ -71,8 +72,8 @@ export const DialogStyle = () => {
         background-color: ${Colors.LIGHT_BLUE_HOVER}
     }
     
-    .button-main-yes {
-        font-weight: bold; 
+    .button-yes-main {
+        font-weight: ${HtmlFont.BOLDER};
         margin-left: 8px;
         background-color: ${Colors.LIGHT_BLUE};
         color: ${Colors.WHITE};
@@ -87,7 +88,7 @@ export const DialogStyle = () => {
     }
     
     .button-not-main {
-        font-weight: bold; 
+        font-weight: ${HtmlFont.BOLDER}; 
         margin-left: 8px;
         background-color: ${Colors.RED};
         color: ${Colors.WHITE};
