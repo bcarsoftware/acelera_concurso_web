@@ -258,7 +258,7 @@ export const PomodoroDashboardPage = () => {
 
                             <Div100Percent>
                                 <ButtonNew buttonContent={(() => resume ? resumeBtn : "CONTINUAR")()} buttonType={HtmlType.BUTTON} name={"restart"} styles={{
-                                    bg_color: Colors.DART_BLUE,
+                                    bg_color: Colors.DARK_BLUE,
                                     bg_hover: Colors.LIGHT_BLUE_HOVER,
                                     font_color: Colors.WHITE
                                 }}
@@ -268,7 +268,7 @@ export const PomodoroDashboardPage = () => {
 
                             <Div100Percent>
                                 <ButtonNew buttonContent={(() => reset ? resetBtn : "RESETAR")()} buttonType={HtmlType.BUTTON} name={"reset"} styles={{
-                                    bg_color: Colors.DART_BLUE,
+                                    bg_color: Colors.DARK_BLUE,
                                     bg_hover: Colors.LIGHT_BLUE_HOVER,
                                     font_color: Colors.WHITE
                                 }}
@@ -294,7 +294,7 @@ export const PomodoroDashboardPage = () => {
 }
 
 const PomodoroStyle = () => {
-    const style = `
+    return (<style>{`
     #Button {
         margin-left: 5px;
         margin-right: 5px;
@@ -352,6 +352,5 @@ const PomodoroStyle = () => {
         transition: border-color 0.3s, box-shadow 0.3s;
     }
     /* classes end */
-    `;
-    return (<style>{style}</style>)
+    `}</style>)
 };

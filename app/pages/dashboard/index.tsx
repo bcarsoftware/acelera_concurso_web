@@ -13,6 +13,8 @@ import {NoteTopicNew} from "~/pages/dashboard/data/note-topic/note-topic-new";
 import {StudyTipsNew} from "~/pages/dashboard/data/study-tips/study-tips-new";
 import {PomodoroDashboardPage} from "~/pages/dashboard/tabs/pomodoro-dashboard";
 import {ProfileDashboardPage} from "~/pages/dashboard/tabs/profile-dashboard";
+import {BodyDashboard} from "~/pages/dashboard/components/body-dashboard";
+import {MainDashboardTag} from "~/pages/dashboard/components/main-dashboard";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -79,13 +81,13 @@ export default function Index() {
     return (
         <>
             <StyleDashboard />
-            <body>
+            <BodyDashboard>
             <HeaderDashboard
                 setMainPage={setMainPage}
                 hiddenNewRegisters={hiddenNewRegisters}
             />
 
-            <main id="Dashboard">
+            <MainDashboardTag>
                 <LeftPanel
                     setProfilePage={setProfilePage}
                     setMainPage={setMainPage}
@@ -110,14 +112,25 @@ export default function Index() {
                     {showNoteSubjectNew && (showNewScreenNoteSubject())}
                     {showStudyTipsNew && (showNewScreenStudyTips())}
                 </Content >
-            </main>
+            </MainDashboardTag>
 
             <FooterDashboard />
-            </body>
+            </BodyDashboard>
         </>
     );
 }
 
 const StyleDashboard = () => {
-    return (<link rel="stylesheet" href="/app/pages/dashboard/dashboard.css"></link>);
+    return (<style>{`
+    .checkbutton {
+        width: 18px;
+        height: 48px;
+        margin-right: 12px;
+        margin-left: 12px;
+    }
+    .padding-check-button {
+        padding-left: 0.5rem;
+        padding-right: 1rem;
+    }
+    `}</style>);
 }

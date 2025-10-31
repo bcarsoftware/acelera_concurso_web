@@ -6,6 +6,18 @@ interface Elements {
 
 export const ContentSquare = ({ children }: Elements) => {
     return (
-        <div className="class-content-square">{children}</div>
+        <>
+            <StyleContentSquare />
+            <div className="class-content-square">{children}</div>
+        </>
     );
+};
+
+const StyleContentSquare = () => {
+    return (<style>{`
+    .class-content-square {
+        flex: 1;
+        min-width: 280px;
+    }
+    `}</style>);
 };

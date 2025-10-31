@@ -6,6 +6,17 @@ interface Elements {
 
 export const ContentWide = ({children}: Elements) => {
     return (
-        <div className="class-content-wide-square">{children}</div>
+        <>
+            <StyleContentWide />
+            <div className="class-content-wide-square">{children}</div>
+        </>
     )
+};
+
+const StyleContentWide = () => {
+    return (<style>{`
+    .class-content-wide-square {
+        width: 100%;
+    }
+    `}</style>);
 };

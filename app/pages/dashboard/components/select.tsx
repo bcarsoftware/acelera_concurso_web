@@ -1,4 +1,5 @@
 import React from "react";
+import {DivInputGroup} from "~/pages/dashboard/components/div-input-group";
 
 interface SelectProps {
     name: string;
@@ -10,11 +11,11 @@ interface SelectProps {
 
 export const Select = ({ label, name, required, disabled, children }: SelectProps) => {
     return (
-        <div className={"input-group"}>
+        <DivInputGroup>
             <label htmlFor={name}>{label}</label>
             <select name={name} id={name} required={required} disabled={disabled}>
                 {children}
             </select>
-        </div>
+        </DivInputGroup>
     );
 };

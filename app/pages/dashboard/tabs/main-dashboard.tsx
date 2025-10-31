@@ -4,6 +4,8 @@ import {ContentSquare} from "~/pages/dashboard/components/content-square";
 import {useState} from "react";
 import type {DataFunctionsScreen} from "../../../../types/data-functions-screen";
 import {Dialog} from "~/dialog/dialog";
+import {Colors} from "../../../../enums/colors";
+import {HtmlFont, HtmlType} from "../../../../enums/html-type";
 
 export const MainDashboardPage = (
     props: DataFunctionsScreen
@@ -92,10 +94,11 @@ export const MainDashboardPage = (
 
     return (
         <>
+            <StyleMainSection />
             <div id="ContentTwice">
                 <div id="PublicTender">
                     <h1>Concursos Cadastrados</h1>
-                    <input type="button" className="button-add" value="Adicionar"
+                    <input type={HtmlType.BUTTON} className="button-add" value="Adicionar"
                     onClick={showPublicTenderNew}
                     />
 
@@ -117,15 +120,15 @@ export const MainDashboardPage = (
                     <ContentWide>
                         <ContentCard>
                             <div className="check-tip">
-                                <input className="check-btn-tip" type="checkbox" />
+                                <input className="checkbutton" type="checkbox" />
                                 <section className="section-tip"><p className="text-section">Dica 1</p></section>
                             </div>
                             <div className="check-tip">
-                                <input className="check-btn-tip" type="checkbox" />
+                                <input className="checkbutton" type="checkbox" />
                                 <section className="section-tip"><p className="text-section">Dica 1</p></section>
                             </div>
                             <div className="check-tip">
-                                <input className="check-btn-tip" type="checkbox" />
+                                <input className="checkbutton" type="checkbox" />
                                 <section className="section-tip"><p className="text-section">Dica 1</p></section>
                             </div>
                         </ContentCard>
@@ -191,4 +194,94 @@ export const MainDashboardPage = (
             </div>
         </>
     );
+};
+
+const StyleMainSection = () => {
+    return (<style>{`
+    #NoteCheck {
+        font-size: 1.2em;
+        margin-bottom: 12px;
+        display: flex;
+    }
+    
+    #NoteCheck input {
+        width: 15px;
+        height: 15px;
+    }
+    
+    #SubjectTopicNote {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+    }
+    
+    #PublicTender {
+        width: 100%;
+        margin-bottom: 2rem;
+        margin-right: 2rem;
+    }
+    
+    #TipsHit {
+        width: 100%;
+    }
+    
+    #ContentTwice {
+        display: flex;
+    }
+    
+    .text-section {
+        color: ${Colors.BLACK};
+        text-align: justify;
+        font-weight: ${HtmlFont.BOLD};
+    }
+    
+    .text-section:hover {
+        color: ${Colors.LIGHT_BLUE};
+    }
+    
+    .button-add {
+        background-color: ${Colors.GREEN};
+        padding: 5px 12px 5px 12px;
+        color: ${Colors.WHITE};
+        font-family: ${HtmlFont.FONT_INTER};
+        font-weight: ${HtmlFont.BOLDER};
+        border-radius: 12px;
+        margin-bottom: 12px;
+        cursor: pointer;
+    }
+    
+    .button-add:hover {
+        background-color: ${Colors.GREEN_HOVER};
+        transition: 100ms;
+    }
+    
+    .section-tip {
+        width: 100%;
+    }
+    
+    .check-tip {
+        display: flex;
+    }
+    
+    .color-black {
+        color: ${Colors.BLACK};
+    }
+    .color-black:hover {
+        color: ${Colors.BLACK_HOVER};
+    }
+    
+    .bg-red {
+        background-color: ${Colors.RED_HOVER};
+    }
+    .bg-red:hover {
+        background-color: ${Colors.RED};
+    }
+    
+    .bg-golden {
+        background-color: ${Colors.GOLDEN};
+    }
+    .bg-golden:hover {
+        background-color: ${Colors.GOLDEN_HOVER};
+    }
+    `}</style>);
 };

@@ -98,20 +98,27 @@ export const ProfileDashboardPage = () => {
 };
 
 const ProfileStyle = () => {
-    const styles = `
-        .info-container {
-            margin-bottom: 15px;
-        }
-        
-        .info-container ul {
-            margin-left: 15px;
-        }
-        
-        .info-container li {
-            list-style-type: disc;
-            margin-left: 15px;
-        }
-    `;
-
-    return (<style>{styles}</style>)
+    return (<style>{`
+    #Profile {
+        border-radius: 12px;
+        padding: 18px 0 18px 0;
+        cursor: pointer;
+        font-weight: bold;
+    }
+    #Profile:hover {
+        background-color: ${Colors.DARK_BLUE};
+    }
+    .info-container {
+        margin-bottom: 15px;
+    }
+    
+    .info-container ul {
+        margin-left: 15px;
+    }
+    
+    .info-container li {
+        list-style-type: disc;
+        margin-left: 15px;
+    }
+    `}</style>);
 };

@@ -6,6 +6,20 @@ interface DivContent {
 
 export const Content = ({ children }: DivContent) => {
     return (
-        <div id="Content">{children}</div>
+        <>
+            <StyleContent />
+            <div id="Content">{children}</div>
+        </>
     );
+};
+
+const StyleContent = () => {
+    return (<style>{`
+    #Content {
+        flex: 1;
+        padding: 2rem;
+        overflow-y: auto;
+        margin-bottom: 2rem;
+    }
+    `}</style>);
 };

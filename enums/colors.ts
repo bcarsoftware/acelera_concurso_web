@@ -1,7 +1,7 @@
 export enum Colors {
     LIGHT_BLUE = "#088ac7",
     LIGHT_BLUE_HOVER = "#066a9c",
-    DART_BLUE = "#09607d",
+    DARK_BLUE = "#09607d",
     WHITE = "#ffffff",
     BLACK = "#000000",
     BLACK_HOVER = "#403f3e",
@@ -13,4 +13,7 @@ export enum Colors {
     GOLDEN_HOVER = "#dba40b",
     ORANGE = "#ff6200",
     ORANGE_HOVER = "#c95e06",
+    BG_PAGE = "#f4f7f6",
+    BORDER_LIGHT = "#e0e0e0",
+    TEXT_LIGHT = "#f1f1f1",
 }
