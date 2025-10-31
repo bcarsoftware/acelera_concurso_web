@@ -11,6 +11,8 @@ import {PomodoroConstats} from "../../../../enums/constants";
 import {PomodoroNew} from "~/pages/dashboard/data/pomodoro/pomodoro-new";
 import {Div100Percent} from "~/pages/dashboard/components/div-hundrend-percent";
 import {InputTime} from "~/pages/dashboard/components/input-time";
+import {DivInputGroup} from "~/pages/dashboard/components/div-input-group";
+import {Select} from "~/pages/dashboard/components/select";
 
 const fnStr = (str: string) => {};
 
@@ -154,6 +156,16 @@ export const PomodoroDashboardPage = () => {
                 <h1>Ferramenta de Pomodoro</h1>
                 <ContentWide>
                     <ContentCard>
+                        <DivInputGroup>
+                            <Select
+                                name={"saved-user-pomodoro"}
+                                required={false}
+                                disabled={false}
+                                label={"Pomodoro Salvo (Opcional)"}
+                            >
+                                <option>Selecione um Pomodoro</option>
+                            </Select>
+                        </DivInputGroup>
                         <div id={"InputDiv"} className={"center-items"}>
                             <Div100Percent>
                                 <InputTime
@@ -212,6 +224,7 @@ export const PomodoroDashboardPage = () => {
                             </Div100Percent>
                         </div>
                     </ContentCard>
+                    <div className={"margin-bottom-10"}></div>
                     <ContentCard>
                         <div id={"InputDiv"} className={"center-items"}>
                             <Div100Percent>
@@ -232,6 +245,7 @@ export const PomodoroDashboardPage = () => {
                             </Div100Percent>
                         </div>
                     </ContentCard>
+                    <div className={"margin-bottom-10"}></div>
                     <ContentCard>
                         {openDialog && (seeDialog())}
                         {openDialogConfirm && (seeConfirmDialog())}
