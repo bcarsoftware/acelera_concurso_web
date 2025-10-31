@@ -19,9 +19,9 @@ export const HeaderDashboard = (props: StartScreen) => {
                     <h1 onClick={functions.accessingMainPage} id="DashboardTitle">Dashboard Acelera Concurso</h1>
                 </div>
                 <div className="div-width-50-percent-right">
-                    <a href="/" className="link-format">
-                        <h4>SAIR  .</h4>
-                    </a>
+                    <div className="link-format">
+                        <h4 onClick={() => props.setLogout(true)}>SAIR  .</h4>
+                    </div>
                 </div>
             </header>
         </>
@@ -47,6 +47,7 @@ const StyleHeaderDashboard = () => {
     .link-format {
         color: inherit;
         text-decoration: none;
+        cursor: pointer;
     }
     `}</style>);
 }

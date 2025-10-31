@@ -101,6 +101,7 @@ const accessingSettingPage = (props: AllScreens) => {
 }
 const accessingLogoutPage = (props: AllScreens) => {
     switchPageShown(ScreenNames.LOGOUT, props);
+    props.setMainPage(true);
 }
 
 /* get accessing functions */

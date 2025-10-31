@@ -60,7 +60,7 @@ const StyleLeftPanel = () => {
             cursor: pointer;
         }
         .nav-item-logout:hover {
-            background-color: var(--color-red-hash-b51702);
+            background-color: ${Colors.RED_HOVER};
             font-weight: bold;
             transition: 100ms;
         }

@@ -17,6 +17,7 @@ import {BodyDashboard} from "~/pages/dashboard/components/body-dashboard";
 import {MainDashboardTag} from "~/pages/dashboard/components/main-dashboard";
 import {SettingsDashboardPage} from "~/pages/dashboard/tabs/settings-dashboard";
 import {Colors} from "../../../enums/colors";
+import {LogoutDashBoardPage} from "~/pages/dashboard/tabs/logout-dashboad";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -78,7 +79,11 @@ export default function Index() {
     };
     const accessProfilePage = () => (<ProfileDashboardPage />);
     const accessPomodoroPage = () => (<PomodoroDashboardPage />);
-    const accessSettingsPage = () => (<SettingsDashboardPage />)
+    const accessSettingsPage = () => (<SettingsDashboardPage />);
+    const accessLogoutPage = () => (<LogoutDashBoardPage
+        logOutScreen={logout}
+        setLogoutScreen={setLogout}
+    />);
     /* TABS PAGES */
 
     return (
@@ -88,6 +93,7 @@ export default function Index() {
             <HeaderDashboard
                 setMainPage={setMainPage}
                 hiddenNewRegisters={hiddenNewRegisters}
+                setLogout={setLogout}
             />
 
             <MainDashboardTag>
@@ -108,6 +114,7 @@ export default function Index() {
                     {mainPage && (accessMainPage())}
                     {pomodoro && (accessPomodoroPage())}
                     {settings && (accessSettingsPage())}
+                    {logout && (accessLogoutPage())}
 
                     {showPublicTenderNew && (showNewScreenPublicTender())}
                     {showSubjectNew && (showNewScreenSubject())}
