@@ -16,6 +16,12 @@ const StyleDivBackLink = () => {
         text-decoration: none;
         font-weight: bold;
     }
+    .back-link nav {
+        cursor: pointer;
+    }
+    .back-link nav:hover {
+        text-decoration: underline;
+    }
     `;
 
     return (<style>{styles}</style>);

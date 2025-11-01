@@ -2,7 +2,7 @@ import type {ChildrenElement} from "~/pages/access/components/children-element";
 import {HtmlFont} from "../../../../enums/html-type";
 import {Colors} from "../../../../enums/colors";
 
-export const Body = ({ children }: ChildrenElement) => {
+export const BodyAdmin = ({ children }: ChildrenElement) => {
     return (
         <>
             <StyleBody />
@@ -29,7 +29,7 @@ const StyleBody = () => {
         width: 100%;
     }
     body {
-        background-color: ${Colors.LIGHT_BLUE};
+        background-color: ${Colors.BLACK};
 
         display: flex;
         justify-content: center;

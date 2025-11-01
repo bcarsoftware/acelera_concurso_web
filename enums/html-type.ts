@@ -9,4 +9,3 @@ export enum HtmlFont {
     BOLDER = "bolder",
     FONT_INTER = '"Inter", serif',
 }
-

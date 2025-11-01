@@ -6,6 +6,7 @@ export const DialogStyle = () => {
     #DivTitle {
         display: flex;
         text-align: left;
+        font-weight: ${HtmlFont.BOLDER};
     }
     #TextTitle {
         width: 100%;
