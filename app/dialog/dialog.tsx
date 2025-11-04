@@ -1,6 +1,7 @@
 import {DialogStyle} from "~/dialog/dialog-style";
 
 interface DialogParams {
+    zIndex?: number;
     name: string;
     title: string;
     message: string;
@@ -9,7 +10,7 @@ interface DialogParams {
 }
 
 export const Dialog = ({
-    name, title, message, buttonText, closeFunction
+    zIndex, name, title, message, buttonText, closeFunction
 }: DialogParams) => {
     return (
         <>
@@ -31,8 +32,8 @@ export const Dialog = ({
     );
 };
 
-const Style = () => {
-    const style = DialogStyle();
+const Style = ({ zIndex }: {zIndex?: number}) => {
+    const style = DialogStyle(zIndex);
 
     return (<style>{style}</style>);
 };

@@ -2,9 +2,13 @@ import {HeaderAdmin} from "~/pages/admin/components/header";
 import type {Route} from "../../../../.react-router/types/app/routes/+types/home";
 import {HtmlFont} from "../../../../enums/html-type";
 import {Colors} from "../../../../enums/colors";
-import React from "react";
+import {useState} from "react";
 import {FooterAdmin} from "~/pages/admin/components/footer";
 import {LogoutAdminPage} from "~/pages/admin/components/logout-admin";
+import {PublicTenderBoardNewPage} from "~/pages/admin/pages/public-tender-board/new-public-tender-board";
+import {PublicTenderBoardDetails} from "~/pages/admin/pages/public-tender-board/details-public-tender-board";
+import {DialogConfirm} from "~/dialog/dialog-confirm";
+import {Dialog} from "~/dialog/dialog";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -13,17 +17,71 @@ export function meta({}: Route.MetaArgs) {
     ];
 }
 
+interface IPublicTenderBoard {
+    id: number;
+    name: string;
+    sail: string;
+}
+
 export default function Index() {
-    const [logout, setLogout] = React.useState<boolean>(false);
+    const [pTenderBoard, setPTenderBoard] = useState<boolean>(false);
+    const [logout, setLogout] = useState<boolean>(false);
+    const [publicTenderDetails, setPublicTenderDetails] = useState<IPublicTenderBoard | null>(null);
+    const [publicTenderShowDetails, setPublicTenderShowDetails] = useState<boolean>(false);
+    const [publicTenderBoardDelete, setPublicTenderBoardDelete] = useState<boolean>(false);
+
+    const [showDialogResult, setShowDialogResult] = useState<boolean>(false);
+    const [dialogTitle, setDialogTitle] = useState<string>("");
+    const [dialogMessage, setDialogMessage] = useState<string>("");
 
     const accessLogoutPage = () => (<LogoutAdminPage
         logOutScreen={logout}
         setLogoutScreen={setLogout}
     />);
 
+    const getDialogResult = () => {
+        return (<Dialog
+            name={"dialog-result"}
+            title={dialogTitle}
+            message={dialogMessage}
+            buttonText={"Fechar"}
+            closeFunction={setShowDialogResult}
+            zIndex={1001}
+        />);
+    }
+
+    const handleDeletePublicTenderBoard = async () => {
+        setPublicTenderBoardDelete(false);
+        setShowDialogResult(true);
+    };
+
+    const seeDeleteConfirmationPage = () => {
+        return (
+            <DialogConfirm
+                name={"delete-public-tender-board"}
+                title={"Excluir Banca de Concurso"}
+                message={`Tem certeza que deseja EXCLUIR a banca: ${publicTenderDetails?.name}?`}
+                yesFunction={handleDeletePublicTenderBoard}
+                closeFunction={setPublicTenderBoardDelete}
+            />
+        );
+    };
+
     return (
         <>
         {logout && (accessLogoutPage())}
+        {pTenderBoard && (<PublicTenderBoardNewPage setOpened={setPTenderBoard} />)}
+        {publicTenderShowDetails && (<PublicTenderBoardDetails
+            id={publicTenderDetails && publicTenderDetails?.id || 0}
+            sail={publicTenderDetails && publicTenderDetails?.sail || ""}
+            name={publicTenderDetails && publicTenderDetails?.name || ""}
+            setOpened={setPublicTenderShowDetails}
+            setShowDialog={setShowDialogResult}
+            setDialogTitle={setDialogTitle}
+            setDialogMessage={setDialogMessage}
+        />)}
+        {publicTenderBoardDelete && (seeDeleteConfirmationPage())}
+        {showDialogResult && (getDialogResult())}
         <StyleBodyAdmin />
             <HeaderAdmin setLogout={setLogout} />
             <main id={"Dashboard"}>
@@ -38,7 +96,7 @@ export default function Index() {
                                     <td colSpan={4}>
                                         <h2>Tabela de Bancas de Concurso</h2>
                                     </td>
-                                    <td className={"btn-add"}>Criar</td>
+                                    <td className={"btn-add"} onClick={() => setPTenderBoard(true)}>Criar</td>
                                 </tr>
                             </thead>
                             <thead>
@@ -51,8 +109,22 @@ export default function Index() {
                             </tr>
                             </thead>
                             <tbody>
-                                <LineTenderBoard id={1} sail={"FGV"} name={"Fundação Getúlio Vargas"} />
-                                <LineTenderBoard id={2} sail={"CESGRANRIO"} name={"Fundação Cesgranrio"} />
+                                <LineTenderBoard
+                                    id={1}
+                                    sail={"FGV"}
+                                    name={"Fundação Getúlio Vargas"}
+                                    updateFunction={setPublicTenderDetails}
+                                    handleDetails={setPublicTenderShowDetails}
+                                    handleDeletePublicTender={setPublicTenderBoardDelete}
+                                />
+                                <LineTenderBoard
+                                    id={2}
+                                    sail={"CESGRANRIO"}
+                                    name={"Fundação Cesgranrio"}
+                                    updateFunction={setPublicTenderDetails}
+                                    handleDetails={setPublicTenderShowDetails}
+                                    handleDeletePublicTender={setPublicTenderBoardDelete}
+                                />
                             </tbody>
                         </table>
                     </div>
@@ -64,27 +136,40 @@ export default function Index() {
     );
 }
 
-interface IPublicTenderBoard {
+interface PublicTenderBoardAndFunctions {
     id: number;
-    sail: string;
     name: string;
-    showDetails?: () => void;
-    handleDelete?: () => void;
+    sail: string;
+    updateFunction: (value: IPublicTenderBoard) => void;
+    handleDetails: (value: boolean) => void;
+    handleDeletePublicTender: (value: boolean) => void;
 }
 
 const LineTenderBoard = ({
-    id, sail, name, showDetails, handleDelete,
-}: IPublicTenderBoard) => {
+    id, sail, name, updateFunction, handleDetails, handleDeletePublicTender,
+}: PublicTenderBoardAndFunctions) => {
     const colorBG = id % 2 == 0 ? Colors.WHITE : Colors.LIGHT_BLUE_WHITE;
 
+    const handleUpdate = () => {
+        updateFunction({id, sail, name});
+        handleDetails(true);
+    };
+
+    const handleDelete = () => {
+        updateFunction({id, sail, name});
+        handleDeletePublicTender(true);
+    }
+
     return (
-        <tr style={{ backgroundColor: colorBG }}>
-            <td>{id}</td>
-            <td>{sail}</td>
-            <td>{name}</td>
-            <td><button className={"btn-edit"} onClick={showDetails}>Alterar</button></td>
-            <td><button className={"btn-delete"} onClick={handleDelete}>Delete</button></td>
-        </tr>
+        <>
+            <tr style={{ backgroundColor: colorBG }}>
+                <td>{id}</td>
+                <td>{sail}</td>
+                <td>{name}</td>
+                <td><button className={"btn-edit"} onClick={handleUpdate}>Alterar</button></td>
+                <td><button className={"btn-delete"} onClick={handleDelete}>Delete</button></td>
+            </tr>
+        </>
     );
 };
 
