@@ -1,10 +1,10 @@
 import React, {createContext, useContext, useEffect} from "react";
-import type {UserResponse} from "../data/data";
+import type {UserAdminResponse} from "../data/data";
 
 type AuthContextType = {
     token: string | null;
-    user: UserResponse | null;
-    login: ({ data, token }: { data: UserResponse; token: string; }) => Promise<void>;
+    user: UserAdminResponse | null;
+    login: ({ data, token }: { data: UserAdminResponse; token: string; }) => Promise<void>;
     logout: () => Promise<void>;
 };
 
@@ -15,7 +15,7 @@ interface IAuthProvider {
 }
 
 export const AuthAdminProvider = ({ children }: IAuthProvider) => {
-    const [user, setUser] = React.useState<UserResponse | null>(null);
+    const [user, setUser] = React.useState<UserAdminResponse | null>(null);
     const [token, setToken] = React.useState<string | null>(null);
     const [isLoading, setIsLoading] = React.useState<boolean>(true);
 
