@@ -5,8 +5,9 @@ export type AuthContextType = {
     token: string | null;
     user: UserAdminResponse | null;
     isLoading: boolean;
-    login: ({ data, token }: { data: UserAdminResponse; token: string; }) => Promise<void>;
+    login: (data: UserAdminResponse, token: string) => Promise<void>;
     logout: () => Promise<void>;
+    reflash: (userAdmin: UserAdminResponse) => Promise<void>;
 };
 
 const AuthAdminContext = createContext<AuthContextType | null>(null);
@@ -30,9 +31,7 @@ export const AuthAdminProvider = ({ children }: IAuthProvider) => {
         setIsLoading(false);
     }, []);
 
-    const login = async ({ data, token }: {
-        data: UserAdminResponse, token: string
-    }) => {
+    const login = async (data: UserAdminResponse, token: string) => {
         setToken(token);
         setUser(data);
         localStorage.setItem("userAdminToken", token);
@@ -46,12 +45,17 @@ export const AuthAdminProvider = ({ children }: IAuthProvider) => {
         localStorage.removeItem("userAdmin");
     }
 
+    const reflash = async (userAdmin: UserAdminResponse) => {
+        setUser(userAdmin);
+        localStorage.setItem("userAdmin", JSON.stringify(userAdmin));
+    };
+
     if (isLoading) {
         return (<div>{"Carregando..."}</div>);
     }
 
     return (
-        <AuthAdminContext.Provider value={{ isLoading, token, user, login, logout }}>
+        <AuthAdminContext.Provider value={{ isLoading, token, user, login, logout, reflash }}>
             {children}
         </AuthAdminContext.Provider>
     );

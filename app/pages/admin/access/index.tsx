@@ -88,7 +88,7 @@ export default function Index() {
                 setShowErrorDialog(true);
             }
             else {
-                await adminAuth?.login({ data: body.data.user, token: body.data.token});
+                await adminAuth?.login(body.data.user, body.data.token);
                 setShowSuccessDialog(true);
             }
         }

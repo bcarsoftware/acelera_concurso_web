@@ -4,8 +4,9 @@ import type {UserResponse} from "../data/data";
 type AuthContextType = {
     token: string | null;
     user: UserResponse | null;
-    login: ({ data, token }: { data: UserResponse; token: string; }) => Promise<void>;
+    login: (user: UserResponse, token: string) => Promise<void>;
     logout: () => Promise<void>;
+    reflash: (user: UserResponse) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -21,19 +22,19 @@ export const AuthProvider = ({ children }: IAuthProvider) => {
 
     useEffect(() => {
         const storedToken = localStorage.getItem("userToken");
+        const storedUser = localStorage.getItem("userData");
 
         if (storedToken) setToken(storedToken);
+        if (storedUser) setUser(JSON.parse(storedUser));
 
         setIsLoading(false);
     }, []);
 
-    const login = async ({ data, token }: {
-        data: any, token: string
-    }) => {
+    const login = async (user: UserResponse, token: string) => {
         setToken(token);
-        setUser(data);
+        setUser(user);
         localStorage.setItem("userToken", token);
-        localStorage.setItem("userData", JSON.stringify(data));
+        localStorage.setItem("userData", JSON.stringify(user));
     }
 
     const logout = async () => {
@@ -43,12 +44,17 @@ export const AuthProvider = ({ children }: IAuthProvider) => {
         localStorage.removeItem("userData");
     }
 
+    const reflash = async (user: UserResponse) => {
+        setUser(user);
+        localStorage.setItem("userData", JSON.stringify(user));
+    };
+
     if (isLoading) {
         return (<div>{"Carregando..."}</div>);
     }
 
     return (
-        <AuthContext.Provider value={{ token, user, login, logout }}>
+        <AuthContext.Provider value={{ token, user, login, logout, reflash }}>
             {children}
         </AuthContext.Provider>
     );
