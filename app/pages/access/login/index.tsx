@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import type {Route} from "../../../../.react-router/types/app/routes/+types/home";
 import {LoginDiv} from "~/pages/access/components/login-div";
 import {Body} from "~/pages/access/components/body";
@@ -12,6 +12,11 @@ import {ButtonElement} from "~/pages/access/components/button-element";
 import {Colors} from "../../../../enums/colors";
 import {DivRegisterLink} from "~/pages/access/components/div-register-link";
 import {InputPassword} from "~/pages/access/components/input-password";
+import {Dialog} from "~/dialog/dialog";
+import {ContentTypes, EnvironConstants} from "../../../../enums/constants";
+import {HTTPTypes} from "../../../../enums/http-types";
+import {InputTextAccess} from "~/pages/access/components/input-text";
+import { useAuth } from "context/auth-context";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -23,11 +28,85 @@ export function meta({}: Route.MetaArgs) {
 export default function Index() {
     const [showPassword, setShowPassword] = useState(false);
 
-    const handleLogin = async (): Promise<void> => {};
+    const [username, setUsername] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+
+    const [showDialogResult, setShowDialogResult] = useState<boolean>(false);
+    const [dialogTitle, setDialogTitle] = useState<string>("");
+    const [dialogMessage, setDialogMessage] = useState<string>("")
+
+    const authenticated = useAuth();
+
+    useEffect(() => {
+        if (authenticated?.isLoading) return;
+    }, []);
+
+    const getDialogResult = () => {
+        return (<Dialog
+            name={"dialog-result"}
+            title={dialogTitle}
+            message={dialogMessage}
+            buttonText={"Fechar"}
+            closeFunction={setShowDialogResult}
+            zIndex={1001}
+        />);
+    }
+
+    const handleLogin = async (): Promise<void> => {
+        const payload = {
+            username: username || undefined,
+            password: password || undefined,
+        };
+
+        if (Object.values(payload).includes(undefined)) {
+            setDialogTitle("Erro nos Dados");
+            setDialogMessage("Nome de Usuário ou Senha Indefinidos!");
+            setShowDialogResult(true);
+            return;
+        }
+
+        try {
+            const url = EnvironConstants.API_BASE_URL + (
+                "/user/login"
+            )
+            const response = await fetch(url, {
+                method: HTTPTypes.POST,
+                body: JSON.stringify(payload),
+                headers: {
+                    "Content-Type": ContentTypes.JSON
+                }
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                console.error(data);
+
+                setDialogTitle("Erro no Acesso");
+                setDialogMessage("Usuário ou senha inválidos!");
+
+                return;
+            }
+
+            setDialogTitle("Sucesso no Acesso");
+            setDialogMessage("Bem vindo ao Acelera Concurso!");
+            await authenticated?.login(data.data, data.token);
+        }
+        catch (error) {
+            console.error(error);
+
+            setDialogTitle("Erro no Servidor");
+            setDialogMessage("Não foi possível se conectar!");
+        }
+        finally {
+            setShowDialogResult(true);
+        }
+    };
 
     return (
         <>
         <Body>
+        {showDialogResult && (getDialogResult())}
 
         <LoginDiv>
             <LoginForm>
@@ -37,13 +116,23 @@ export default function Index() {
                     <nav><a href="/public">Voltar ao Inicio.</a></nav>
                 </DivBackLink>
 
-                <DivInputGroup>
-                    <label htmlFor="email">E-mail/Usuário*</label>
-                    <input type="email" id="email" name="email" placeholder="seuemail@exemplo.com" required/>
-                </DivInputGroup>
+                <InputTextAccess
+                    labelContent={"E-Mail/Nome de Usuário*"}
+                    name={"email-or-username"}
+                    placeholder={"username@email.com"}
+                    required={true} disabled={false}
+                    value={username}
+                    updateValue={setUsername}
+                />
 
                 <DivInputGroup>
-                    <InputPassword labelName={"Digite a Senha*"} showPassword={showPassword} required={true} />
+                    <InputPassword
+                        labelName={"Digite a Senha*"}
+                        showPassword={showPassword}
+                        required={true}
+                        value={password}
+                        updateValue={setPassword}
+                    />
 
                     <ButtonPassword buttonType={HtmlType.BUTTON} showPassword={showPassword} functionShow={setShowPassword} />
                 </DivInputGroup>
@@ -52,7 +141,7 @@ export default function Index() {
                     <a href="/recovery">Esqueceu a senha?</a>
                 </DivOptions>
 
-                <ButtonElement typeName={HtmlType.SUBMIT} styles={{
+                <ButtonElement typeName={HtmlType.BUTTON} styles={{
                     font_color: Colors.WHITE,
                     font_weight: HtmlFont.BOLD,
                     bg_color: Colors.GREEN,
