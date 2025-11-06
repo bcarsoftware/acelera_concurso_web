@@ -5,6 +5,7 @@ import {useAdminAuth} from "context/auth-admin-context";
 import {ContentTypes, EnvironConstants} from "../../../../../enums/constants";
 import {Dialog} from "~/dialog/dialog";
 import {HtmlType} from "../../../../../enums/html-type";
+import {HTTPTypes} from "../../../../../enums/http-types";
 
 export const PublicTenderBoardNewPage = (
     { setOpened, getAllBoards }: {
@@ -46,7 +47,7 @@ export const PublicTenderBoardNewPage = (
         try {
             const url = EnvironConstants.API_BASE_URL + "/public-tender-board"
             const response = await fetch(url, {
-                method: "POST",
+                method: HTTPTypes.POST,
                 body: JSON.stringify(payload),
                 headers: {
                     "Content-Type": ContentTypes.JSON,

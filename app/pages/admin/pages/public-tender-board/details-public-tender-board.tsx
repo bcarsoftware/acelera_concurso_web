@@ -5,6 +5,7 @@ import {InputNumberAdmin} from "~/pages/admin/components/input-number-admin";
 import {Dialog} from "~/dialog/dialog";
 import {useAdminAuth} from "../../../../../context/auth-admin-context";
 import {ContentTypes, EnvironConstants} from "../../../../../enums/constants";
+import {HTTPTypes} from "../../../../../enums/http-types";
 
 interface Details {
     id: number;
@@ -60,7 +61,7 @@ export const PublicTenderBoardDetails = (
         try {
             const url = EnvironConstants.API_BASE_URL + "/public-tender-board/" + tenderId;
             const response = await fetch(url, {
-                method: "PATCH",
+                method: HTTPTypes.PATCH,
                 body: JSON.stringify(payload),
                 headers: {
                     "Content-Type": ContentTypes.JSON,

@@ -13,6 +13,7 @@ import {type AuthContextType, useAdminAuth} from "../../../../context/auth-admin
 import {useNavigate} from "react-router";
 import type {PublicTenderBoardResponse} from "../../../../data/data";
 import {ContentTypes, EnvironConstants} from "../../../../enums/constants";
+import {HTTPTypes} from "../../../../enums/http-types";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -46,8 +47,10 @@ export default function Index() {
     useEffect(() => {
         if (authenticated?.isLoading) return;
 
-        if (!authenticated || !authenticated.user || !authenticated.token) {
-            navigate("");
+        if (!authenticated?.isLoading && (
+            !authenticated?.user || !authenticated.user.user_admin_id || !authenticated.token
+        )) {
+            navigate("/admin/login");
             return;
         }
 
@@ -61,7 +64,7 @@ export default function Index() {
         try {
             const url = EnvironConstants.API_BASE_URL + "/public-tender-board"
             const response = await fetch(url, {
-                method: "GET",
+                method: HTTPTypes.GET,
                 headers: {
                     "Content-Type": ContentTypes.JSON,
                     "Authorization": `Bearer ${authenticated?.token}`
@@ -100,7 +103,44 @@ export default function Index() {
 
     const handleDeletePublicTenderBoard = async () => {
         setPublicTenderBoardDelete(false);
-        setShowDialogResult(true);
+
+        try {
+            const url = EnvironConstants.API_BASE_URL + (
+                "/public-tender-board/" + publicTenderDetails?.id + "/delete"
+            )
+            const response = await fetch(url, {
+                method: HTTPTypes.DELETE,
+                headers: {
+                    "Content-Type": ContentTypes.JSON,
+                    "Authorization": `Bearer ${authenticated?.token}`
+                }
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                console.error(data);
+
+                setDialogTitle("Erro no Cadastro");
+                setDialogMessage("Não foi possível cadastrar essa Banca de Concurso!");
+
+                return;
+            }
+
+            setDialogTitle("Sucesso")
+            setDialogMessage("Banca de Concurso foi excluída!");
+
+            await setAllPublicTenderBoards();
+        }
+        catch (error) {
+            console.error(error);
+
+            setDialogTitle("Erro no Servidor");
+            setDialogMessage("Não foi possível se conectar!")
+        }
+        finally {
+            setShowDialogResult(true);
+        }
     };
 
     const seeDeleteConfirmationPage = () => {
@@ -169,7 +209,9 @@ export default function Index() {
                                                     name={tender.name}
                                                     updateFunction={setPublicTenderDetails}
                                                     handleDetails={setPublicTenderShowDetails}
-                                                    handleDeletePublicTender={setPublicTenderBoardDelete}
+                                                    handleDeletePublicTender={
+                                                        setPublicTenderBoardDelete
+                                                    }
                                                     index={index}
                                                 />
                                             );
@@ -200,7 +242,7 @@ interface PublicTenderBoardAndFunctions {
 const LineTenderBoard = ({
     id, sail, name, updateFunction, handleDetails, handleDeletePublicTender, index
 }: PublicTenderBoardAndFunctions) => {
-    const colorBG = index % 2 == 0 ? Colors.WHITE : Colors.LIGHT_BLUE_WHITE;
+    const colorBG = index % 2 == 0 ? Colors.LIGHT_BLUE_WHITE : Colors.WHITE;
 
     const handleUpdate = () => {
         updateFunction({id, sail, name});
