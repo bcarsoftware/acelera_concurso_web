@@ -4,7 +4,7 @@ import {FooterDashboard} from "~/pages/dashboard/components/footer";
 import {LeftPanel} from "~/pages/dashboard/components/left-panel";
 import {Content} from "~/pages/dashboard/components/content";
 import {MainDashboardPage} from "~/pages/dashboard/tabs/main-dashboard";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {PublicTenderNew} from "~/pages/dashboard/data/public-tender/public-tender-new";
 import {SubjectNew} from "~/pages/dashboard/data/subject/subject-new";
 import {TopicNew} from "~/pages/dashboard/data/topic/topic-new";
@@ -18,6 +18,8 @@ import {MainDashboardTag} from "~/pages/dashboard/components/main-dashboard";
 import {SettingsDashboardPage} from "~/pages/dashboard/tabs/settings-dashboard";
 import {Colors} from "../../../enums/colors";
 import {LogoutDashBoardPage} from "~/pages/dashboard/tabs/logout-dashboad";
+import {useAuth} from "../../../context/auth-context";
+import {useNavigate} from "react-router";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -53,6 +55,24 @@ export default function Index() {
     const showNewScreenNoteTopic = () => (<NoteTopicNew />);
     const showNewScreenStudyTips = () => (<StudyTipsNew />);
     /* SHOW REGISTERS SCREENS */
+
+    /* AUTHENTICATED & NAVIGATE */
+    const authenticated = useAuth();
+    const navigate = useNavigate();
+    /* AUTHENTICATED & NAVIGATE */
+
+    /* USE EFFECT */
+    useEffect(() => {
+        if (authenticated?.isLoading) return;
+
+        if (!authenticated?.isLoading && (
+            !authenticated?.user || !authenticated.user.user_id || !authenticated.token
+        )) {
+            navigate("/login");
+            return;
+        }
+    }, [authenticated, navigate]);
+    /* USE EFFECT */
 
     /* HIDDEN REGISTERS AND SEE MAIN PAGE */
     const hiddenNewRegisters = () => {

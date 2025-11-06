@@ -1,8 +1,19 @@
 import type {StartScreen} from "../../../../types/start-screen";
 import {getStartHeader} from "~/utilities/dashboard-utilities";
+import {useAuth} from "../../../../context/auth-context";
+import {useEffect, useState} from "react";
 
 export const HeaderDashboard = (props: StartScreen) => {
     const functions = getStartHeader(props);
+    const authenticated = useAuth();
+
+    const [points, setPoints] = useState<number>(0);
+
+    useEffect(() => {
+        if (authenticated?.isLoading) return;
+
+        setPoints(authenticated?.user?.points || 0);
+    }, [authenticated]);
 
     return (
         <>
@@ -19,8 +30,9 @@ export const HeaderDashboard = (props: StartScreen) => {
                     <h1 onClick={functions.accessingMainPage} id="DashboardTitle">Dashboard Acelera Concurso</h1>
                 </div>
                 <div className="div-width-50-percent-right">
-                    <div className="link-format">
-                        <h4 onClick={() => props.setLogout(true)}>SAIR  .</h4>
+                    <div className="link-format flex-end">
+                        <h4>{points} PONTOS</h4>
+                        <h4 onClick={() => props.setLogout(true)}>SAIR</h4>
                     </div>
                 </div>
             </header>
@@ -48,6 +60,13 @@ const StyleHeaderDashboard = () => {
         color: inherit;
         text-decoration: none;
         cursor: pointer;
+    }
+    .flex-end {
+        display: flex;
+        justify-content: end;
+    }
+    .flex-end h4 {
+        margin-left: 15px;
     }
     `}</style>);
 }

@@ -15,7 +15,7 @@ import {InputPassword} from "~/pages/access/components/input-password";
 
 export function meta({}: Route.MetaArgs) {
     return [
-        { title: "Index Acelera Concurso" },
+        { title: "Login Acelera Concurso" },
         { name: "description", content: "Sua melhor preparação!" },
     ];
 }

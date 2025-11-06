@@ -4,6 +4,7 @@ import type {UserResponse} from "../data/data";
 type AuthContextType = {
     token: string | null;
     user: UserResponse | null;
+    isLoading: boolean;
     login: (user: UserResponse, token: string) => Promise<void>;
     logout: () => Promise<void>;
     reflash: (user: UserResponse) => Promise<void>;
@@ -54,7 +55,7 @@ export const AuthProvider = ({ children }: IAuthProvider) => {
     }
 
     return (
-        <AuthContext.Provider value={{ token, user, login, logout, reflash }}>
+        <AuthContext.Provider value={{ token, user, isLoading, login, logout, reflash }}>
             {children}
         </AuthContext.Provider>
     );
