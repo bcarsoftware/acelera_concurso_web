@@ -82,7 +82,7 @@ export const PublicTenderBoardNewPage = (
     };
 
     return (
-        <form>
+        <form method={HTTPTypes.POST}>
             {showDialog && (getDialogResult())}
 
             <Style />

@@ -6,6 +6,7 @@ import {Dialog} from "~/dialog/dialog";
 import {useAdminAuth} from "../../../../../context/auth-admin-context";
 import {ContentTypes, EnvironConstants} from "../../../../../enums/constants";
 import {HTTPTypes} from "../../../../../enums/http-types";
+import {HtmlType} from "../../../../../enums/html-type";
 
 interface Details {
     id: number;
@@ -79,7 +80,7 @@ export const PublicTenderBoardDetails = (
             }
             else {
                 setDialogTitle("Sucesso");
-                setDialogMessage("Banca de Concurso cadastrada com sucesso!");
+                setDialogMessage("Banca de Concurso atualizada com sucesso!");
 
                 await getAllBoards();
             }
@@ -96,7 +97,7 @@ export const PublicTenderBoardDetails = (
     }
 
     return (
-        <form>
+        <form method={HTTPTypes.PATCH}>
             {showDialog && (getDialogResult())}
 
             <Style />
@@ -138,8 +139,13 @@ export const PublicTenderBoardDetails = (
                     />
 
                     <div id={"AdminDivButton"}>
-                        <button className={"button-general-main-admin"} onClick={handleUpdateTenderBoard}>Atualizar Banca</button>
-                        <button formNoValidate={true} className={"button-not-main-admin"} onClick={() => setOpened(false)}>Cancelar</button>
+                        <button type={HtmlType.BUTTON}
+                                className={"button-general-main-admin"}
+                                onClick={handleUpdateTenderBoard}>Atualizar Banca</button>
+                        <button type={HtmlType.BUTTON}
+                                formNoValidate={true}
+                                className={"button-not-main-admin"}
+                                onClick={() => setOpened(false)}>Cancelar</button>
                     </div>
                 </div>
             </div>

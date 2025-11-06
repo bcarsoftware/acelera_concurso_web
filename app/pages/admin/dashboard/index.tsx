@@ -14,6 +14,7 @@ import {useNavigate} from "react-router";
 import type {PublicTenderBoardResponse} from "../../../../data/data";
 import {ContentTypes, EnvironConstants} from "../../../../enums/constants";
 import {HTTPTypes} from "../../../../enums/http-types";
+import { AdminProfilePage } from "../pages/profile/admin-profile";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -34,6 +35,7 @@ export default function Index() {
     const [publicTenderDetails, setPublicTenderDetails] = useState<IPublicTenderBoard | null>(null);
     const [publicTenderShowDetails, setPublicTenderShowDetails] = useState<boolean>(false);
     const [publicTenderBoardDelete, setPublicTenderBoardDelete] = useState<boolean>(false);
+    const [profile, setProfile] = useState<boolean>(false);
 
     const [publicTenderBoardList, setPublicTenderBoardList] = useState<PublicTenderBoardResponse[]>([]);
 
@@ -155,6 +157,10 @@ export default function Index() {
         );
     };
 
+    const accessProfilePage = () => (
+        <AdminProfilePage setProfile={setProfile} />
+    );
+
     return (
         <>
         {showDialogResult && (getDialogResult())}
@@ -171,9 +177,10 @@ export default function Index() {
             getAllBoards={setAllPublicTenderBoards}
         />)}
         {publicTenderBoardDelete && (seeDeleteConfirmationPage())}
+        {profile && (accessProfilePage())}
 
         <StyleBodyAdmin />
-            <HeaderAdmin setLogout={setLogout} />
+            <HeaderAdmin setLogout={setLogout} setProfile={setProfile} />
             <main id={"Dashboard"}>
                 <div className={"line"}>
                     <div className={"col-25"}></div>
@@ -204,6 +211,7 @@ export default function Index() {
                                         (tender: PublicTenderBoardResponse, index: number) => {
                                             return (
                                                 <LineTenderBoard
+                                                    key={tender.public_tender_board_id}
                                                     id={tender.public_tender_board_id}
                                                     sail={tender.sail}
                                                     name={tender.name}

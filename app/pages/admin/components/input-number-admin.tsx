@@ -16,7 +16,7 @@ export const InputNumberAdmin = (
     return (
         <DivInputGroup>
             <label htmlFor={props.name}>{props.labelContent}</label>
-            <input type="number" defaultValue={0} id={props.name} name={props.name} disabled={props.disabled}
+            <input type="number" id={props.name} name={props.name} disabled={props.disabled}
                    placeholder={props.placeholder} required={props.required} value={props.value} />
         </DivInputGroup>
     );
