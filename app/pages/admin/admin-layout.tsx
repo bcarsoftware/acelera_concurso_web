@@ -1,6 +1,5 @@
-import {AuthAdminProvider, useAdminAuth} from "../../../context/auth-admin-context";
-import {Outlet, useNavigate} from "react-router";
-import {useEffect} from "react";
+import {AuthAdminProvider} from "../../../context/auth-admin-context";
+import {Outlet} from "react-router";
 
 export default function AdminLayout() {
     return (
