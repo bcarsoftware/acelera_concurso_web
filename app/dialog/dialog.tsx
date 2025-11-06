@@ -14,7 +14,7 @@ export const Dialog = ({
 }: DialogParams) => {
     return (
         <>
-            <Style />
+            <Style zIndex={zIndex} />
             <div className={"popup-overlay-main"} id={name}>
                 <div className={"dialog-container-main"}>
                     <div id={"DivTitle"}>

@@ -2,13 +2,17 @@ import {HeaderAdmin} from "~/pages/admin/components/header";
 import type {Route} from "../../../../.react-router/types/app/routes/+types/home";
 import {HtmlFont} from "../../../../enums/html-type";
 import {Colors} from "../../../../enums/colors";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {FooterAdmin} from "~/pages/admin/components/footer";
 import {LogoutAdminPage} from "~/pages/admin/components/logout-admin";
 import {PublicTenderBoardNewPage} from "~/pages/admin/pages/public-tender-board/new-public-tender-board";
 import {PublicTenderBoardDetails} from "~/pages/admin/pages/public-tender-board/details-public-tender-board";
 import {DialogConfirm} from "~/dialog/dialog-confirm";
 import {Dialog} from "~/dialog/dialog";
+import {type AuthContextType, useAdminAuth} from "../../../../context/auth-admin-context";
+import {useNavigate} from "react-router";
+import type {PublicTenderBoardResponse} from "../../../../data/data";
+import {ContentTypes, EnvironConstants} from "../../../../enums/constants";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -30,9 +34,53 @@ export default function Index() {
     const [publicTenderShowDetails, setPublicTenderShowDetails] = useState<boolean>(false);
     const [publicTenderBoardDelete, setPublicTenderBoardDelete] = useState<boolean>(false);
 
+    const [publicTenderBoardList, setPublicTenderBoardList] = useState<PublicTenderBoardResponse[]>([]);
+
     const [showDialogResult, setShowDialogResult] = useState<boolean>(false);
     const [dialogTitle, setDialogTitle] = useState<string>("");
     const [dialogMessage, setDialogMessage] = useState<string>("");
+
+    const authenticated: AuthContextType | null = useAdminAuth();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (authenticated?.isLoading) return;
+
+        if (!authenticated || !authenticated.user || !authenticated.token) {
+            navigate("");
+            return;
+        }
+
+        const settingPublicTenderBoards = async () => {
+            await setAllPublicTenderBoards();
+        };
+        settingPublicTenderBoards().then();
+    }, [authenticated, navigate]);
+
+    const setAllPublicTenderBoards = async () => {
+        try {
+            const url = EnvironConstants.API_BASE_URL + "/public-tender-board"
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": ContentTypes.JSON,
+                    "Authorization": `Bearer ${authenticated?.token}`
+                }
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                setPublicTenderBoardList([]);
+                return;
+            }
+
+            setPublicTenderBoardList(data.data);
+        }
+        catch (error) {
+            setPublicTenderBoardList([]);
+        }
+    };
 
     const accessLogoutPage = () => (<LogoutAdminPage
         logOutScreen={logout}
@@ -69,19 +117,21 @@ export default function Index() {
 
     return (
         <>
+        {showDialogResult && (getDialogResult())}
         {logout && (accessLogoutPage())}
-        {pTenderBoard && (<PublicTenderBoardNewPage setOpened={setPTenderBoard} />)}
+        {pTenderBoard && (<PublicTenderBoardNewPage
+            setOpened={setPTenderBoard}
+            getAllBoards={setAllPublicTenderBoards}
+        />)}
         {publicTenderShowDetails && (<PublicTenderBoardDetails
             id={publicTenderDetails && publicTenderDetails?.id || 0}
             sail={publicTenderDetails && publicTenderDetails?.sail || ""}
             name={publicTenderDetails && publicTenderDetails?.name || ""}
             setOpened={setPublicTenderShowDetails}
-            setShowDialog={setShowDialogResult}
-            setDialogTitle={setDialogTitle}
-            setDialogMessage={setDialogMessage}
+            getAllBoards={setAllPublicTenderBoards}
         />)}
         {publicTenderBoardDelete && (seeDeleteConfirmationPage())}
-        {showDialogResult && (getDialogResult())}
+
         <StyleBodyAdmin />
             <HeaderAdmin setLogout={setLogout} />
             <main id={"Dashboard"}>
@@ -109,22 +159,23 @@ export default function Index() {
                             </tr>
                             </thead>
                             <tbody>
-                                <LineTenderBoard
-                                    id={1}
-                                    sail={"FGV"}
-                                    name={"Fundação Getúlio Vargas"}
-                                    updateFunction={setPublicTenderDetails}
-                                    handleDetails={setPublicTenderShowDetails}
-                                    handleDeletePublicTender={setPublicTenderBoardDelete}
-                                />
-                                <LineTenderBoard
-                                    id={2}
-                                    sail={"CESGRANRIO"}
-                                    name={"Fundação Cesgranrio"}
-                                    updateFunction={setPublicTenderDetails}
-                                    handleDetails={setPublicTenderShowDetails}
-                                    handleDeletePublicTender={setPublicTenderBoardDelete}
-                                />
+                                {
+                                    publicTenderBoardList && publicTenderBoardList.map(
+                                        (tender: PublicTenderBoardResponse, index: number) => {
+                                            return (
+                                                <LineTenderBoard
+                                                    id={tender.public_tender_board_id}
+                                                    sail={tender.sail}
+                                                    name={tender.name}
+                                                    updateFunction={setPublicTenderDetails}
+                                                    handleDetails={setPublicTenderShowDetails}
+                                                    handleDeletePublicTender={setPublicTenderBoardDelete}
+                                                    index={index}
+                                                />
+                                            );
+                                        }
+                                    )
+                                }
                             </tbody>
                         </table>
                     </div>
@@ -143,12 +194,13 @@ interface PublicTenderBoardAndFunctions {
     updateFunction: (value: IPublicTenderBoard) => void;
     handleDetails: (value: boolean) => void;
     handleDeletePublicTender: (value: boolean) => void;
+    index: number;
 }
 
 const LineTenderBoard = ({
-    id, sail, name, updateFunction, handleDetails, handleDeletePublicTender,
+    id, sail, name, updateFunction, handleDetails, handleDeletePublicTender, index
 }: PublicTenderBoardAndFunctions) => {
-    const colorBG = id % 2 == 0 ? Colors.WHITE : Colors.LIGHT_BLUE_WHITE;
+    const colorBG = index % 2 == 0 ? Colors.WHITE : Colors.LIGHT_BLUE_WHITE;
 
     const handleUpdate = () => {
         updateFunction({id, sail, name});

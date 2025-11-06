@@ -1,9 +1,10 @@
 import React, {createContext, useContext, useEffect} from "react";
 import type {UserAdminResponse} from "../data/data";
 
-type AuthContextType = {
+export type AuthContextType = {
     token: string | null;
     user: UserAdminResponse | null;
+    isLoading: boolean;
     login: ({ data, token }: { data: UserAdminResponse; token: string; }) => Promise<void>;
     logout: () => Promise<void>;
 };
@@ -20,27 +21,29 @@ export const AuthAdminProvider = ({ children }: IAuthProvider) => {
     const [isLoading, setIsLoading] = React.useState<boolean>(true);
 
     useEffect(() => {
-        const storedToken = localStorage.getItem("userToken");
+        const storedToken = localStorage.getItem("userAdminToken");
+        const userAdmin = localStorage.getItem("userAdmin");
 
         if (storedToken) setToken(storedToken);
+        if (userAdmin) setUser(JSON.parse(userAdmin));
 
         setIsLoading(false);
     }, []);
 
     const login = async ({ data, token }: {
-        data: any, token: string
+        data: UserAdminResponse, token: string
     }) => {
         setToken(token);
         setUser(data);
         localStorage.setItem("userAdminToken", token);
-        localStorage.setItem("userAdminData", JSON.stringify(data));
+        localStorage.setItem("userAdmin", JSON.stringify(data));
     }
 
     const logout = async () => {
         setToken(null);
         setUser(null);
         localStorage.removeItem("userAdminToken");
-        localStorage.removeItem("userAdminData");
+        localStorage.removeItem("userAdmin");
     }
 
     if (isLoading) {
@@ -48,7 +51,7 @@ export const AuthAdminProvider = ({ children }: IAuthProvider) => {
     }
 
     return (
-        <AuthAdminContext.Provider value={{ token, user, login, logout }}>
+        <AuthAdminContext.Provider value={{ isLoading, token, user, login, logout }}>
             {children}
         </AuthAdminContext.Provider>
     );

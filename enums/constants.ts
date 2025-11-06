@@ -10,3 +10,11 @@ export enum PomodoroConstats {
     BREAK_LONG_MIN = 1,
     BREAK_LONG_MAX = 60,
 }
+
+export enum ContentTypes {
+    JSON = 'application/json',
+}
+
+export const EnvironConstants = {
+    API_BASE_URL: import.meta.env.VITE_API_BASE_URL || "http://localhost",
+};

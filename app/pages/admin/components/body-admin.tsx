@@ -6,7 +6,7 @@ export const BodyAdmin = ({ children }: ChildrenElement) => {
     return (
         <>
             <StyleBody />
-            <body>{children}</body>
+            <div>{children}</div>
         </>
     );
 };

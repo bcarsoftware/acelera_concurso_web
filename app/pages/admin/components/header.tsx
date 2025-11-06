@@ -1,9 +1,16 @@
 import {useNavigate} from "react-router";
+import {useAdminAuth} from "../../../../context/auth-admin-context";
 
 export const HeaderAdmin = (
     { setLogout }: { setLogout: (value: boolean) => void }
 ) => {
     const navigate = useNavigate();
+    const adminAuth = useAdminAuth();
+
+    const handlerLogout = async () => {
+        await adminAuth?.logout();
+        setLogout(true);
+    };
 
     return (
         <>
@@ -22,7 +29,7 @@ export const HeaderAdmin = (
                 </div>
                 <div className="div-width-50-percent-right">
                     <div className="link-format">
-                        <h4 onClick={() => setLogout(true)}>SAIR  .</h4>
+                        <h4 onClick={handlerLogout}>SAIR  .</h4>
                     </div>
                 </div>
             </header>

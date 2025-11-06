@@ -13,6 +13,7 @@ import {DivRegisterLink} from "~/pages/access/components/div-register-link";
 import {BodyAdmin} from "~/pages/admin/components/body-admin";
 import {Dialog} from "~/dialog/dialog";
 import {ButtonElement} from "~/pages/access/components/button-element";
+import {ContentTypes, EnvironConstants} from "../../../../enums/constants";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -48,6 +49,36 @@ export default function Index() {
             username: username,
             password: password,
         };
+
+        try {
+            const url = EnvironConstants.API_BASE_URL + "/user-admin"
+            const response = await fetch(url, {
+                method: "POST",
+                body: JSON.stringify(payload),
+                headers: {
+                    "Content-Type": ContentTypes.JSON
+                }
+            });
+
+            const body = await response.json();
+
+            if (!response.ok) {
+                console.error(body);
+                setDialogTitle("Erro no Cadastro");
+                setDialogMessage("Não foi possível cadastrar o administrador!");
+            }
+            else {
+                setDialogTitle("Sucesso no Cadastro");
+                setDialogMessage("Administrador cadastrado com sucesso!");
+            }
+        }
+        catch (error) {
+            console.error(error);
+
+            setDialogTitle("Erro no Servidor");
+            setDialogMessage("Não foi possível se conectar.")
+        }
+
         setShowDialog(true);
     };
 
@@ -56,7 +87,6 @@ export default function Index() {
     };
 
     return (
-        <>
         <BodyAdmin>
 
         {showDialog && (getDialog())}
@@ -121,6 +151,5 @@ export default function Index() {
         </DivCardContainer>
 
         </BodyAdmin>
-        </>
     );
 }

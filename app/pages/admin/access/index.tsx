@@ -14,6 +14,8 @@ import {DivCardContainer} from "~/pages/access/components/div-card-container";
 import {InputText} from "~/pages/dashboard/components/input-text";
 import {useNavigate} from "react-router";
 import {Dialog} from "~/dialog/dialog";
+import {ContentTypes, EnvironConstants} from "../../../../enums/constants";
+import {useAdminAuth} from "../../../../context/auth-admin-context";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -24,9 +26,12 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Index() {
     const navigate = useNavigate();
+    const adminAuth = useAdminAuth();
     const [showPassword, setShowPassword] = useState(false);
 
     const [showSuccessDialog, setShowSuccessDialog] = useState<boolean>(false);
+    const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
+    const [showServerErrorDialog, setShowServerErrorDialog] = useState<boolean>(false);
 
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
@@ -34,10 +39,28 @@ export default function Index() {
     const getSuccessDialog = (
     ) => (<Dialog
         name={"request-result"}
-        title={"Sucesso no Acesso!"}
-        message={"Usuário Administrador Encontrado."}
+        title={"Sucesso no Acesso"}
+        message={"Usuário Administrador Encontrado!"}
         buttonText={"Fechar"}
         closeFunction={openDashboard}
+    />);
+
+    const getErrorDialog = (
+    ) => (<Dialog
+        name={"request-result"}
+        title={"Erro no Acesso!"}
+        message={"Usuário Administrador NÃO Encontrado!"}
+        buttonText={"Fechar"}
+        closeFunction={setShowErrorDialog}
+    />);
+
+    const getServerErrorDialog = (
+    ) => (<Dialog
+        name={"request-result"}
+        title={"Erro no Servidor"}
+        message={"Não foi possível se conectar!"}
+        buttonText={"Fechar"}
+        closeFunction={setShowServerErrorDialog}
     />);
 
     const openDashboard = () => {
@@ -48,14 +71,39 @@ export default function Index() {
     const handleLogin = async (): Promise<void> => {
         const payload = { username, password };
 
-        setShowSuccessDialog(true);
+        try {
+            const url = EnvironConstants.API_BASE_URL + "/user-admin/login"
+            const response = await fetch(url, {
+                method: "POST",
+                body: JSON.stringify(payload),
+                headers: {
+                    "Content-Type": ContentTypes.JSON
+                }
+            });
+
+            const body = await response.json();
+
+            if (!response.ok) {
+                console.error(body);
+                setShowErrorDialog(true);
+            }
+            else {
+                await adminAuth?.login({ data: body.data.user, token: body.data.token});
+                setShowSuccessDialog(true);
+            }
+        }
+        catch (error) {
+            console.error(error);
+            setShowServerErrorDialog(true);
+        }
     };
 
     return (
-        <>
         <BodyAdmin>
 
         {showSuccessDialog && (getSuccessDialog())}
+        {showErrorDialog && (getErrorDialog())}
+        {showServerErrorDialog && (getServerErrorDialog())}
 
         <DivCardContainer widthDiv={"600px"}>
             <LoginForm>
@@ -67,7 +115,7 @@ export default function Index() {
 
                 <DivInputGroup>
                     <InputText
-                        labelContent={"Email/Usuário*"}
+                        labelContent={"Nome de Usuário*"}
                         name={"username"}
                         placeholder={"usuario@exemplo.com"}
                         required={true}
@@ -103,6 +151,5 @@ export default function Index() {
         </DivCardContainer>
 
         </BodyAdmin>
-        </>
     );
 }
