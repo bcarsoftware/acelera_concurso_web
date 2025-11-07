@@ -20,6 +20,7 @@ import {Colors} from "../../../enums/colors";
 import {LogoutDashBoardPage} from "~/pages/dashboard/tabs/logout-dashboad";
 import {useAuth} from "../../../context/auth-context";
 import {useNavigate} from "react-router";
+import {Body} from "~/pages/access/components/body";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -107,47 +108,45 @@ export default function Index() {
     /* TABS PAGES */
 
     return (
-        <>
+        <BodyDashboard>
             <StyleDashboard />
-            <BodyDashboard>
-            <HeaderDashboard
+        <HeaderDashboard
+            setMainPage={setMainPage}
+            hiddenNewRegisters={hiddenNewRegisters}
+            setLogout={setLogout}
+        />
+
+        <MainDashboardTag>
+            <LeftPanel
+                setProfilePage={setProfilePage}
                 setMainPage={setMainPage}
-                hiddenNewRegisters={hiddenNewRegisters}
+                setPublicTender={setPublicTender}
+                setSubject={setSubject}
+                setTopic={setTopic}
+                setQuestions={setQuestions}
+                setPomodoro={setPomodoro}
+                setSettings={setSettings}
                 setLogout={setLogout}
+                hiddenNewRegisters={hiddenNewRegisters}
             />
+            <Content>
+                {profilePage && (accessProfilePage())}
+                {mainPage && (accessMainPage())}
+                {pomodoro && (accessPomodoroPage())}
+                {settings && (accessSettingsPage())}
+                {logout && (accessLogoutPage())}
 
-            <MainDashboardTag>
-                <LeftPanel
-                    setProfilePage={setProfilePage}
-                    setMainPage={setMainPage}
-                    setPublicTender={setPublicTender}
-                    setSubject={setSubject}
-                    setTopic={setTopic}
-                    setQuestions={setQuestions}
-                    setPomodoro={setPomodoro}
-                    setSettings={setSettings}
-                    setLogout={setLogout}
-                    hiddenNewRegisters={hiddenNewRegisters}
-                />
-                <Content>
-                    {profilePage && (accessProfilePage())}
-                    {mainPage && (accessMainPage())}
-                    {pomodoro && (accessPomodoroPage())}
-                    {settings && (accessSettingsPage())}
-                    {logout && (accessLogoutPage())}
+                {showPublicTenderNew && (showNewScreenPublicTender())}
+                {showSubjectNew && (showNewScreenSubject())}
+                {showTopicNew && (showNewScreenTopic())}
+                {showNoteTopicNew && (showNewScreenNoteTopic())}
+                {showNoteSubjectNew && (showNewScreenNoteSubject())}
+                {showStudyTipsNew && (showNewScreenStudyTips())}
+            </Content >
+        </MainDashboardTag>
 
-                    {showPublicTenderNew && (showNewScreenPublicTender())}
-                    {showSubjectNew && (showNewScreenSubject())}
-                    {showTopicNew && (showNewScreenTopic())}
-                    {showNoteTopicNew && (showNewScreenNoteTopic())}
-                    {showNoteSubjectNew && (showNewScreenNoteSubject())}
-                    {showStudyTipsNew && (showNewScreenStudyTips())}
-                </Content >
-            </MainDashboardTag>
-
-            <FooterDashboard />
-            </BodyDashboard>
-        </>
+        <FooterDashboard />
+        </BodyDashboard>
     );
 }
 

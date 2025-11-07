@@ -33,7 +33,6 @@ export default function Index() {
     const handleUpdatePassword = () => {};
 
     return (
-        <>
         <Body>
 
         <DivCardContainer widthDiv={"720px"}>
@@ -81,6 +80,5 @@ export default function Index() {
         </DivCardContainer>
 
         </Body>
-        </>
     );
 }

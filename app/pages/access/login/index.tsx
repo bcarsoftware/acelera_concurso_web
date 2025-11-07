@@ -17,6 +17,7 @@ import {ContentTypes, EnvironConstants} from "../../../../enums/constants";
 import {HTTPTypes} from "../../../../enums/http-types";
 import {InputTextAccess} from "~/pages/access/components/input-text";
 import { useAuth } from "context/auth-context";
+import {useNavigate} from "react-router";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -33,24 +34,38 @@ export default function Index() {
 
     const [showDialogResult, setShowDialogResult] = useState<boolean>(false);
     const [dialogTitle, setDialogTitle] = useState<string>("");
-    const [dialogMessage, setDialogMessage] = useState<string>("")
+    const [dialogMessage, setDialogMessage] = useState<string>("");
+
+    const [success, setSuccess] = useState<boolean>(false);
 
     const authenticated = useAuth();
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (authenticated?.isLoading) return;
     }, []);
 
     const getDialogResult = () => {
+        const closingFunction = success ?
+            (value: boolean) => {
+                openDashboard(value)
+                setSuccess(value);
+            } : setShowDialogResult;
+
         return (<Dialog
             name={"dialog-result"}
             title={dialogTitle}
             message={dialogMessage}
             buttonText={"Fechar"}
-            closeFunction={setShowDialogResult}
+            closeFunction={closingFunction}
             zIndex={1001}
         />);
     }
+
+    const openDashboard = (value: boolean) => {
+        setShowDialogResult(false);
+        navigate("/dashboard");
+    };
 
     const handleLogin = async (): Promise<void> => {
         const payload = {
@@ -77,10 +92,10 @@ export default function Index() {
                 }
             });
 
-            const data = await response.json();
+            const body = await response.json();
 
             if (!response.ok) {
-                console.error(data);
+                console.error(body);
 
                 setDialogTitle("Erro no Acesso");
                 setDialogMessage("Usuário ou senha inválidos!");
@@ -90,7 +105,8 @@ export default function Index() {
 
             setDialogTitle("Sucesso no Acesso");
             setDialogMessage("Bem vindo ao Acelera Concurso!");
-            await authenticated?.login(data.data, data.token);
+            await authenticated?.login(body.data.user, body.data.token);
+            setSuccess(true);
         }
         catch (error) {
             console.error(error);
@@ -104,7 +120,6 @@ export default function Index() {
     };
 
     return (
-        <>
         <Body>
         {showDialogResult && (getDialogResult())}
 
@@ -155,6 +170,5 @@ export default function Index() {
         </LoginDiv>
 
         </Body>
-        </>
     );
 }

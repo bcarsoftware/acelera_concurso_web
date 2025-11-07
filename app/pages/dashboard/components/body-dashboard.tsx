@@ -10,7 +10,7 @@ export const BodyDashboard = ({ children }: IBodyDashboard) => {
     return (
         <>
             <StyleBody />
-            <body>{children}</body>
+            <div>{children}</div>
         </>
     );
 };

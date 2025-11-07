@@ -6,7 +6,7 @@ export const Body = ({ children }: ChildrenElement) => {
     return (
         <>
             <StyleBody />
-            <body>{children}</body>
+            <div>{children}</div>
         </>
     );
 };

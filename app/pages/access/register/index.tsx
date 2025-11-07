@@ -236,7 +236,6 @@ export default function Index() {
     }
 
     return (
-        <>
         <Body>
         {showDialog && (getDialogResult())}
         <DivCardContainer widthDiv={"720px"}>
@@ -395,6 +394,5 @@ export default function Index() {
         </DivCardContainer>
 
         </Body>
-        </>
     );
 }
