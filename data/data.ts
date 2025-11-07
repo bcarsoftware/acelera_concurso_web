@@ -15,6 +15,12 @@ enum EnumCategory {
     SPECIFIC = "SPECIFIC",
 }
 
+export enum EnumLevel {
+    UNDEFINED = "UNDEFINED",
+    GRADUATED = "GRADUATED",
+    HIGH_SCHOOL = "HIGH_SCHOOL"
+}
+
 export interface ActiveCodeResponse {
     secure_code: string;
     token?: string;
@@ -71,8 +77,9 @@ export interface PublicTenderResponse {
     user_id: number;
     tender_name: string;
     tender_board: string;
-    work_tile: string;
+    tender_level: EnumLevel;
     institute: string;
+    work_tile: string;
     notice_link?: string | null;
     tender_date?: string | null;
     deleted?: boolean;

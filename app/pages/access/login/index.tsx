@@ -112,7 +112,7 @@ export default function Index() {
             console.error(error);
 
             setDialogTitle("Erro no Servidor");
-            setDialogMessage("Não foi possível se conectar!");
+            setDialogMessage("Não foi possível acessar o sistema!");
         }
         finally {
             setShowDialogResult(true);

@@ -9,3 +9,9 @@ export enum HtmlFont {
     BOLDER = "bolder",
     FONT_INTER = '"Inter", serif',
 }
+
+export enum InputTypes {
+    TEXT = "text",
+    NUMBER = "number",
+    CHECKBOX = "checkbox",
+}
