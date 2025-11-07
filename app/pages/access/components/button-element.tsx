@@ -12,6 +12,7 @@ interface ButtonParams {
     children: React.ReactNode;
     typeName: HtmlType;
     styles: Styles;
+    disabled?: boolean;
     functionBtn: () => void;
 }
 
@@ -20,11 +21,12 @@ export const ButtonElement = ({
     typeName,
     styles,
     functionBtn,
+    disabled,
 }: ButtonParams) => {
     return (
         <>
             <StyleButtonElement font_weight={styles.font_weight} font_color={styles.font_color} bg_color={styles.bg_color} bg_hover={styles.bg_hover} />
-            <button type={typeName} onClick={functionBtn} className="button-container">{children}</button>
+            <button type={typeName} disabled={disabled} onClick={functionBtn} className="button-container">{children}</button>
         </>
     );
 };

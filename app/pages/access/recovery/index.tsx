@@ -40,6 +40,8 @@ export default function Index() {
     const [dialogMessage, setDialogMessage] = useState<string>("");
     const [showDialog, setShowDialog] = useState<boolean>(false);
 
+    const [disable, setDisable] = useState<boolean>(true);
+
     const navigate = useNavigate();
 
     const handleUpdatePassword = async () => {
@@ -189,6 +191,7 @@ export default function Index() {
 
         setSecureCode(activeCode);
         setCodeSent(true);
+        setDisable(false);
     }
 
     const getDialogResult = () => {
@@ -250,7 +253,7 @@ export default function Index() {
                         name={"confirmation-code"}
                         placeholder={"LLLNLNN"}
                         required={true}
-                        disabled={false}
+                        disabled={disable}
                         value={confirmCode}
                         updateValue={setConfirmCode}
                     />
@@ -263,6 +266,7 @@ export default function Index() {
                         required={true}
                         value={password}
                         updateValue={setPassword}
+                        disabled={disable}
                     />
 
                     <ButtonPassword buttonType={HtmlType.BUTTON} showPassword={showPassword} functionShow={setShowPassword} />
@@ -273,7 +277,7 @@ export default function Index() {
                     font_weight: HtmlFont.BOLD,
                     bg_color: Colors.GREEN,
                     bg_hover: Colors.GREEN_HOVER
-                }} functionBtn={handleUpdatePassword}>Atualizar Senha</ButtonElement>
+                }} functionBtn={handleUpdatePassword} disabled={disable}>Atualizar Senha</ButtonElement>
 
                 <DivRegisterLink>
                     <p>Não tem uma conta? <a href="/register">Cadastre-se</a></p>

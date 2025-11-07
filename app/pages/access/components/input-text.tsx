@@ -14,7 +14,7 @@ export const InputTextAccess = (
     return (
         <DivInputGroup>
             <label htmlFor={props.name}>{props.labelContent}</label>
-            <input type="text" id={props.name} name={props.name}
+            <input type="text" id={props.name} name={props.name} disabled={props.disabled}
                    placeholder={props.placeholder} required={props.required}
             value={props.value}
             onChange={handlerUpdateValue}/>

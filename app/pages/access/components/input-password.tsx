@@ -3,13 +3,14 @@ import type {ChangeEvent} from "react";
 interface PasswordInput {
     labelName: string;
     showPassword: boolean;
+    disabled?: boolean;
     required?: boolean;
     value?: string;
     updateValue?: (value: string) => void;
 }
 
 export const InputPassword = (
-    { labelName, showPassword, required, value, updateValue }: PasswordInput
+    { labelName, showPassword, required, value, updateValue, disabled }: PasswordInput
 ) => {
     const handlerUpdateValue = (event: ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
@@ -28,6 +29,7 @@ export const InputPassword = (
                 required={required}
                 value={value}
                 onChange={handlerUpdateValue}
+                disabled={disabled}
             />
         </>
     );
