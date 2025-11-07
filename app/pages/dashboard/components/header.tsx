@@ -2,6 +2,7 @@ import type {StartScreen} from "../../../../types/start-screen";
 import {getStartHeader} from "~/utilities/dashboard-utilities";
 import {useAuth} from "../../../../context/auth-context";
 import {useEffect, useState} from "react";
+import {Colors} from "../../../../enums/colors";
 
 export const HeaderDashboard = (props: StartScreen) => {
     const functions = getStartHeader(props);
@@ -31,7 +32,7 @@ export const HeaderDashboard = (props: StartScreen) => {
                 </div>
                 <div className="div-width-50-percent-right">
                     <div className="link-format flex-end">
-                        <h4>{points} PONTOS</h4>
+                        <h4 id={"POINTS"}>{points} PONTOS</h4>
                         <h4 onClick={() => props.setLogout(true)}>SAIR</h4>
                     </div>
                 </div>
@@ -42,6 +43,9 @@ export const HeaderDashboard = (props: StartScreen) => {
 
 const StyleHeaderDashboard = () => {
     return (<style>{`
+    #POINTS {
+        color: ${Colors.GOLDEN};
+    }
     #DashboardTitle {
         cursor: pointer;
     }
