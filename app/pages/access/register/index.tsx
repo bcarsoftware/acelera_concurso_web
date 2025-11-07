@@ -133,7 +133,7 @@ export default function Index() {
 
         if (!payload.email) {
             setDialogTitle("Erro nos Dados");
-            setDialogMessage("Email Indefinidos!");
+            setDialogMessage("Endereço de Email Indefinido!");
             setShowDialog(true);
             return;
         }

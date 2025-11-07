@@ -1,5 +1,3 @@
-// <input type="button" id="ConfirmButton" value="Enviar Código" onClick={sendCodeToEmail} hidden={codeSent} />
-
 import {HtmlFont, type HtmlType} from "../../../../enums/html-type";
 
 interface Styles {
@@ -15,7 +13,7 @@ interface ButtonElements {
     hidden: boolean;
     html_type: HtmlType;
     styles: Styles;
-    functionCall: () => void;
+    functionCall: (() => void) | (() => Promise<void>);
 }
 
 export const InputButton = ({
