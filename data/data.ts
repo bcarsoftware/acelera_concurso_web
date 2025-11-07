@@ -1,4 +1,4 @@
-enum EnumGender {
+export enum EnumGender {
     FEMALE = "FEMALE",
     MALE = "MALE",
     NOT_BINARY = "NOT_BINARY",
@@ -13,6 +13,12 @@ enum EnumStatus {
 enum EnumCategory {
     GENERAL = "GENERAL",
     SPECIFIC = "SPECIFIC",
+}
+
+export interface ActiveCodeResponse {
+    secure_code: string;
+    token?: string;
+    code?: string;
 }
 
 export interface NoteSubjectResponse {

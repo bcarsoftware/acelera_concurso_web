@@ -6,7 +6,7 @@ interface ButtonNextProps {
     font_color: string;
     bg_color: string;
     bg_hover: string;
-    functionOpera: () => void;
+    functionOpera: (() => void) | (() => Promise<void>);
 }
 
 export const ButtonNext = ({
