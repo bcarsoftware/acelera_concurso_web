@@ -18,7 +18,8 @@ enum EnumCategory {
 export enum EnumLevel {
     UNDEFINED = "UNDEFINED",
     GRADUATED = "GRADUATED",
-    HIGH_SCHOOL = "HIGH_SCHOOL"
+    HIGH_SCHOOL = "HIGH_SCHOOL",
+    TECHNICAL = "TECHNICAL",
 }
 
 export interface ActiveCodeResponse {

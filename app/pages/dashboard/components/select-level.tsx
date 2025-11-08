@@ -29,6 +29,7 @@ export const SelectLevel = ({
                     required={required} disabled={disabled}>
                 <option value={EnumLevel.UNDEFINED}>A Definir...</option>
                 <option value={EnumLevel.HIGH_SCHOOL}>Nível Médio</option>
+                <option value={EnumLevel.TECHNICAL}>Nível Técnico</option>
                 <option value={EnumLevel.GRADUATED}>Nível Superior</option>
             </select>
         </DivInputGroup>
