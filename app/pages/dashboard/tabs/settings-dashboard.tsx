@@ -3,20 +3,36 @@ import {ContentCard} from "~/pages/dashboard/components/content-card";
 import {Colors} from "../../../../enums/colors";
 import {ButtonNew} from "~/pages/dashboard/components/button";
 import {HtmlType} from "../../../../enums/html-type";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {InputText} from "~/pages/dashboard/components/input-text";
 import {DivInputGroup} from "~/pages/dashboard/components/div-input-group";
 import {InputPassword} from "~/pages/dashboard/components/input-password";
 import {ButtonPassword} from "~/pages/dashboard/components/button-password";
 import {DialogConfirm} from "~/dialog/dialog-confirm";
 import {useNavigate} from "react-router";
+import {useAuth} from "../../../../context/auth-context";
+import {Dialog} from "~/dialog/dialog";
+import {ContentTypes, EnvironConstants} from "../../../../enums/constants";
+import {HTTPTypes} from "../../../../enums/http-types";
 
 export const SettingsDashboardPage = () => {
     const navigate = useNavigate();
+    const authUser = useAuth();
+
     const [changePassword, setChangePassword] = useState<boolean>(false);
     const [changePasswordText, setChangePasswordText] = useState<string>("Mudar Senha de Acesso");
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [seeDeactivateDialog, setSeeDeactivateDialog] = useState<boolean>(false);
+
+    const [showDialogResult, setShowDialogResult] = useState<boolean>(false);
+    const [dialogTitle, setDialogTitle] = useState<string>("");
+    const [dialogMessage, setDialogMessage] = useState<string>("");
+
+    const [success, setSuccess] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (authUser?.isLoading) return;
+    }, []);
 
     const showChangePassword = () => {
         setChangePassword(!changePassword);
@@ -30,11 +46,63 @@ export const SettingsDashboardPage = () => {
     const handleUpdatePassword = async () => {};
 
     const handleDeactivateAccount = async () => {
-        navigate("/");
+        try {
+            const url = `${EnvironConstants.API_BASE_URL}/user/${authUser?.user?.user_id}`;
+            const response = await fetch(url, {
+                method: HTTPTypes.DELETE,
+                headers: {
+                    "Content-Type": ContentTypes.JSON,
+                    "Authorization": `Bearer ${authUser?.token}`,
+                }
+            });
+
+            const body = await response.json();
+
+            if (!response.ok) {
+                console.log(body);
+                setDialogTitle("Erro na Desativação");
+                setDialogMessage("Não foi possível desativar sua Conta!");
+
+                return;
+            }
+
+            setDialogTitle("Desativação");
+            setDialogMessage("Conta desativada, mas você poderá retornar!");
+            setSuccess(true);
+        }
+        catch (error) {
+            console.error(error);
+
+            setDialogTitle("Erro no Servidor");
+            setDialogMessage("Não foi possível desativar sua Conta!");
+        }
+        finally {
+            setSeeDeactivateDialog(false);
+            setShowDialogResult(true);
+        }
     };
+
+    const getDialogResult = () => {
+        const closingDialog = success ? async (value: boolean) => {
+            setSuccess(false);
+            setShowDialogResult(value);
+            await authUser?.logout();
+            navigate("/login");
+        } : setShowDialogResult;
+
+        return (<Dialog
+            name={"dialog-result"}
+            title={dialogTitle}
+            message={dialogMessage}
+            buttonText={"Fechar"}
+            closeFunction={closingDialog}
+            zIndex={1001}
+        />);
+    }
 
     return (
         <>
+            {showDialogResult && (getDialogResult())}
             <StyleSettings />
             <form>
                 <h1>Configurações</h1>
