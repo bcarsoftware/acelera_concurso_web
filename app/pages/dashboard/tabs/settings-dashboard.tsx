@@ -14,6 +14,7 @@ import {useAuth} from "../../../../context/auth-context";
 import {Dialog} from "~/dialog/dialog";
 import {ContentTypes, EnvironConstants} from "../../../../enums/constants";
 import {HTTPTypes} from "../../../../enums/http-types";
+import type {ActiveCodeResponse} from "../../../../data/data";
 
 export const SettingsDashboardPage = () => {
     const navigate = useNavigate();
@@ -30,6 +31,13 @@ export const SettingsDashboardPage = () => {
 
     const [success, setSuccess] = useState<boolean>(false);
 
+    const [activation, setActivation] = useState<ActiveCodeResponse | null>(null);
+    const [confirmCode, setConfirmCode] = useState<string>("");
+
+    const [password, setPassword] = useState<string>("");
+
+    const [isCodeWrong, setCodeWrong] = useState<boolean>(true);
+
     useEffect(() => {
         if (authUser?.isLoading) return;
     }, []);
@@ -39,11 +47,145 @@ export const SettingsDashboardPage = () => {
         setChangePasswordText(changePassword ? "Mudar Senha de Acesso" : "ALTERANDO A SENHA!");
     }
 
-    const sendConfirmationCode = async () => {};
+    const sendConfirmationCode = async () => {
+        const payload = {
+            email: authUser?.user?.email || undefined,
+        };
 
-    const verifyConfirmationCode = async () => {};
+        if (!payload.email) {
+            setDialogTitle("Erro nos Dados");
+            setDialogMessage("Endereço de Email Indefinido!");
+            setShowDialogResult(true);
+            return;
+        }
 
-    const handleUpdatePassword = async () => {};
+        try {
+            const url = EnvironConstants.API_BASE_URL + "/email-code";
+            const response = await fetch(url, {
+                method: HTTPTypes.POST,
+                body: JSON.stringify(payload),
+                headers: {
+                    "Content-Type": ContentTypes.JSON,
+                }
+            });
+
+            const bodyData = await response.json();
+
+            if (!response.ok) {
+                console.error(bodyData);
+                setDialogTitle("Erro no Envio");
+                setDialogMessage("Não foi possível enviar o código!");
+
+                return null;
+            }
+
+            const activeCode: ActiveCodeResponse = bodyData.data;
+
+            return activeCode;
+        }
+        catch (error) {
+            console.error(error);
+
+            setDialogTitle("Erro no Servidor");
+            setDialogMessage("Não foi possível enviar o código!");
+
+            return null;
+        }
+    };
+
+    const verifyConfirmationCode = async () => {
+        const payload = {
+            secure_code: activation?.secure_code || null,
+            token: activation?.token || null,
+            code: confirmCode || null,
+        };
+
+        try {
+            const url = EnvironConstants.API_BASE_URL + "/email-code/verify";
+            const response = await fetch(url, {
+                method: HTTPTypes.POST,
+                body: JSON.stringify(payload),
+                headers: {
+                    "Content-Type": ContentTypes.JSON,
+                }
+            });
+
+            const bodySettings = await response.json();
+
+            if (!response.ok) {
+                console.error(bodySettings);
+
+                setDialogTitle("Erro na Verificação");
+                setDialogMessage("Não foi possível verificar o código!");
+                setShowDialogResult(true);
+
+                return false;
+            }
+
+            return true;
+        }
+        catch (error) {
+            console.error(error);
+
+            setDialogTitle("Erro no Servidor");
+            setDialogMessage("Não foi possível se verificar o código!");
+
+            return false;
+        }
+    };
+
+    const handleConfirmCode = async () => {
+        const activeCode = await sendConfirmationCode();
+
+        if (!activeCode) {
+            setShowDialogResult(true);
+            return;
+        }
+
+        setCodeWrong(false);
+        setActivation(activeCode);
+    }
+
+    const handleUpdatePassword = async () => {
+        const payload = {
+            username: "username",
+            password: password,
+        };
+
+        try {
+            const url = `${EnvironConstants.API_BASE_URL}/user/${authUser?.user?.user_id}/password`;
+            const response = await fetch(url, {
+                method: HTTPTypes.PATCH,
+                body: JSON.stringify(payload),
+                headers: {
+                    "Content-Type": ContentTypes.JSON,
+                    "Authorization": `Bearer ${authUser?.token}`,
+                }
+            });
+
+            const body = await response.json();
+
+            if (!response.ok) {
+                console.log(body);
+                setDialogTitle("Erro na Desativação");
+                setDialogMessage("Não foi possível atualizar sua senha de acesso!");
+
+                return;
+            }
+
+            setDialogTitle("Sucesso");
+            setDialogMessage("Senha de acesso atualizada!");
+        }
+        catch (error) {
+            console.error(error);
+
+            setDialogTitle("Erro no Servidor");
+            setDialogMessage("Não foi possível atualizar sua senha de acesso!");
+        }
+        finally {
+            setShowDialogResult(true);
+        }
+    };
 
     const handleDeactivateAccount = async () => {
         try {
@@ -152,7 +294,7 @@ export const SettingsDashboardPage = () => {
                                         bg_hover: Colors.RED_HOVER,
                                         font_color: Colors.WHITE,
                                     }}
-                                    onClickFunction={sendConfirmationCode}
+                                    onClickFunction={handleConfirmCode}
                                 />
 
                                 <p className={"pg"}></p>
@@ -163,6 +305,8 @@ export const SettingsDashboardPage = () => {
                                     placeholder={"LLNLNN"}
                                     required={true}
                                     disabled={false}
+                                    value={confirmCode}
+                                    updateValue={setConfirmCode}
                                 />
 
                                 <p className={"pg"}></p>
@@ -182,7 +326,10 @@ export const SettingsDashboardPage = () => {
                                 <p className={"pg"}></p>
                                 <p className={"pg"}>Agora Digite a sua Nova Senha</p>
                                 <DivInputGroup>
-                                    <InputPassword labelName={"Digite a Nova Senha*"} showPassword={showPassword} required={true} />
+                                    <InputPassword labelName={"Digite a Nova Senha*"} showPassword={showPassword} required={true}
+                                        disabled={isCodeWrong}
+                                        value={password} updateValue={setPassword}
+                                    />
 
                                     <ButtonPassword buttonType={HtmlType.BUTTON} showPassword={showPassword} functionShow={setShowPassword} />
                                 </DivInputGroup>

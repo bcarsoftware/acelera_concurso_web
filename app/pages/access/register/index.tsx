@@ -193,7 +193,7 @@ export default function Index() {
 
             if (!response.ok) {
                 console.error(bodyCode);
-                setDialogTitle("Erro no Envio");
+                setDialogTitle("Erro na Verificação");
                 setDialogMessage("Não foi possível verificar o código!");
 
                 return false;
