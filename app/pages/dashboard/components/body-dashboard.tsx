@@ -93,31 +93,6 @@ const StyleBody = () => {
         section:hover {
             transform: translateY(-5px);
         }
-        
-        @media (max-width: 768px) {
-            #Dashboard {
-                flex-direction: column;
-            }
-        
-            #LeftPanel {
-                width: 100%;
-                height: auto;
-                text-align: center;
-            }
-        
-            #Content {
-                padding: 1rem;
-            }
-        
-            #SubjectTopicNote {
-                flex-direction: column;
-                gap: 1rem;
-            }
-        
-            .class-content-square {
-                min-width: 100%;
-            }
-        }
     `;
 
     return (<style>{styles}</style>);

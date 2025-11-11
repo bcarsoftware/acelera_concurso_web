@@ -17,6 +17,13 @@ export const FooterDashboard = () => {
 
 const StyleFooter = () => {
     return (<style>{`
+    footer {
+        position: fixed;
+        bottom: 0;
+        center: 0;
+        z-index: 500;
+        width: 100%;
+    }
     .div-width-50-percent-left {
         width: 50%;
         text-align: left;

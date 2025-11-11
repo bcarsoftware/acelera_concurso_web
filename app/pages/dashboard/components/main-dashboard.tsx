@@ -16,9 +16,35 @@ export const MainDashboardTag = ({ children }: IMainDashboardProps) => {
 const StyleMainDashboard = () => {
     const styles = `
     #Dashboard {
+        margin-top: 85px;
         display: flex;
         flex: 1;
         overflow: hidden;
+        height: 100vh;
+    }
+    @media (max-width: 768px) {
+        #Dashboard {
+            flex-direction: column;
+        }
+    
+        #LeftPanel {
+            width: 100%;
+            height: auto;
+            text-align: center;
+        }
+    
+        #Content {
+            padding: 1rem;
+        }
+    
+        #SubjectTopicNote {
+            flex-direction: column;
+            gap: 1rem;
+        }
+    
+        .class-content-square {
+            min-width: 100%;
+        }
     }
     `;
 

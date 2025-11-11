@@ -43,6 +43,13 @@ export const HeaderDashboard = (props: StartScreen) => {
 
 const StyleHeaderDashboard = () => {
     return (<style>{`
+    header {
+        position: fixed;
+        top: 0;
+        center: 0;
+        z-index: 500;
+        width: 100%;
+    }
     #POINTS {
         color: ${Colors.GOLDEN};
     }
