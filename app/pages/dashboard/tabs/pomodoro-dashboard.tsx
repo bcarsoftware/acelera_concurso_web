@@ -60,6 +60,8 @@ export const PomodoroDashboardPage = () => {
 
     const [pomodoroId, setPomodoroId] = useState<string | undefined>(undefined);
 
+    const [confirmedDelete, setConfirmedDelete] = useState<boolean>(false);
+
     const [reload, setReload] = useState<boolean>(false);
 
     useEffect(() => {
@@ -263,12 +265,70 @@ export const PomodoroDashboardPage = () => {
         setPomodoroDetailsScreen(true);
     };
 
+    const handleDeletePomodoro = async () => {
+        try {
+            const url = (
+                `${EnvironConstants.API_BASE_URL}/pomodoro/${pomodoroId}/user/${authUser?.user?.user_id}`
+            );
+
+            const response = await fetch(url, {
+                method: HTTPTypes.DELETE,
+                headers: {
+                    "Content-Type": ContentTypes.JSON,
+                    "Authorization": `Bearer ${authUser?.token}`
+                }
+            });
+
+            const body = await response.json();
+
+            if (!response.ok) {
+                console.log(body);
+
+                setDialogTitle("Erro na Exclusão");
+                setDialogMessage("Não foi possível excluir esse Pomodoro!");
+            }
+
+            setDialogTitle("Sucesso");
+            setDialogMessage("Pomodoro excluído com sucesso!");
+            setReload(!reload);
+        }
+        catch (error) {
+            console.error(error);
+
+            setDialogTitle("Erro no Servidor");
+            setDialogMessage("Não foi possível excluir esse Pomodoro!");
+        }
+        finally {
+            setConfirmedDelete(false);
+            setOpenDialog(true);
+        }
+    };
+
+    const confirmDeletePomodoro = () => {
+        if ([undefined, "-1", -1].includes(pomodoroId)) {
+            setDialogTitle("Erro no Pomodoro");
+            setDialogMessage("Primeiro selecione um pomodoro para excluir!");
+            setConfirmedDelete(false);
+            setOpenDialog(true);
+            return;
+        }
+
+        return (<DialogConfirm
+            name={"delete-pomodoro"}
+            title={"Excluir Pomodoro"}
+            message={"Tem Certeza que deseja excluir este Pomodoro?"}
+            yesFunction={handleDeletePomodoro}
+            closeFunction={setConfirmedDelete}
+        />);
+    }
+
     return (
         <>
             <PomodoroStyle />
             <form>
                 {pomodoroRegisterScreen && (showPomodoroNewScreen())}
                 {pomodoroDetailsScreen && (showPomodoroDetailsScreen())}
+                {confirmedDelete && (confirmDeletePomodoro())}
                 <h1>Ferramenta de Pomodoro</h1>
                 <ContentWide>
                     <ContentCard>
@@ -439,6 +499,7 @@ export const PomodoroDashboardPage = () => {
                                     bg_hover: Colors.BLACK_HOVER,
                                     font_color: Colors.WHITE
                                 }}
+                                onClickFunction={() => setConfirmedDelete(true)}
                                 />
                             </Div100Percent>
                         </div>
