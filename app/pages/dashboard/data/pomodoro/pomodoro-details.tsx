@@ -11,6 +11,8 @@ import {useAuth} from "../../../../../context/auth-context";
 import {HTTPTypes} from "../../../../../enums/http-types";
 
 interface PomodoroSaveParams {
+    pomodoroId: string,
+    namePomodoro: string;
     minutesPomodoro: number;
     secondsPomodoro: number;
     shortBreakPomodoro: number;
@@ -18,10 +20,12 @@ interface PomodoroSaveParams {
     roundsNumberPomodoro: number;
     reload: boolean;
     setReload: (value: boolean) => void;
-    setPomodoroRegisterScreen: (visible: boolean) => void;
+    setPomodoroUpdateScreen: (visible: boolean) => void;
 }
 
-export const PomodoroNew = ({
+export const PomodoroDetails = ({
+    pomodoroId,
+    namePomodoro,
     minutesPomodoro,
     secondsPomodoro,
     shortBreakPomodoro,
@@ -29,43 +33,46 @@ export const PomodoroNew = ({
     roundsNumberPomodoro,
     reload,
     setReload,
-    setPomodoroRegisterScreen
+    setPomodoroUpdateScreen
 }: PomodoroSaveParams) => {
-    const authUser = useAuth();
+    const authentic = useAuth();
 
-    const [pomodoroName, setPomodoroName] = useState<string>("");
-
-    const [focusMinutes, setFocusMinutes] = useState<number>(0);
-    const [focusSeconds, setFocusSeconds] = useState<number>(0);
-    const [breakShort, setBreakShort] = useState<number>(0);
-    const [breakLong, setBreakLong] = useState<number>(0);
-    const [rounds, setRounds] = useState<number>(0);
-
-    const [openDialogPomodoro, setOpenDialogPomodoro] = useState<boolean>(false);
     const [dialogTitlePomodoro, setDialogTitlePomodoro] = useState<string>("");
     const [dialogMessagePomodoro, setDialogMessagePomodoro] = useState<string>("");
+
+    const [pomodoroNameDetail, setPomodoroNameDetail] = useState<string>("");
+
+    const [focusMinutesDetail, setFocusMinutesDetail] = useState<number>(0);
+    const [focusSecondsDetail, setFocusSecondsDetail] = useState<number>(0);
+    const [breakShortDetail, setBreakShortDetail] = useState<number>(0);
+
+    const [breakLongDetail, setBreakLongDetail] = useState<number>(0);
+    const [roundsDetail, setRoundsDetail] = useState<number>(0);
+
+    const [openDialogPomodoro, setOpenDialogPomodoro] = useState<boolean>(false);
 
     const [success, setSuccess] = useState<boolean>(false);
 
     useEffect(() => {
-        if (authUser?.isLoading) return;
+        if (authentic?.isLoading) return;
 
-        setFocusMinutes(minutesPomodoro);
-        setFocusSeconds(secondsPomodoro);
-        setBreakShort(shortBreakPomodoro);
-        setBreakLong(longBreakPomodoro);
-        setRounds(roundsNumberPomodoro);
+        setPomodoroNameDetail(namePomodoro);
+        setFocusMinutesDetail(minutesPomodoro);
+        setFocusSecondsDetail(secondsPomodoro);
+        setBreakShortDetail(shortBreakPomodoro);
+        setBreakLongDetail(longBreakPomodoro);
+        setRoundsDetail(roundsNumberPomodoro);
     }, []);
 
-    const updatePomodoroName = (value: string) => setPomodoroName(value);
+    const updatePomodoroName = (value: string) => setPomodoroNameDetail(value);
 
-    const closePomodoroNew = () => {
-        setPomodoroRegisterScreen(false);
+    const closePomodoroDetails = () => {
+        setPomodoroUpdateScreen(false);
     }
 
-    const handleSave = async (e: React.FormEvent) => {
+    const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!pomodoroName) {
+        if (!pomodoroNameDetail) {
             setDialogTitlePomodoro("Nome do Pomodoro");
             setDialogMessagePomodoro("Digite um Nome para esse Pomodoro");
             setOpenDialogPomodoro(true);
@@ -73,30 +80,30 @@ export const PomodoroNew = ({
         }
 
         const pomodoro = {
-            user_id: authUser?.user?.user_id || 0,
-            pomodoro_name: pomodoroName,
-            focus_minutes: focusMinutes,
-            focus_seconds: focusSeconds,
-            break_short: breakShort,
-            break_long: breakLong,
-            rounds: rounds,
+            user_id: authentic?.user?.user_id || 0,
+            pomodoro_name: pomodoroNameDetail,
+            focus_minutes: focusMinutesDetail,
+            focus_seconds: focusSecondsDetail,
+            break_short: breakShortDetail,
+            break_long: breakLongDetail,
+            rounds: roundsDetail,
         };
 
         try {
-            const url = `${EnvironConstants.API_BASE_URL}/pomodoro`
+            const url = `${EnvironConstants.API_BASE_URL}/pomodoro/${pomodoroId}`
             const response = await fetch(url, {
-                method: HTTPTypes.POST,
+                method: HTTPTypes.PATCH,
                 body: JSON.stringify(pomodoro),
                 headers: {
                     "Content-Type": ContentTypes.JSON,
-                    "Authorization": `Bearer ${authUser?.token}`,
+                    "Authorization": `Bearer ${authentic?.token}`,
                 },
             });
 
-            const bodyData = await response.json();
+            const body = await response.json();
 
             if (!response.ok) {
-                console.log(bodyData);
+                console.log(body);
 
                 setDialogTitlePomodoro("Erro no Cadastro");
                 setDialogMessagePomodoro("Não foi possível cadastrar esse pomodoro!");
@@ -137,7 +144,7 @@ export const PomodoroNew = ({
 
         if (success) {
             setSuccess(false);
-            setPomodoroRegisterScreen(false);
+            setPomodoroUpdateScreen(false);
         }
     }
 
@@ -150,31 +157,31 @@ export const PomodoroNew = ({
                     <div className={"dialog-container"}>
                         <div id={"TitleDiv"}>
                             <div id={"TextDiv"}>
-                                <h2>Cadastro Pomodoro</h2>
+                                <h2>Detalhes do Pomodoro</h2>
                             </div>
                         </div>
 
                         <DivInputGroup>
                             <InputText
                                 labelContent={"Nome do Pomodoro*"}
-                                name={"pomodoro-name"}
+                                name={"pomodoro-name-details"}
                                 placeholder={"Nome do Pomodoro*"}
                                 required={true}
                                 disabled={false}
-                                value={pomodoroName}
+                                value={pomodoroNameDetail}
                                 updateValue={updatePomodoroName}
                             />
 
                             <div className={"div-display-flex"}>
                                 <Div100Percent>
                                     <InputTime
-                                        name={"minutes"}
+                                        name={"minutes-details"}
                                         label={"Minutes*"}
-                                        value={focusMinutes}
+                                        value={focusMinutesDetail}
                                         required={true}
                                         minValue={PomodoroConstats.SECONDS_MIN}
                                         maxValue={PomodoroConstats.SECONDS_MAX}
-                                        updateValue={setFocusMinutes}
+                                        updateValue={setFocusMinutesDetail}
                                     />
                                 </Div100Percent>
 
@@ -182,11 +189,11 @@ export const PomodoroNew = ({
                                     <InputTime
                                         name={"seconds"}
                                         label={"Segundos*"}
-                                        value={focusSeconds}
+                                        value={focusSecondsDetail}
                                         required={true}
                                         minValue={PomodoroConstats.SECONDS_MIN}
                                         maxValue={PomodoroConstats.SECONDS_MAX}
-                                        updateValue={setFocusSeconds}
+                                        updateValue={setFocusSecondsDetail}
                                     />
                                 </Div100Percent>
 
@@ -194,11 +201,11 @@ export const PomodoroNew = ({
                                     <InputTime
                                         name={"rounds"}
                                         label={"Rounds*"}
-                                        value={rounds}
+                                        value={roundsDetail}
                                         required={true}
                                         minValue={PomodoroConstats.SECONDS_MIN}
                                         maxValue={PomodoroConstats.SECONDS_MAX}
-                                        updateValue={setRounds}
+                                        updateValue={setRoundsDetail}
                                     />
                                 </Div100Percent>
 
@@ -206,11 +213,11 @@ export const PomodoroNew = ({
                                     <InputTime
                                         name={"interval"}
                                         label={"Intervalo*"}
-                                        value={breakShort}
+                                        value={breakShortDetail}
                                         required={true}
                                         minValue={PomodoroConstats.SECONDS_MIN}
                                         maxValue={PomodoroConstats.SECONDS_MAX}
-                                        updateValue={setBreakShort}
+                                        updateValue={setBreakShortDetail}
                                     />
                                 </Div100Percent>
 
@@ -218,11 +225,11 @@ export const PomodoroNew = ({
                                     <InputTime
                                         name={"rest"}
                                         label={"Descanso*"}
-                                        value={breakLong}
+                                        value={breakLongDetail}
                                         required={true}
                                         minValue={PomodoroConstats.SECONDS_MIN}
                                         maxValue={PomodoroConstats.SECONDS_MAX}
-                                        updateValue={setBreakLong}
+                                        updateValue={setBreakLongDetail}
                                     />
                                 </Div100Percent>
                             </div>
@@ -232,9 +239,9 @@ export const PomodoroNew = ({
                             <button
                                 type={HtmlType.SUBMIT}
                                 className={"button-general margin-top-15 button-width-100-percent"}
-                                onClick={handleSave}
-                            >Cadastrar Pomodoro</button>
-                            <button className={"button-not margin-top-15 button-width-100-percent"} onClick={closePomodoroNew} formNoValidate={true}>Cancelar e Fechar</button>
+                                onClick={handleUpdate}
+                            >Atualizar Pomodoro</button>
+                            <button type={HtmlType.BUTTON} className={"button-not margin-top-15 button-width-100-percent"} onClick={closePomodoroDetails} formNoValidate={true}>Cancelar e Fechar</button>
                         </div>
                     </div>
                 </div>

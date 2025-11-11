@@ -16,6 +16,7 @@ import {Select} from "~/pages/dashboard/components/select";
 import {useAuth} from "../../../../context/auth-context";
 import {HTTPTypes} from "../../../../enums/http-types";
 import type {PomodoroResponse} from "../../../../data/data";
+import {PomodoroDetails} from "~/pages/dashboard/data/pomodoro/pomodoro-details";
 
 const fnStr = (str: string) => {};
 
@@ -23,6 +24,8 @@ export const PomodoroDashboardPage = () => {
     const authUser = useAuth();
 
     const [pomodoro, setPomodoro] = useState<Pomodoro>(new Pomodoro(fnStr, fnStr));
+
+    const [pomodoroName, setPomodoroName] = useState<string>("");
 
     const [minute, setMinutes] = useState<number>(0);
     const [second, setSeconds] = useState<number>(0);
@@ -49,11 +52,15 @@ export const PomodoroDashboardPage = () => {
     const [dialogTitle, setDialogTitle] = useState<string>("");
     const [dialogMessage, setDialogMessage] = useState<string>("");
 
-    const [pomodoroRegisterScreen, setPomodoroRegisterScreen] = useState(false);
+    const [pomodoroRegisterScreen, setPomodoroRegisterScreen] = useState<boolean>(false);
+
+    const [pomodoroDetailsScreen, setPomodoroDetailsScreen] = useState<boolean>(false);
 
     const [pomodoros, setPomodoros] = useState<PomodoroResponse[]>([])
 
     const [pomodoroId, setPomodoroId] = useState<string | undefined>(undefined);
+
+    const [reload, setReload] = useState<boolean>(false);
 
     useEffect(() => {
         if (authUser?.isLoading) return;
@@ -68,10 +75,12 @@ export const PomodoroDashboardPage = () => {
         setPomodoroTimer(pomodoro.pomodoro.watcher);
 
         setPomodoroTitle(pomodoro.pomodoro.title);
+    }, []);
 
+    useEffect(() => {
         const takePomodoro = async () => await gettingPomodoros();
         takePomodoro().then();
-    }, []);
+    }, [reload]);
 
     const changeSelectValues = async (value: string): Promise<void> => {
         setPomodoroId(value);
@@ -82,6 +91,8 @@ export const PomodoroDashboardPage = () => {
 
         if (selected.length === 0) {
             pomodoro.pomodoro.reset();
+
+            setPomodoroName("");
 
             setMinutes(pomodoro.pomodoro.focusMinutes);
             setSeconds(pomodoro.pomodoro.focusSeconds);
@@ -102,6 +113,8 @@ export const PomodoroDashboardPage = () => {
         pomodoro.pomodoro.rounds = pomodoroSelected.rounds;
         pomodoro.pomodoro.shortBreak = pomodoroSelected.break_short;
         pomodoro.pomodoro.longBreak = pomodoroSelected.break_long;
+
+        setPomodoroName(pomodoroSelected.pomodoro_name);
 
         setMinutes(pomodoroSelected.focus_minutes);
         setSeconds(pomodoroSelected.focus_seconds);
@@ -217,18 +230,45 @@ export const PomodoroDashboardPage = () => {
         shortBreakPomodoro={interShort}
         longBreakPomodoro={interLong}
         roundsNumberPomodoro={round}
+        reload={reload}
+        setReload={setReload}
         setPomodoroRegisterScreen={setPomodoroRegisterScreen}
+    />);
+
+    const showPomodoroDetailsScreen = () => (<PomodoroDetails
+        pomodoroId={pomodoroId || "-1"}
+        namePomodoro={pomodoroName}
+        minutesPomodoro={minute}
+        secondsPomodoro={second}
+        shortBreakPomodoro={interShort}
+        longBreakPomodoro={interLong}
+        roundsNumberPomodoro={round}
+        reload={reload}
+        setReload={setReload}
+        setPomodoroUpdateScreen={setPomodoroDetailsScreen}
     />);
 
     const openPomodoroNew = () => {
         setPomodoroRegisterScreen(true);
     }
 
+    const openPomodoroDetails = () => {
+        if ([undefined, "-1", -1].includes(pomodoroId)) {
+            setDialogTitle("Erro no Pomodoro");
+            setDialogMessage("Primeiro selecione um pomodoro para ver os detalhes!");
+            setOpenDialog(true);
+            return;
+        }
+
+        setPomodoroDetailsScreen(true);
+    };
+
     return (
         <>
             <PomodoroStyle />
             <form>
                 {pomodoroRegisterScreen && (showPomodoroNewScreen())}
+                {pomodoroDetailsScreen && (showPomodoroDetailsScreen())}
                 <h1>Ferramenta de Pomodoro</h1>
                 <ContentWide>
                     <ContentCard>
@@ -389,6 +429,7 @@ export const PomodoroDashboardPage = () => {
                                     bg_hover: Colors.BLACK_HOVER,
                                     font_color: Colors.WHITE
                                 }}
+                                onClickFunction={openPomodoroDetails}
                                 />
                             </Div100Percent>
 
