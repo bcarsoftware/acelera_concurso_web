@@ -1,5 +1,5 @@
 import {InputText} from "~/pages/dashboard/components/input-text";
-import {PomodoroConstats} from "../../../../../enums/constants";
+import {ContentTypes, EnvironConstants, PomodoroConstats} from "../../../../../enums/constants";
 import React, {useEffect, useState} from "react";
 import {HtmlType} from "../../../../../enums/html-type";
 import {Dialog} from "~/dialog/dialog";
@@ -7,6 +7,8 @@ import {Div100Percent} from "~/pages/dashboard/components/div-hundrend-percent";
 import {InputTime} from "~/pages/dashboard/components/input-time";
 import {Colors} from "../../../../../enums/colors";
 import {DivInputGroup} from "~/pages/dashboard/components/div-input-group";
+import {useAuth} from "../../../../../context/auth-context";
+import {HTTPTypes} from "../../../../../enums/http-types";
 
 interface PomodoroSaveParams {
     minutesPomodoro: number;
@@ -20,19 +22,29 @@ interface PomodoroSaveParams {
 export const PomodoroNew = ({
    minutesPomodoro, secondsPomodoro, shortBreakPomodoro, longBreakPomodoro, roundsNumberPomodoro, setPomodoroRegisterScreen
 }: PomodoroSaveParams) => {
-    const [pomodoroName, setPomodoroName] = React.useState<string>("");
+    const authUser = useAuth();
 
-    const [focusMinutes, setFocusMinutes] = React.useState<number>(0);
-    const [focusSeconds, setFocusSeconds] = React.useState<number>(0);
-    const [breakShort, setBreakShort] = React.useState<number>(0);
-    const [breakLong, setBreakLong] = React.useState<number>(0);
-    const [rounds, setRounds] = React.useState<number>(0);
+    const [pomodoroName, setPomodoroName] = useState<string>("");
 
-    const [userID, setUserID] = React.useState<number>(0);
+    const [focusMinutes, setFocusMinutes] = useState<number>(0);
+    const [focusSeconds, setFocusSeconds] = useState<number>(0);
+    const [breakShort, setBreakShort] = useState<number>(0);
+    const [breakLong, setBreakLong] = useState<number>(0);
+    const [rounds, setRounds] = useState<number>(0);
 
     const [openDialogPomodoro, setOpenDialogPomodoro] = useState<boolean>(false);
     const [dialogTitlePomodoro, setDialogTitlePomodoro] = useState<string>("");
     const [dialogMessagePomodoro, setDialogMessagePomodoro] = useState<string>("");
+
+    useEffect(() => {
+        if (authUser?.isLoading) return;
+
+        setFocusMinutes(minutesPomodoro);
+        setFocusSeconds(secondsPomodoro);
+        setBreakShort(shortBreakPomodoro);
+        setBreakLong(longBreakPomodoro);
+        setRounds(roundsNumberPomodoro);
+    }, []);
 
     const updatePomodoroName = (value: string) => setPomodoroName(value);
 
@@ -43,13 +55,14 @@ export const PomodoroNew = ({
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!pomodoroName) {
-            setOpenDialogPomodoro(true);
             setDialogTitlePomodoro("Nome do Pomodoro");
             setDialogMessagePomodoro("Digite um Nome para esse Pomodoro");
+            setOpenDialogPomodoro(true);
+            return;
         }
 
         const pomodoro = {
-            user_id: userID,
+            user_id: authUser?.user?.user_id || 0,
             pomodoro_name: pomodoroName,
             focus_minutes: focusMinutes,
             focus_seconds: focusSeconds,
@@ -57,6 +70,41 @@ export const PomodoroNew = ({
             break_long: breakLong,
             rounds: rounds,
         };
+
+        try {
+            const url = `${EnvironConstants.API_BASE_URL}/pomodoro`
+            const response = await fetch(url, {
+                method: HTTPTypes.POST,
+                body: JSON.stringify(pomodoro),
+                headers: {
+                    "Content-Type": ContentTypes.JSON,
+                    "Authorization": `Bearer ${authUser?.token}`,
+                },
+            });
+
+            const body = await response.json();
+
+            if (!response.ok) {
+                console.log(body);
+
+                setDialogTitlePomodoro("Erro no Cadastro");
+                setDialogMessagePomodoro("Não foi possível cadastrar esse pomodoro!");
+
+                return;
+            }
+
+            setDialogTitlePomodoro("Sucesso");
+            setDialogMessagePomodoro("Pomodoro cadastrado com sucesso!");
+        }
+        catch (error) {
+            console.error(error);
+
+            setDialogTitlePomodoro("Erro no Servidor");
+            setDialogMessagePomodoro("Não foi possível cadastrar esse pomodoro!");
+        }
+        finally {
+            setOpenDialogPomodoro(true);
+        }
     }
 
     const seePomodoroDialog = () => {
@@ -74,15 +122,6 @@ export const PomodoroNew = ({
         setDialogTitlePomodoro("");
         setDialogMessagePomodoro("");
     }
-
-    useEffect(() => {
-        setUserID(0);
-        setFocusMinutes(minutesPomodoro);
-        setFocusSeconds(secondsPomodoro);
-        setBreakShort(shortBreakPomodoro);
-        setBreakLong(longBreakPomodoro);
-        setRounds(roundsNumberPomodoro);
-    }, []);
 
     return (
         <form>

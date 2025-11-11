@@ -7,16 +7,21 @@ import {HtmlType} from "../../../../enums/html-type";
 import {Pomodoro} from "~/utilities/pomodoro-utilities";
 import {Dialog} from "~/dialog/dialog";
 import {DialogConfirm} from "~/dialog/dialog-confirm";
-import {PomodoroConstats} from "../../../../enums/constants";
+import {ContentTypes, EnvironConstants, PomodoroConstats} from "../../../../enums/constants";
 import {PomodoroNew} from "~/pages/dashboard/data/pomodoro/pomodoro-new";
 import {Div100Percent} from "~/pages/dashboard/components/div-hundrend-percent";
 import {InputTime} from "~/pages/dashboard/components/input-time";
 import {DivInputGroup} from "~/pages/dashboard/components/div-input-group";
 import {Select} from "~/pages/dashboard/components/select";
+import {useAuth} from "../../../../context/auth-context";
+import {HTTPTypes} from "../../../../enums/http-types";
+import type {PomodoroResponse} from "../../../../data/data";
 
 const fnStr = (str: string) => {};
 
 export const PomodoroDashboardPage = () => {
+    const authUser = useAuth();
+
     const [pomodoro, setPomodoro] = useState<Pomodoro>(new Pomodoro(fnStr, fnStr));
 
     const [minute, setMinutes] = useState<number>(0);
@@ -46,7 +51,13 @@ export const PomodoroDashboardPage = () => {
 
     const [pomodoroRegisterScreen, setPomodoroRegisterScreen] = useState(false);
 
+    const [pomodoros, setPomodoros] = useState<PomodoroResponse[]>([])
+
+    const [pomodoroId, setPomodoroId] = useState<string | undefined>(undefined);
+
     useEffect(() => {
+        if (authUser?.isLoading) return;
+
         setPomodoro(new Pomodoro(setPomodoroTimer, setPomodoroTitle));
 
         setMinutes(pomodoro.pomodoro.focusMinutes);
@@ -57,7 +68,72 @@ export const PomodoroDashboardPage = () => {
         setPomodoroTimer(pomodoro.pomodoro.watcher);
 
         setPomodoroTitle(pomodoro.pomodoro.title);
+
+        const takePomodoro = async () => await gettingPomodoros();
+        takePomodoro().then();
     }, []);
+
+    const changeSelectValues = async (value: string): Promise<void> => {
+        setPomodoroId(value);
+
+        const selectedId = parseInt(value);
+
+        const selected = pomodoros.filter(pomodoro => pomodoro.pomodoro_id === selectedId);
+
+        if (selected.length === 0) {
+            pomodoro.pomodoro.reset();
+
+            setMinutes(pomodoro.pomodoro.focusMinutes);
+            setSeconds(pomodoro.pomodoro.focusSeconds);
+            setRound(pomodoro.pomodoro.rounds);
+            setInterShort(pomodoro.pomodoro.shortBreak);
+            setInterLong(pomodoro.pomodoro.longBreak);
+            setPomodoroTimer(pomodoro.pomodoro.watcher)
+
+            setPomodoroId(undefined);
+
+            return;
+        }
+
+        const pomodoroSelected = selected[0];
+
+        pomodoro.pomodoro.focusMinutes = pomodoroSelected.focus_minutes;
+        pomodoro.pomodoro.focusSeconds = pomodoroSelected.focus_seconds;
+        pomodoro.pomodoro.rounds = pomodoroSelected.rounds;
+        pomodoro.pomodoro.shortBreak = pomodoroSelected.break_short;
+        pomodoro.pomodoro.longBreak = pomodoroSelected.break_long;
+
+        setMinutes(pomodoroSelected.focus_minutes);
+        setSeconds(pomodoroSelected.focus_seconds);
+        setRound(pomodoroSelected.rounds);
+        setInterShort(pomodoroSelected.break_short);
+        setInterLong(pomodoroSelected.break_long);
+    }
+
+    const gettingPomodoros = async () => {
+        try {
+            const url = `${EnvironConstants.API_BASE_URL}/pomodoro/${authUser?.user?.user_id}/user`;
+
+            const response = await fetch(url, {
+                method: HTTPTypes.GET,
+                headers: {
+                    "Content-Type": ContentTypes.JSON,
+                    "Authorization": `Bearer ${authUser?.token}`,
+                },
+            });
+
+            const body = await response.json();
+
+            if (!response.ok) {
+                return;
+            }
+
+            setPomodoros(body.data);
+        }
+        catch (error) {
+            return;
+        }
+    };
 
     const seeDialog = () => {
         return (<Dialog
@@ -162,8 +238,15 @@ export const PomodoroDashboardPage = () => {
                                 required={false}
                                 disabled={false}
                                 label={"Pomodoro Salvo (Opcional)"}
+                                value={pomodoroId}
+                                updateValue={changeSelectValues}
                             >
-                                <option>Selecione um Pomodoro</option>
+                                <option value={0}>Selecione um Pomodoro</option>
+                                {
+                                    pomodoros.map((pomodoro) => (
+                                        <option value={pomodoro.pomodoro_id}>{pomodoro.pomodoro_name}</option>
+                                    ))
+                                }
                             </Select>
                         </DivInputGroup>
                         <div id={"InputDiv"} className={"center-items"}>
@@ -292,11 +375,29 @@ export const PomodoroDashboardPage = () => {
 
                             <Div100Percent>
                                 <ButtonNew buttonContent={"SALVAR"} buttonType={HtmlType.BUTTON} name={"save-pomodoro"} styles={{
-                                    bg_color: Colors.GREEN,
-                                    bg_hover: Colors.GREEN_HOVER,
+                                    bg_color: Colors.BLACK,
+                                    bg_hover: Colors.BLACK_HOVER,
                                     font_color: Colors.WHITE
                                 }}
                                 onClickFunction={openPomodoroNew}
+                                />
+                            </Div100Percent>
+
+                            <Div100Percent>
+                                <ButtonNew buttonContent={"ATUALIZAR"} buttonType={HtmlType.BUTTON} name={"update-pomodoro"} styles={{
+                                    bg_color: Colors.BLACK,
+                                    bg_hover: Colors.BLACK_HOVER,
+                                    font_color: Colors.WHITE
+                                }}
+                                />
+                            </Div100Percent>
+
+                            <Div100Percent>
+                                <ButtonNew buttonContent={"EXCLUIR"} buttonType={HtmlType.BUTTON} name={"delete-pomodoro"} styles={{
+                                    bg_color: Colors.BLACK,
+                                    bg_hover: Colors.BLACK_HOVER,
+                                    font_color: Colors.WHITE
+                                }}
                                 />
                             </Div100Percent>
                         </div>
