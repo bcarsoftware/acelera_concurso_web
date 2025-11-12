@@ -1,15 +1,20 @@
 import {ContentWide} from "~/pages/dashboard/components/content-wide";
 import {ContentCard} from "~/pages/dashboard/components/content-card";
 import {ContentSquare} from "~/pages/dashboard/components/content-square";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import type {DataFunctionsScreen} from "../../../../types/data-functions-screen";
 import {Dialog} from "~/dialog/dialog";
 import {Colors} from "../../../../enums/colors";
 import {HtmlFont, HtmlType} from "../../../../enums/html-type";
+import type {PublicTenderResponse} from "../../../../data/data";
+import {useAuth} from "../../../../context/auth-context";
+import {ContentTypes, EnvironConstants} from "../../../../enums/constants";
+import {HTTPTypes} from "../../../../enums/http-types";
 
 export const MainDashboardPage = (
     props: DataFunctionsScreen
 ) => {
+    const authUser = useAuth();
     const [noteSubjectChecked, setNoteSubjectChecked] = useState<boolean>(true);
     const [noteTopicChecked, setNoteTopicChecked] = useState<boolean>(true);
     const [noteAllChecked, setNoteAllChecked] = useState<boolean>(true);
@@ -17,6 +22,50 @@ export const MainDashboardPage = (
 
     const [titleDialog, setTitleDialog] = useState<string>("");
     const [messageDialog, setMessageDialog] = useState<string>("");
+
+    /* Data Arrays */
+    const [publicTenders, setPublicTenders] = useState<PublicTenderResponse[]>([]);
+    const [reloadPublicTender, setReloadPublicTender] = useState<boolean>(false);
+    /* Data Arrays */
+
+    /* Getting Public Tenders */
+    const gettingPublicTenders = async () => {
+        try {
+            const url = `${EnvironConstants.API_BASE_URL}/public-tender`;
+            const response = await fetch(url, {
+                method: HTTPTypes.GET,
+                headers: {
+                    "Content-Type": ContentTypes.JSON,
+                    "Authorization": `Bearer ${authUser?.token}`,
+                    "UserID": `${authUser?.user?.user_id}`
+                }
+            });
+
+            const bodyJs = await response.json();
+
+            if (!response.ok) {
+                console.error(bodyJs);
+
+                setPublicTenders([])
+                return;
+            }
+
+            setPublicTenders(bodyJs.data);
+        }
+        catch (error) {
+            setPublicTenders([]);
+        }
+    };
+    /* Getting Public Tenders */
+
+    useEffect(() => {
+        if (authUser?.isLoading) return;
+    }, []);
+
+    useEffect(() => {
+        const getPubTender = async () => await gettingPublicTenders();
+        getPubTender().then();
+    }, [reloadPublicTender]);
 
     const checkNoteSubject = () => {
         setNoteSubjectChecked(!noteSubjectChecked);
@@ -104,10 +153,15 @@ export const MainDashboardPage = (
 
                     <ContentWide>
                         <ContentCard>
-                            <section><p className="text-section">Concurso 1</p></section>
-                            <section><p className="text-section">Concurso 2</p></section>
-                            <section><p className="text-section">Concurso 3</p></section>
-                            <section><p className="text-section">Concurso 4</p></section>
+                            {
+                                publicTenders.map((publicTender) => {
+                                    return (
+                                        <section><p className={"text-section"}>
+                                            {publicTender.tender_name}
+                                        </p></section>
+                                    );
+                                })
+                            }
                         </ContentCard>
                     </ContentWide>
                 </div>
