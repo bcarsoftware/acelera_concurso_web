@@ -25,7 +25,6 @@ export const MainDashboardPage = (
 
     /* Data Arrays */
     const [publicTenders, setPublicTenders] = useState<PublicTenderResponse[]>([]);
-    const [reloadPublicTender, setReloadPublicTender] = useState<boolean>(false);
     /* Data Arrays */
 
     /* Getting Public Tenders */
@@ -60,12 +59,10 @@ export const MainDashboardPage = (
 
     useEffect(() => {
         if (authUser?.isLoading) return;
-    }, []);
 
-    useEffect(() => {
         const getPubTender = async () => await gettingPublicTenders();
         getPubTender().then();
-    }, [reloadPublicTender]);
+    }, []);
 
     const checkNoteSubject = () => {
         setNoteSubjectChecked(!noteSubjectChecked);
