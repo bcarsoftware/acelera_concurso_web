@@ -22,6 +22,7 @@ import {useAuth} from "../../../context/auth-context";
 import {useNavigate} from "react-router";
 import {PublicTenderDetails} from "~/pages/dashboard/data/public-tender/public-tender-details";
 import type {PublicTenderResponse} from "../../../data/data";
+import {PublicTenderDashboardPage} from "~/pages/dashboard/tabs/public-tender-dashboard";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -118,6 +119,12 @@ export default function Index() {
         />);
     };
     const accessProfilePage = () => (<ProfileDashboardPage />);
+    const accessPublicTenderPage = () => (<PublicTenderDashboardPage
+        setPublicTender={setPublicTender}
+        setShowPublicTenderNew={setShowPublicTenderNew}
+        setShowPublicTenderDetails={setShowPublicTenderDetails}
+        setSelectedPublicTender={setSelectedPublicTender}
+    />);
     const accessPomodoroPage = () => (<PomodoroDashboardPage />);
     const accessSettingsPage = () => (<SettingsDashboardPage />);
     const accessLogoutPage = () => (<LogoutDashBoardPage
@@ -156,6 +163,7 @@ export default function Index() {
             <Content>
                 {profilePage && (accessProfilePage())}
                 {mainPage && (accessMainPage())}
+                {publicTender && (accessPublicTenderPage())}
                 {pomodoro && (accessPomodoroPage())}
                 {settings && (accessSettingsPage())}
                 {logout && (accessLogoutPage())}

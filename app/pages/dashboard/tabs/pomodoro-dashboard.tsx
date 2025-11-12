@@ -25,15 +25,16 @@ export const PomodoroDashboardPage = () => {
 
     const [pomodoro, setPomodoro] = useState<Pomodoro>(new Pomodoro(fnStr, fnStr));
 
-    const [pomodoroName, setPomodoroName] = useState<string>("");
-
     const [minute, setMinutes] = useState<number>(0);
+
     const [second, setSeconds] = useState<number>(0);
     const [round, setRound] = useState<number>(0);
     const [interShort, setInterShort] = useState<number>(0);
     const [interLong, setInterLong] = useState<number>(0);
-
     const [play, setPlay] = useState<boolean>(false);
+
+    const [pomodoroName, setPomodoroName] = useState<string>("");
+
     const [pause, setPause] = useState<boolean>(false);
     const [reset, setReset] = useState<boolean>(false);
     const [resume, setResume] = useState<boolean>(false);
@@ -504,6 +505,7 @@ export const PomodoroDashboardPage = () => {
                             </Div100Percent>
                         </div>
                     </ContentCard>
+                    <a href="https://www.flaticon.com/free-icons/next" title="next icons">Next icons created by th studio - Flaticon</a>
                 </ContentWide>
             </form>
         </>
