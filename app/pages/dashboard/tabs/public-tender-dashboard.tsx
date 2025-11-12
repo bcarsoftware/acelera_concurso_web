@@ -10,6 +10,8 @@ import {ButtonNew} from "~/pages/dashboard/components/button";
 import {HtmlType} from "../../../../enums/html-type";
 import {Div100Percent} from "~/pages/dashboard/components/div-hundrend-percent";
 import {Dialog} from "~/dialog/dialog";
+import {Select} from "~/pages/dashboard/components/select";
+import {DialogConfirm} from "~/dialog/dialog-confirm";
 
 interface IParams {
     setPublicTender: (value: boolean) => void;
@@ -28,8 +30,12 @@ export const PublicTenderDashboardPage = (
     const [dialogMessage, setDialogMessage] = useState<string>("");
     const [openDialog, setOpenDialog] = useState<boolean>(false);
 
+    const [openConfirmDelete, setOpenConfirmDelete] = useState<boolean>(false);
+
     const [publicTenders, setPublicTenders] = useState<PublicTenderResponse[]>([]);
     const [selectedIndex, setSelectedIndex] = useState<number | undefined>(undefined);
+
+    const [institute, setInstitute] = useState<string | undefined>(undefined);
 
     useEffect(() => {
         if (authUser?.isLoading) return;
@@ -80,14 +86,7 @@ export const PublicTenderDashboardPage = (
     };
 
     const handleDeletePublicTender = async () => {
-        const unlocked = selectedIndex == undefined;
-        if (unlocked) {
-            setDialogTitle("Erro na Exclusão");
-            setDialogMessage("Primeiro selecione um concurso para excluir!");
-            setOpenDialog(true);
-            return;
-        }
-
+        if (selectedIndex == undefined) return;
         const tenderID = publicTenders[selectedIndex].public_tender_id;
 
         try {
@@ -120,6 +119,7 @@ export const PublicTenderDashboardPage = (
             setDialogMessage("Esse concurso não pôde ser excluido!");
         }
         finally {
+            setOpenConfirmDelete(false);
             setOpenDialog(true);
         }
     };
@@ -150,6 +150,51 @@ export const PublicTenderDashboardPage = (
         setSelectedIndex(undefined);
     };
 
+    const handleSearchByInstitution = async (value?: string) => {
+        if (!value) return;
+        else if (value === "null") {
+            setInstitute(undefined);
+            await gettingPublicTenders();
+            return;
+        }
+
+        setInstitute(value);
+
+        try {
+            const url = `${EnvironConstants.API_BASE_URL}/public-tender/${value}/institute`;
+            const response = await fetch(url, {
+                method: HTTPTypes.GET,
+                headers: {
+                    "Content-Type": ContentTypes.JSON,
+                    "Authorization": `Bearer ${authUser?.token}`,
+                    "UserID": `${authUser?.user?.user_id.toString() || "-1100000"}`,
+                }
+            });
+
+            const dataBody = await response.json();
+
+            if (!response.ok) {
+                console.log(dataBody);
+
+                setDialogTitle("Erro na Busca");
+                setDialogMessage("Concurso não encontrado para este instituto!");
+            }
+
+            setPublicTenders(dataBody.data);
+            setDialogTitle("Sucesso");
+            setDialogMessage(`Foram encontrados ${dataBody.data.length} concursos!`);
+        }
+        catch (error) {
+            console.error(error);
+
+            setDialogTitle("Erro na Busca");
+            setDialogMessage("Concurso não encontrado para este instituto!");
+        }
+        finally {
+            setOpenDialog(true);
+        }
+    };
+
     const seeDialog = () => {
         return (<Dialog
             name={"public-tender-dashboard-dialog"}
@@ -160,8 +205,31 @@ export const PublicTenderDashboardPage = (
         />);
     };
 
+    const managerDeletePublicTender = async () => {
+        const unlocked = selectedIndex == undefined;
+        if (unlocked) {
+            setDialogTitle("Erro na Exclusão");
+            setDialogMessage("Primeiro selecione um concurso para excluir!");
+            setOpenDialog(true);
+            return;
+        }
+
+        setOpenConfirmDelete(true);
+    };
+
+    const seeConfirmDeleteDialog = () => {
+        return (<DialogConfirm
+            name={"public-tender-confirm-delete"}
+            title={"Atenção"}
+            message={"Tem certeza que deseja excluir este concurso?"}
+            yesFunction={handleDeletePublicTender}
+            closeFunction={setOpenConfirmDelete}
+        />);
+    };
+
     return (<div>
         {openDialog && (seeDialog())}
+        {openConfirmDelete && (seeConfirmDeleteDialog())}
         <StyleTender />
         <form>
             <h1>Mural de Concursos</h1>
@@ -221,11 +289,11 @@ export const PublicTenderDashboardPage = (
                             bg_color: Colors.RED,
                             bg_hover: Colors.RED_HOVER,
                             font_color: Colors.WHITE,
-                        }} onClickFunction={handleDeletePublicTender} />
+                        }} onClickFunction={managerDeletePublicTender} />
                     </Div100Percent>
                     <Div100Percent>
                         <ButtonNew buttonContent={
-                            "Resetar Concurso"
+                            "Resetar Concurso Selecionado"
                         } buttonType={
                             HtmlType.BUTTON
                         } name={
@@ -237,6 +305,24 @@ export const PublicTenderDashboardPage = (
                         }} onClickFunction={resetClick} />
                     </Div100Percent>
                     </div>
+                </ContentCard>
+            </ContentWide>
+            <ContentWide>
+                <ContentCard>
+                    <h2>Busca Por Instituto</h2>
+                    <Select
+                        name={"select-institute"}
+                        required={true}
+                        disabled={false}
+                        label={"Nome do Instituto*"}
+                        value={institute}
+                        updateValue={handleSearchByInstitution}
+                    >
+                        <option value={"null"}>Selecione o Instituto</option>
+                        {publicTenders.map((publicTender, index) => (
+                            <option key={index} value={publicTender.institute}>{publicTender.institute}</option>
+                        ))}
+                    </Select>
                 </ContentCard>
             </ContentWide>
         </form>
