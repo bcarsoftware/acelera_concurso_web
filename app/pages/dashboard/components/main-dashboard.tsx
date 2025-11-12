@@ -17,6 +17,7 @@ const StyleMainDashboard = () => {
     const styles = `
     #Dashboard {
         margin-top: 85px;
+        margin-bottom: 62px;
         display: flex;
         flex: 1;
         overflow: hidden;

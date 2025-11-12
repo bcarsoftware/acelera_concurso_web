@@ -7,7 +7,8 @@ export const InputNumber = (
     return (
         <DivInputGroup>
             <label htmlFor={props.name}>{props.labelContent}</label>
-            <input type="number" defaultValue={0} id={props.name} name={props.name} disabled={props.disabled}
+            <input type="number" defaultValue={0} value={props.value} id={props.name} name={props.name}
+                   disabled={props.disabled}
                    placeholder={props.placeholder} required={props.required}/>
         </DivInputGroup>
     );

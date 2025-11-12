@@ -141,6 +141,13 @@ export const MainDashboardPage = (
     };
     /* REGISTERS SCREENS */
 
+    /* UPDATER SCREENS */
+    const showPublicTenderDetails = () => {
+        settingAllFalse();
+        props.setShowPublicTenderDetails(true);
+    }
+    /* UPDATER SCREENS */
+
     return (
         <>
             <StyleMainSection />
@@ -156,7 +163,13 @@ export const MainDashboardPage = (
                             {
                                 publicTenders.map((publicTender) => {
                                     return (
-                                        <section><p className={"text-section"}>
+                                        <section onClick={
+                                            () => {
+                                                props.setMainPage(false);
+                                                props.setShowPublicTenderDetails(true);
+                                                props.setSelectedPublicTender(publicTender);
+                                            }
+                                        }><p className={"text-section"}>
                                             {publicTender.tender_name}
                                         </p></section>
                                     );

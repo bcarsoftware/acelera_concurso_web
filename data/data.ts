@@ -80,7 +80,7 @@ export interface PublicTenderResponse {
     tender_board: string;
     tender_level: EnumLevel;
     institute: string;
-    work_tile: string;
+    work_title: string;
     notice_link?: string | null;
     tender_date?: string | null;
     deleted?: boolean;

@@ -20,7 +20,8 @@ import {Colors} from "../../../enums/colors";
 import {LogoutDashBoardPage} from "~/pages/dashboard/tabs/logout-dashboad";
 import {useAuth} from "../../../context/auth-context";
 import {useNavigate} from "react-router";
-import {Body} from "~/pages/access/components/body";
+import {PublicTenderDetails} from "~/pages/dashboard/data/public-tender/public-tender-details";
+import type {PublicTenderResponse} from "../../../data/data";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -57,6 +58,20 @@ export default function Index() {
     const showNewScreenStudyTips = () => (<StudyTipsNew />);
     /* SHOW REGISTERS SCREENS */
 
+    /* SELECTED DATA */
+    const [selectedPublicTender, setSelectedPublicTender] = useState<PublicTenderResponse | undefined>(undefined);
+    /* SELECTED DATA */
+
+    /* UPDATER DATA DETAILS */
+    const [showPublicTenderDetails, setShowPublicTenderDetails] = useState<boolean>(false);
+    /* UPDATER DATA DETAILS */
+    /* SHOW DETAILS SCREENS */
+    const showPublicTenderDetailsScreen = () => (<PublicTenderDetails
+        details={selectedPublicTender}
+        goingToMainPage={goingToMainPage}
+    />);
+    /* SHOW DETAILS SCREENS */
+
     /* AUTHENTICATED & NAVIGATE */
     const authenticated = useAuth();
     const navigate = useNavigate();
@@ -76,13 +91,15 @@ export default function Index() {
     /* USE EFFECT */
 
     /* HIDDEN REGISTERS AND SEE MAIN PAGE */
-    const hiddenNewRegisters = () => {
+    const hiddenScreens = () => {
         setShowPublicTenderNew(false);
         setShowSubjectNew(false);
         setShowTopicNew(false);
         setShowNoteSubjectNew(false);
         setShowNoteTopicNew(false);
         setShowStudyTipsNew(false);
+
+        setShowPublicTenderDetails(false);
     }
     /* HIDDEN REGISTERS AND SEE MAIN PAGE */
 
@@ -96,6 +113,8 @@ export default function Index() {
             setShowNoteSubjectNew={setShowNoteSubjectNew}
             setShowNoteTopicNew={setShowNoteTopicNew}
             setShowStudyTipsNew={setShowStudyTipsNew}
+            setShowPublicTenderDetails={setShowPublicTenderDetails}
+            setSelectedPublicTender={setSelectedPublicTender}
         />);
     };
     const accessProfilePage = () => (<ProfileDashboardPage />);
@@ -107,12 +126,17 @@ export default function Index() {
     />);
     /* TABS PAGES */
 
+    const goingToMainPage = () => {
+        hiddenScreens();
+        setMainPage(true);
+    };
+
     return (
         <BodyDashboard>
             <StyleDashboard />
         <HeaderDashboard
             setMainPage={setMainPage}
-            hiddenNewRegisters={hiddenNewRegisters}
+            hiddenScreens={hiddenScreens}
             setLogout={setLogout}
         />
 
@@ -127,7 +151,7 @@ export default function Index() {
                 setPomodoro={setPomodoro}
                 setSettings={setSettings}
                 setLogout={setLogout}
-                hiddenNewRegisters={hiddenNewRegisters}
+                hiddenScreens={hiddenScreens}
             />
             <Content>
                 {profilePage && (accessProfilePage())}
@@ -142,6 +166,8 @@ export default function Index() {
                 {showNoteTopicNew && (showNewScreenNoteTopic())}
                 {showNoteSubjectNew && (showNewScreenNoteSubject())}
                 {showStudyTipsNew && (showNewScreenStudyTips())}
+
+                {showPublicTenderDetails && (showPublicTenderDetailsScreen())}
             </Content >
         </MainDashboardTag>
 

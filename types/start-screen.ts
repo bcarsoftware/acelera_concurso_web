@@ -1,5 +1,5 @@
 export interface StartScreen {
     setMainPage: (arg: boolean) => void;
-    hiddenNewRegisters: () => void;
+    hiddenScreens: () => void;
     setLogout: (value: boolean) => void;
 }

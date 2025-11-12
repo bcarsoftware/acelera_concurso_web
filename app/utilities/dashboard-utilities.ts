@@ -78,25 +78,31 @@ const accessingProfilePage = (props: AllScreens) => {
     switchPageShown(ScreenNames.PROFILE, props);
 }
 const accessingMainPage = (props: AllScreens) => {
-    props.hiddenNewRegisters();
+    props.hiddenScreens();
     switchPageShown(ScreenNames.START, props);
 };
 const accessingPublicTenderPage = (props: AllScreens) => {
+    props.hiddenScreens();
     switchPageShown(ScreenNames.PUBLIC_TENDER, props);
 }
 const accessingSubjectPage = (props: AllScreens) => {
+    props.hiddenScreens();
     switchPageShown(ScreenNames.SUBJECT, props);
 }
 const accessingTopicPage = (props: AllScreens) => {
+    props.hiddenScreens();
     switchPageShown(ScreenNames.TOPIC, props);
 }
 const accessingQuestionPage = (props: AllScreens) => {
+    props.hiddenScreens();
     switchPageShown(ScreenNames.QUESTIONS, props);
 }
 const accessingPomodoroPage = (props: AllScreens) => {
+    props.hiddenScreens();
     switchPageShown(ScreenNames.POMODORO, props);
 }
 const accessingSettingPage = (props: AllScreens) => {
+    props.hiddenScreens();
     switchPageShown(ScreenNames.SETTINGS, props);
 }
 const accessingLogoutPage = (props: AllScreens) => {
@@ -131,7 +137,7 @@ export const getStartHeader = (props: StartScreen) => {
         setPomodoro: () => false,
         setSettings: () => false,
         setLogout: () => false,
-        hiddenNewRegisters: props.hiddenNewRegisters,
+        hiddenScreens: props.hiddenScreens,
     };
 
     return {

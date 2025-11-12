@@ -1,3 +1,5 @@
+import type {PublicTenderResponse} from "../data/data";
+
 export interface DataFunctionsScreen {
     setMainPage: (arg: boolean) => void;
     setShowPublicTenderNew: (arg: boolean) => void;
@@ -6,4 +8,6 @@ export interface DataFunctionsScreen {
     setShowNoteSubjectNew: (arg: boolean) => void;
     setShowNoteTopicNew: (arg: boolean) => void;
     setShowStudyTipsNew: (arg: boolean) => void;
+    setShowPublicTenderDetails: (arg: boolean) => void;
+    setSelectedPublicTender: (arg: PublicTenderResponse) => void;
 }
