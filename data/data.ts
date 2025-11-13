@@ -5,12 +5,12 @@ export enum EnumGender {
     NOT_SAY = "NOT_SAY",
 }
 
-enum EnumStatus {
+export enum EnumStatus {
     COMPLETE = "COMPLETE",
     INCOMPLETE = "INCOMPLETE",
 }
 
-enum EnumCategory {
+export enum EnumCategory {
     GENERAL = "GENERAL",
     SPECIFIC = "SPECIFIC",
 }

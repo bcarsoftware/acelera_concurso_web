@@ -15,7 +15,6 @@ import {Dialog} from "~/dialog/dialog";
 import {EnumLevel, type PublicTenderResponse} from "../../../../../data/data";
 import {SelectLevel} from "~/pages/dashboard/components/select-level";
 import {InputNumber} from "~/pages/dashboard/components/input-number";
-import {useNavigate} from "react-router";
 
 interface TenderDetails {
     details?: PublicTenderResponse,

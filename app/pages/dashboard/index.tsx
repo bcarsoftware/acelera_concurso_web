@@ -21,8 +21,9 @@ import {LogoutDashBoardPage} from "~/pages/dashboard/tabs/logout-dashboad";
 import {useAuth} from "../../../context/auth-context";
 import {useNavigate} from "react-router";
 import {PublicTenderDetails} from "~/pages/dashboard/data/public-tender/public-tender-details";
-import type {PublicTenderResponse} from "../../../data/data";
+import type {PublicTenderResponse, SubjectResponse} from "../../../data/data";
 import {PublicTenderDashboardPage} from "~/pages/dashboard/tabs/public-tender-dashboard";
+import {SubjectDetails} from "~/pages/dashboard/data/subject/subject-details";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -52,7 +53,10 @@ export default function Index() {
     /* REGISTER NEW REGISTER */
     /* SHOW REGISTERS SCREENS */
     const showNewScreenPublicTender = () => (<PublicTenderNew />);
-    const showNewScreenSubject = () => (<SubjectNew />);
+    const showNewScreenSubject = () => (<SubjectNew
+        goingToMainPage={goingToMainPage}
+        publicTender={selectedPublicTender}
+    />);
     const showNewScreenTopic = () => (<TopicNew />);
     const showNewScreenNoteSubject = () => (<NoteSubjectNew />);
     const showNewScreenNoteTopic = () => (<NoteTopicNew />);
@@ -61,15 +65,22 @@ export default function Index() {
 
     /* SELECTED DATA */
     const [selectedPublicTender, setSelectedPublicTender] = useState<PublicTenderResponse | undefined>(undefined);
+    const [selectedSubject, setSelectedSubject] = useState<SubjectResponse | undefined>(undefined);
     /* SELECTED DATA */
 
     /* UPDATER DATA DETAILS */
     const [showPublicTenderDetails, setShowPublicTenderDetails] = useState<boolean>(false);
+    const [showSubjectDetails, setShowSubjectDetails] = useState<boolean>(false);
     /* UPDATER DATA DETAILS */
     /* SHOW DETAILS SCREENS */
     const showPublicTenderDetailsScreen = () => (<PublicTenderDetails
         details={selectedPublicTender}
         goingToMainPage={goingToMainPage}
+    />);
+    const showSubjectDetailsScreen = () => (<SubjectDetails
+        goingToMainPage={goingToMainPage}
+        subject={selectedSubject}
+        publicTenderName={selectedPublicTender?.tender_name}
     />);
     /* SHOW DETAILS SCREENS */
 
@@ -101,6 +112,7 @@ export default function Index() {
         setShowStudyTipsNew(false);
 
         setShowPublicTenderDetails(false);
+        setShowSubjectDetails(false);
     }
     /* HIDDEN REGISTERS AND SEE MAIN PAGE */
 
@@ -116,6 +128,8 @@ export default function Index() {
             setShowStudyTipsNew={setShowStudyTipsNew}
             setShowPublicTenderDetails={setShowPublicTenderDetails}
             setSelectedPublicTender={setSelectedPublicTender}
+            setShowSubjectDetails={setShowSubjectDetails}
+            setSelectedSubject={setSelectedSubject}
         />);
     };
     const accessProfilePage = () => (<ProfileDashboardPage />);
@@ -176,6 +190,7 @@ export default function Index() {
                 {showStudyTipsNew && (showNewScreenStudyTips())}
 
                 {showPublicTenderDetails && (showPublicTenderDetailsScreen())}
+                {showSubjectDetails && (showSubjectDetailsScreen())}
             </Content >
         </MainDashboardTag>
 

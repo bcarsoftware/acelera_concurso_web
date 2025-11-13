@@ -1,12 +1,12 @@
 import {ContentWide} from "~/pages/dashboard/components/content-wide";
 import {ContentCard} from "~/pages/dashboard/components/content-card";
 import {ContentSquare} from "~/pages/dashboard/components/content-square";
-import {useEffect, useState} from "react";
+import {type ChangeEvent, useEffect, useState} from "react";
 import type {DataFunctionsScreen} from "../../../../types/data-functions-screen";
 import {Dialog} from "~/dialog/dialog";
 import {Colors} from "../../../../enums/colors";
 import {HtmlFont, HtmlType} from "../../../../enums/html-type";
-import type {PublicTenderResponse} from "../../../../data/data";
+import type {PublicTenderResponse, StudyTipsResponse, SubjectResponse, TopicResponse} from "../../../../data/data";
 import {useAuth} from "../../../../context/auth-context";
 import {ContentTypes, EnvironConstants} from "../../../../enums/constants";
 import {HTTPTypes} from "../../../../enums/http-types";
@@ -25,6 +25,7 @@ export const MainDashboardPage = (
 
     /* Data Arrays */
     const [publicTenders, setPublicTenders] = useState<PublicTenderResponse[]>([]);
+    const [subjects, setSubjects] = useState<SubjectResponse[]>([]);
     /* Data Arrays */
 
     /* Getting Public Tenders */
@@ -57,11 +58,48 @@ export const MainDashboardPage = (
     };
     /* Getting Public Tenders */
 
+    /* Getting Subjects */
+    const gettingSubjects = async (pTenderId: number) => {
+        try {
+            const url = `${EnvironConstants.API_BASE_URL}/subject`;
+            const response = await fetch(url, {
+                method: HTTPTypes.GET,
+                headers: {
+                    "Content-Type": ContentTypes.JSON,
+                    "Authorization": `Bearer ${authUser?.token}`,
+                    "TenderID": `${pTenderId}`
+                }
+            });
+
+            const bodyJs = await response.json();
+
+            if (!response.ok) {
+                console.error(bodyJs);
+
+                setSubjects([])
+                return;
+            }
+
+            setSubjects(bodyJs.data);
+        }
+        catch (error) {
+            setSubjects([]);
+        }
+    };
+    /* Getting Subjects */
+
+    /* Getting Topics */
+    const gettingTopics = async (subjectId: number) => {
+    };
+    /* Getting Topics */
+
     useEffect(() => {
         if (authUser?.isLoading) return;
 
         const getPubTender = async () => await gettingPublicTenders();
         getPubTender().then();
+
+        props.setSelectedPublicTender(undefined);
     }, []);
 
     const checkNoteSubject = () => {
@@ -89,6 +127,9 @@ export const MainDashboardPage = (
         props.setShowTopicNew(false);
         props.setShowPublicTenderNew(false);
         props.setShowStudyTipsNew(false);
+
+        props.setShowPublicTenderDetails(false);
+        props.setShowSubjectDetails(false);
     }
 
     const showPublicTenderNew = () => {
@@ -143,7 +184,51 @@ export const MainDashboardPage = (
         settingAllFalse();
         props.setShowPublicTenderDetails(true);
     }
+    const showSubjectDetails = () => {
+        settingAllFalse();
+        props.setShowSubjectDetails(true);
+    }
     /* UPDATER SCREENS */
+
+    /* DATA SELECTED */
+    const [selectPublicTender, setSelectPublicTender] = useState<PublicTenderResponse | undefined>(undefined);
+    const [selectSubject, setSelectSubject] = useState<SubjectResponse | undefined>(undefined);
+    const [selectTopic, setSelectTopic] = useState<TopicResponse | undefined>(undefined);
+    const [selectStudyTips, setSelectStudyTips] = useState<StudyTipsResponse[]>([]);
+    /* DATA SELECTED */
+
+    const handleSelectPublicTender = async (
+        publicTenderData: PublicTenderResponse,
+        event: ChangeEvent<HTMLInputElement>,
+    ) => {
+        if (event.target.checked) {
+            setSelectPublicTender(publicTenderData);
+            props.setSelectedPublicTender(publicTenderData);
+            await gettingSubjects(publicTenderData.public_tender_id);
+        }
+
+        else {
+            setSelectPublicTender(undefined);
+            props.setSelectedPublicTender(undefined);
+            setSubjects([]);
+        }
+    }
+
+    const handleSelectSubject = async (
+        subjectData: SubjectResponse,
+        event: ChangeEvent<HTMLInputElement>,
+    )=> {
+        if (event.target.checked) {
+            setSelectSubject(subjectData);
+            props.setSelectedSubject(subjectData);
+            await gettingTopics(subjectData.subject_id);
+        }
+
+        else {
+            setSelectSubject(undefined);
+            props.setSelectedSubject(undefined);
+        }
+    }
 
     return (
         <>
@@ -160,15 +245,26 @@ export const MainDashboardPage = (
                             {
                                 publicTenders.map((publicTender) => {
                                     return (
-                                        <section onClick={
+                                        <div className={"check-general"}>
+                                        <input
+                                            onChange={(event) =>
+                                                handleSelectPublicTender(publicTender, event)}
+                                            className="checkbutton"
+                                            type="checkbox" />
+                                        <section className={
+                                            `section-general ${
+                                                selectPublicTender?.public_tender_id === publicTender.public_tender_id ?
+                                                    "selected" : ""
+                                            }`
+                                        } onClick={
                                             () => {
-                                                props.setMainPage(false);
-                                                props.setShowPublicTenderDetails(true);
                                                 props.setSelectedPublicTender(publicTender);
+                                                showPublicTenderDetails();
                                             }
-                                        }><p className={"text-section"}>
+                                        }><p>
                                             {publicTender.tender_name}
                                         </p></section>
+                                        </div>
                                     );
                                 })
                             }
@@ -207,10 +303,24 @@ export const MainDashboardPage = (
                     />
 
                     <ContentCard>
-                        <section><p className="text-section">Disciplina 1</p></section>
-                        <section><p className="text-section">Disciplina 2</p></section>
-                        <section><p className="text-section">Disciplina 3</p></section>
-                        <section><p className="text-section">Disciplina 4</p></section>
+                        {subjects.map((subject) => (<div className={"check-general"}>
+                            <input
+                                onChange={(event) =>
+                                    handleSelectSubject(subject, event)}
+                                className="checkbutton" type="checkbox" />
+                            <section
+                                className={
+                                    `section-general ${
+                                        selectSubject?.subject_id === subject.subject_id ?
+                                            "selected" : ""
+                                    }`
+                                }
+                                onClick={() => {
+                                    props.setSelectedSubject(subject);
+                                    showSubjectDetails();
+                                }}
+                            ><p className="text-section">{subject.name}</p></section>
+                        </div>))}
                     </ContentCard>
                 </ContentSquare>
                 <ContentSquare>
@@ -219,10 +329,22 @@ export const MainDashboardPage = (
                     onClick={showTopicNew}/>
 
                     <ContentCard>
-                        <section><p className="text-section">Assunto 1</p></section>
-                        <section><p className="text-section">Assunto 2</p></section>
-                        <section><p className="text-section">Assunto 3</p></section>
-                        <section><p className="text-section">Assunto 4</p></section>
+                        <div className={"check-general"}>
+                            <input className="checkbutton" type="checkbox" />
+                            <section className={"section-general"}><p className="text-section">Assunto 1</p></section>
+                        </div>
+                        <div className={"check-general"}>
+                            <input className="checkbutton" type="checkbox" />
+                            <section className={"section-general"}><p className="text-section">Assunto 2</p></section>
+                        </div>
+                        <div className={"check-general"}>
+                            <input className="checkbutton" type="checkbox" />
+                            <section className={"section-general"}><p className="text-section">Assunto 3</p></section>
+                        </div>
+                        <div className={"check-general"}>
+                            <input className="checkbutton" type="checkbox" />
+                            <section className={"section-general"}><p className="text-section">Assunto 4</p></section>
+                        </div>
                     </ContentCard>
                 </ContentSquare>
                 <ContentSquare>
@@ -323,7 +445,26 @@ const StyleMainSection = () => {
         width: 100%;
     }
     
+    .section-general {
+        width: 100%;
+        color: ${Colors.BLACK};
+        text-align: justify;
+        font-weight: ${HtmlFont.BOLD};
+    }
+    
+    .section-general:hover {
+        color: ${Colors.LIGHT_BLUE};
+    }
+        
+    .section-general.selected {
+        color: ${Colors.LIGHT_BLUE};
+    }
+    
     .check-tip {
+        display: flex;
+    }
+    
+    .check-general {
         display: flex;
     }
     
