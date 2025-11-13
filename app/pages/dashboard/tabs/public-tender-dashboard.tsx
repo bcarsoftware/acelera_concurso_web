@@ -5,7 +5,7 @@ import {Colors} from "../../../../enums/colors";
 import {useAuth} from "../../../../context/auth-context";
 import {ContentTypes, EnvironConstants} from "../../../../enums/constants";
 import {HTTPTypes} from "../../../../enums/http-types";
-import type {PublicTenderResponse} from "../../../../data/data";
+import type {PublicTenderBoardResponse, PublicTenderResponse} from "../../../../data/data";
 import {ButtonNew} from "~/pages/dashboard/components/button";
 import {HtmlType} from "../../../../enums/html-type";
 import {Div100Percent} from "~/pages/dashboard/components/div-hundrend-percent";
@@ -36,12 +36,17 @@ export const PublicTenderDashboardPage = (
     const [selectedIndex, setSelectedIndex] = useState<number | undefined>(undefined);
 
     const [institute, setInstitute] = useState<string | undefined>(undefined);
+    const [boardName, setBoardName] = useState<string | undefined>(undefined);
+
+    const [tenderBoards, setTenderBoards] = useState<string[]>([]);
 
     useEffect(() => {
         if (authUser?.isLoading) return;
 
         const getData = async () => await gettingPublicTenders();
         getData().then();
+
+        gettingPublicTenderBoards().then();
     }, []);
 
     const handleScroll = (direction: "left" | "right") => {
@@ -74,6 +79,8 @@ export const PublicTenderDashboardPage = (
                 console.log(dataBody);
 
                 setPublicTenders([]);
+
+                return;
             }
 
             setPublicTenders(dataBody.data);
@@ -84,6 +91,36 @@ export const PublicTenderDashboardPage = (
             setPublicTenders([]);
         }
     };
+
+    const gettingPublicTenderBoards = async () => {
+        try {
+            const url = `${EnvironConstants.API_BASE_URL}/public-tender-board/user`;
+            const response = await fetch(url, {
+                method: HTTPTypes.GET,
+                headers: {
+                    "Content-Type": ContentTypes.JSON,
+                    "Authorization": `Bearer ${authUser?.token}`,
+                }
+            });
+
+            const dataBody = await response.json();
+
+            if (!response.ok) {
+                console.log(dataBody);
+
+                setTenderBoards([]);
+
+                return;
+            }
+
+            setTenderBoards(dataBody.data);
+        }
+        catch (error) {
+            console.error(error);
+
+            setTenderBoards([]);
+        }
+    }
 
     const handleDeletePublicTender = async () => {
         if (selectedIndex == undefined) return;
@@ -150,6 +187,57 @@ export const PublicTenderDashboardPage = (
         setSelectedIndex(undefined);
     };
 
+    const handleSearchByBoardName = async (value?: string) => {
+        if (!value) return;
+        else if (value === "null") {
+            setBoardName(undefined);
+            await gettingPublicTenders();
+            return;
+        }
+
+        setBoardName(value);
+
+        try {
+            const url = `${EnvironConstants.API_BASE_URL}/public-tender/${value}/tender-board`;
+            const response = await fetch(url, {
+                method: HTTPTypes.GET,
+                headers: {
+                    "Content-Type": ContentTypes.JSON,
+                    "Authorization": `Bearer ${authUser?.token}`,
+                    "UserID": authUser?.user?.user_id.toString() || "-1001"
+                }
+            });
+
+            const dataBoard = await response.json();
+
+            if (!response.ok) {
+                console.log(dataBoard);
+
+                setPublicTenders([]);
+
+                setDialogTitle("Erro na Busca");
+                setDialogMessage("Concurso não encontrado para esta banca!");
+
+                return;
+            }
+
+            setPublicTenders(dataBoard.data);
+            setDialogTitle("Sucesso");
+            setDialogMessage(`Foram encontrados ${dataBoard.data.length} concursos!`);
+        }
+        catch (error) {
+            console.error(error);
+
+            setPublicTenders([]);
+
+            setDialogTitle("Erro no Servidor");
+            setDialogMessage("Concurso não encontrado para esta banca!");
+        }
+        finally {
+            setOpenDialog(true);
+        }
+    };
+
     const handleSearchByInstitution = async (value?: string) => {
         if (!value) return;
         else if (value === "null") {
@@ -176,8 +264,11 @@ export const PublicTenderDashboardPage = (
             if (!response.ok) {
                 console.log(dataBody);
 
+                setPublicTenders([]);
+
                 setDialogTitle("Erro na Busca");
                 setDialogMessage("Concurso não encontrado para este instituto!");
+                return;
             }
 
             setPublicTenders(dataBody.data);
@@ -186,6 +277,8 @@ export const PublicTenderDashboardPage = (
         }
         catch (error) {
             console.error(error);
+
+            setPublicTenders([]);
 
             setDialogTitle("Erro na Busca");
             setDialogMessage("Concurso não encontrado para este instituto!");
@@ -309,7 +402,7 @@ export const PublicTenderDashboardPage = (
             </ContentWide>
             <ContentWide>
                 <ContentCard>
-                    <h2>Busca Por Instituto</h2>
+                    <h2>Pesquisa Por Instituto</h2>
                     <Select
                         name={"select-institute"}
                         required={true}
@@ -321,6 +414,24 @@ export const PublicTenderDashboardPage = (
                         <option value={"null"}>Selecione o Instituto</option>
                         {publicTenders.map((publicTender, index) => (
                             <option key={index} value={publicTender.institute}>{publicTender.institute}</option>
+                        ))}
+                    </Select>
+                </ContentCard>
+            </ContentWide>
+            <ContentWide>
+                <ContentCard>
+                    <h2>Pesquisa Por Banca</h2>
+                    <Select
+                        name={"select-board"}
+                        required={true}
+                        disabled={false}
+                        label={"Nome da Banca*"}
+                        value={institute}
+                        updateValue={handleSearchByBoardName}
+                    >
+                        <option value={"null"}>Selecione a Banca</option>
+                        {tenderBoards.map((tenderBoard, index) => (
+                            <option key={index} value={tenderBoard}>{tenderBoard}</option>
                         ))}
                     </Select>
                 </ContentCard>
