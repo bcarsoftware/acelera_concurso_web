@@ -60,7 +60,7 @@ export default function Index() {
             await setAllPublicTenderBoards();
         };
         settingPublicTenderBoards().then();
-    }, [authenticated, navigate]);
+    }, []);
 
     const setAllPublicTenderBoards = async () => {
         try {
