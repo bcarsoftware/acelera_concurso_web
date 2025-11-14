@@ -25,6 +25,7 @@ import type {PublicTenderResponse, StudyTipsResponse, SubjectResponse, TopicResp
 import {PublicTenderDashboardPage} from "~/pages/dashboard/tabs/public-tender-dashboard";
 import {SubjectDetails} from "~/pages/dashboard/data/subject/subject-details";
 import {TopicDetails} from "~/pages/dashboard/data/topic/topic-details";
+import {StudyTipsDetails} from "~/pages/dashboard/data/study-tips/study-tips-details";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -97,7 +98,10 @@ export default function Index() {
         subjectName={selectedSubject?.name}
         topic={selectedTopic}
     />);
-    const showStudyTipsDetailsScreen = () => (<></>);
+    const showStudyTipsDetailsScreen = () => (<StudyTipsDetails
+        studyTipData={selectedStudyTips}
+        goingToMainPage={goingToMainPage}
+    />);
     /* SHOW DETAILS SCREENS */
 
     /* AUTHENTICATED & NAVIGATE */
