@@ -57,7 +57,10 @@ export default function Index() {
         goingToMainPage={goingToMainPage}
         publicTender={selectedPublicTender}
     />);
-    const showNewScreenTopic = () => (<TopicNew />);
+    const showNewScreenTopic = () => (<TopicNew
+        subject={selectedSubject}
+        goingToMainPage={goingToMainPage}
+    />);
     const showNewScreenNoteSubject = () => (<NoteSubjectNew />);
     const showNewScreenNoteTopic = () => (<NoteTopicNew />);
     const showNewScreenStudyTips = () => (<StudyTipsNew />);
