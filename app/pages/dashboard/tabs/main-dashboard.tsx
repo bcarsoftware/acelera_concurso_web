@@ -26,6 +26,7 @@ export const MainDashboardPage = (
     /* Data Arrays */
     const [publicTenders, setPublicTenders] = useState<PublicTenderResponse[]>([]);
     const [subjects, setSubjects] = useState<SubjectResponse[]>([]);
+    const [topics, setTopics] = useState<TopicResponse[]>([]);
     /* Data Arrays */
 
     /* Getting Public Tenders */
@@ -90,6 +91,29 @@ export const MainDashboardPage = (
 
     /* Getting Topics */
     const gettingTopics = async (subjectId: number) => {
+        try {
+            const url = `${EnvironConstants.API_BASE_URL}/topic`;
+            const response = await fetch(url, {
+                method: HTTPTypes.GET,
+                headers: {
+                    "Content-Type": ContentTypes.JSON,
+                    "Authorization": `Bearer ${authUser?.token}`,
+                    "SubjectID": `${subjectId}`
+                }
+            });
+
+            const topicsBody = await response.json();
+
+            if (!response.ok) {
+                console.error(topicsBody);
+
+                setTopics([]);
+                return;
+            }
+
+            setTopics(topicsBody.data);
+        }
+        catch (error) { setTopics([]); }
     };
     /* Getting Topics */
 
@@ -130,6 +154,7 @@ export const MainDashboardPage = (
 
         props.setShowPublicTenderDetails(false);
         props.setShowSubjectDetails(false);
+        props.setShowTopicDetails(false);
     }
 
     const showPublicTenderNew = () => {
@@ -188,6 +213,10 @@ export const MainDashboardPage = (
         settingAllFalse();
         props.setShowSubjectDetails(true);
     }
+    const showTopicDetails = () => {
+        settingAllFalse();
+        props.setShowTopicDetails(true);
+    }
     /* UPDATER SCREENS */
 
     /* DATA SELECTED */
@@ -225,10 +254,28 @@ export const MainDashboardPage = (
         }
 
         else {
+            setSelectTopic(undefined);
+            props.setSelectedTopic(undefined);
+            setTopics([]);
             setSelectSubject(undefined);
             props.setSelectedSubject(undefined);
         }
     }
+
+    const handleSelectTopic = async (
+        topicData: TopicResponse,
+        event: ChangeEvent<HTMLInputElement>,
+    ) => {
+        if (event.target.checked) {
+            setSelectTopic(topicData);
+            props.setSelectedTopic(topicData);
+        }
+
+        else {
+            setSelectTopic(undefined);
+            props.setSelectedTopic(undefined);
+        }
+    };
 
     return (
         <>
@@ -329,22 +376,21 @@ export const MainDashboardPage = (
                     onClick={showTopicNew}/>
 
                     <ContentCard>
-                        <div className={"check-general"}>
-                            <input className="checkbutton" type="checkbox" />
-                            <section className={"section-general"}><p className="text-section">Assunto 1</p></section>
-                        </div>
-                        <div className={"check-general"}>
-                            <input className="checkbutton" type="checkbox" />
-                            <section className={"section-general"}><p className="text-section">Assunto 2</p></section>
-                        </div>
-                        <div className={"check-general"}>
-                            <input className="checkbutton" type="checkbox" />
-                            <section className={"section-general"}><p className="text-section">Assunto 3</p></section>
-                        </div>
-                        <div className={"check-general"}>
-                            <input className="checkbutton" type="checkbox" />
-                            <section className={"section-general"}><p className="text-section">Assunto 4</p></section>
-                        </div>
+                        {topics.map((topic) => (<div className={"check-general"}>
+                            <input
+                                onChange={(event) =>
+                                    handleSelectTopic(topic, event)}
+                                className="checkbutton"
+                                type="checkbox"
+                            />
+                            <section className={
+                                "section-general"
+                            }
+                            onClick={() => {
+                                props.setSelectedTopic(topic);
+                                showTopicDetails();
+                            }}><p className="text-section">{topic.name}</p></section>
+                        </div>))}
                     </ContentCard>
                 </ContentSquare>
                 <ContentSquare>

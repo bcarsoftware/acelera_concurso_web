@@ -47,6 +47,42 @@ export const TopicDetails = (
         setStatus(topic?.status as EnumStatus);
     }, []);
 
+    const handleFinishTopic = async () => {
+        try {
+            const url = `${EnvironConstants.API_BASE_URL}/topic/${topic?.topic_id}/finish`
+            const response = await fetch(url, {
+                method: HTTPTypes.PATCH,
+                headers: {
+                    "Content-Type": ContentTypes.JSON,
+                    "Authorization": `Bearer ${authUser?.token}`,
+                }
+            });
+
+            const finished = await response.json();
+
+            if (!response.ok) {
+                console.log(finished);
+
+                setDialogTitle("Erro ao Finalizar");
+                setDialogMessage("Não foi possível finalizar essa tarefa!");
+
+                return;
+            }
+
+            setDialogTitle("Sucesso");
+            setDialogMessage("Tarefa finalizada com sucesso!");
+        }
+        catch (error) {
+            console.error(error);
+
+            setDialogTitle("Erro no Servidor");
+            setDialogMessage("Não foi possível finalizar essa tarefa!");
+        }
+        finally {
+            setShowDialog(true);
+        }
+    };
+
     const handleDeleteTopic = async () => {
         try {
             const url = `${EnvironConstants.API_BASE_URL}/topic/${topic?.topic_id}`;
@@ -189,12 +225,12 @@ export const TopicDetails = (
                         value={topicDescription}
                         updateValue={setTopicDescription}
                     />
-                    <SelectStatus value={status} updateValue={setStatus} disable={false} />
+                    <SelectStatus value={status} updateValue={setStatus} disable={true} />
 
                     <ButtonNew
                         buttonContent={"Atualizar Assunto"}
                         buttonType={HtmlType.BUTTON}
-                        name={"new-topic-button"}
+                        name={"update-topic-button"}
                         styles={{
                             bg_color: Colors.GREEN,
                             bg_hover: Colors.GREEN_HOVER,
@@ -204,14 +240,27 @@ export const TopicDetails = (
                     />
                     <div style={{ height: "12px", width: "100%" }}></div>
                     <ButtonNew
+                        buttonContent={"Finalizar Assunto"}
+                        buttonType={HtmlType.BUTTON}
+                        name={"finish-topic-button"}
+                        styles={{
+                            bg_color: Colors.BLACK,
+                            bg_hover: Colors.BLACK_HOVER,
+                            font_color: Colors.WHITE
+                        }}
+                        onClickFunction={handleFinishTopic}
+                    />
+                    <div style={{ height: "12px", width: "100%" }}></div>
+                    <ButtonNew
                         buttonContent={"Excluir Assunto"}
                         buttonType={HtmlType.BUTTON}
-                        name={"new-topic-button"}
+                        name={"delete-topic-button"}
                         styles={{
                             bg_color: Colors.RED,
                             bg_hover: Colors.RED_HOVER,
                             font_color: Colors.WHITE
                         }}
+                        onClickFunction={() => setShowConfirmDeleteDialog(true)}
                     />
                 </ContentCard>
             </ContentWide>

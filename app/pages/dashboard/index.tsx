@@ -21,9 +21,10 @@ import {LogoutDashBoardPage} from "~/pages/dashboard/tabs/logout-dashboad";
 import {useAuth} from "../../../context/auth-context";
 import {useNavigate} from "react-router";
 import {PublicTenderDetails} from "~/pages/dashboard/data/public-tender/public-tender-details";
-import type {PublicTenderResponse, SubjectResponse} from "../../../data/data";
+import type {PublicTenderResponse, SubjectResponse, TopicResponse} from "../../../data/data";
 import {PublicTenderDashboardPage} from "~/pages/dashboard/tabs/public-tender-dashboard";
 import {SubjectDetails} from "~/pages/dashboard/data/subject/subject-details";
+import {TopicDetails} from "~/pages/dashboard/data/topic/topic-details";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -69,11 +70,13 @@ export default function Index() {
     /* SELECTED DATA */
     const [selectedPublicTender, setSelectedPublicTender] = useState<PublicTenderResponse | undefined>(undefined);
     const [selectedSubject, setSelectedSubject] = useState<SubjectResponse | undefined>(undefined);
+    const [selectedTopic, setSelectedTopic] = useState<TopicResponse | undefined>(undefined);
     /* SELECTED DATA */
 
     /* UPDATER DATA DETAILS */
     const [showPublicTenderDetails, setShowPublicTenderDetails] = useState<boolean>(false);
     const [showSubjectDetails, setShowSubjectDetails] = useState<boolean>(false);
+    const [showTopicDetails, setShowTopicDetails] = useState<boolean>(false);
     /* UPDATER DATA DETAILS */
     /* SHOW DETAILS SCREENS */
     const showPublicTenderDetailsScreen = () => (<PublicTenderDetails
@@ -84,6 +87,11 @@ export default function Index() {
         goingToMainPage={goingToMainPage}
         subject={selectedSubject}
         publicTenderName={selectedPublicTender?.tender_name}
+    />);
+    const showTopicDetailsScreen = () => (<TopicDetails
+        goingToMainPage={goingToMainPage}
+        subjectName={selectedSubject?.name}
+        topic={selectedTopic}
     />);
     /* SHOW DETAILS SCREENS */
 
@@ -116,6 +124,7 @@ export default function Index() {
 
         setShowPublicTenderDetails(false);
         setShowSubjectDetails(false);
+        setShowTopicDetails(false);
     }
     /* HIDDEN REGISTERS AND SEE MAIN PAGE */
 
@@ -133,6 +142,8 @@ export default function Index() {
             setSelectedPublicTender={setSelectedPublicTender}
             setShowSubjectDetails={setShowSubjectDetails}
             setSelectedSubject={setSelectedSubject}
+            setShowTopicDetails={setShowTopicDetails}
+            setSelectedTopic={setSelectedTopic}
         />);
     };
     const accessProfilePage = () => (<ProfileDashboardPage />);
@@ -194,6 +205,7 @@ export default function Index() {
 
                 {showPublicTenderDetails && (showPublicTenderDetailsScreen())}
                 {showSubjectDetails && (showSubjectDetailsScreen())}
+                {showTopicDetails && (showTopicDetailsScreen())}
             </Content >
         </MainDashboardTag>
 

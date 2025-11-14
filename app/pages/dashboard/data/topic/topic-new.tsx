@@ -134,7 +134,7 @@ export const TopicNew = (
                         value={topicDescription}
                         updateValue={setTopicDescription}
                     />
-                    <SelectStatus value={status} updateValue={setStatus} disable={false} />
+                    <SelectStatus value={status} updateValue={setStatus} disable={true} />
 
                     <Button
                         buttonContent={"Cadastrar Novo Assunto"}
