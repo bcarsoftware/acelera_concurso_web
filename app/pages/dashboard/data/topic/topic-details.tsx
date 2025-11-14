@@ -7,7 +7,7 @@ import {Colors} from "../../../../../enums/colors";
 import {ButtonNew} from "~/pages/dashboard/components/button";
 import {useAuth} from "../../../../../context/auth-context";
 import {useEffect, useState} from "react";
-import {EnumStatus, type SubjectResponse, type TopicResponse} from "../../../../../data/data";
+import {EnumStatus, type TopicResponse} from "../../../../../data/data";
 import {Dialog} from "~/dialog/dialog";
 import {ContentTypes, EnvironConstants} from "../../../../../enums/constants";
 import {HTTPTypes} from "../../../../../enums/http-types";

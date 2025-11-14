@@ -64,7 +64,9 @@ export default function Index() {
     />);
     const showNewScreenNoteSubject = () => (<NoteSubjectNew />);
     const showNewScreenNoteTopic = () => (<NoteTopicNew />);
-    const showNewScreenStudyTips = () => (<StudyTipsNew />);
+    const showNewScreenStudyTips = () => (<StudyTipsNew
+        goingToMainPage={goingToMainPage}
+    />);
     /* SHOW REGISTERS SCREENS */
 
     /* SELECTED DATA */
