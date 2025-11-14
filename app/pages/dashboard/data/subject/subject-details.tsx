@@ -56,6 +56,43 @@ export const SubjectDetails = (
         setStatus(subject.status);
     }, []);
 
+    const handleFinishSubject = async () => {
+        try {
+            const url = `${EnvironConstants.API_BASE_URL}/subject/${subjectId}/finish`
+            const response = await fetch(url, {
+                method: HTTPTypes.PATCH,
+                headers: {
+                    "Content-Type": ContentTypes.JSON,
+                    "Authorization": `Bearer ${authUser?.token}`,
+                }
+            });
+
+            const finishedSubject = await response.json();
+
+            if (!response.ok) {
+                console.log(finishedSubject);
+
+                setDialogTitle("Erro ao Finalizar");
+                setDialogMessage("Não foi possível finalizar a disciplina!");
+
+                return;
+            }
+
+            setSuccess(true);
+            setDialogTitle("Sucesso");
+            setDialogMessage("Disciplina finalizada com sucesso!");
+        }
+        catch (error) {
+            console.log(error);
+
+            setDialogTitle("Erro no Servidor");
+            setDialogMessage("Não foi possível finalizar a disciplina!");
+        }
+        finally {
+            setShowDialog(true);
+        }
+    };
+
     const handleDeleteSubject = async () => {
         try {
             const url = `${EnvironConstants.API_BASE_URL}/subject/${subjectId}`;
@@ -209,6 +246,18 @@ export const SubjectDetails = (
                             font_color: Colors.WHITE
                         }}
                         onClickFunction={handleUpdateSubject}
+                    />
+                    <div style={{ height: "12px", width: "100%" }}></div>
+                    <ButtonNew
+                        buttonContent={"Finalizar Disciplina"}
+                        buttonType={HtmlType.BUTTON}
+                        name={"finish-subject-button"}
+                        styles={{
+                            bg_color: Colors.BLACK,
+                            bg_hover: Colors.BLACK_HOVER,
+                            font_color: Colors.WHITE
+                        }}
+                        onClickFunction={handleFinishSubject}
                     />
                     <div style={{ height: "12px", width: "100%" }}></div>
                     <ButtonNew

@@ -70,7 +70,7 @@ export const StudyTipsDetails = (
             if (!response.ok) {
                 console.log(studyTipBody);
 
-                setDialogTitle("Erro no Cadastro");
+                setDialogTitle("Erro na Atualização");
                 setDialogMessage("Não foi possível atualizar esta nota de estudo!");
 
                 return;
