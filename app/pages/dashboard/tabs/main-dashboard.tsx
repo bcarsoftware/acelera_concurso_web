@@ -10,6 +10,7 @@ import type {PublicTenderResponse, StudyTipsResponse, SubjectResponse, TopicResp
 import {useAuth} from "../../../../context/auth-context";
 import {ContentTypes, EnvironConstants} from "../../../../enums/constants";
 import {HTTPTypes} from "../../../../enums/http-types";
+import {DialogConfirm} from "~/dialog/dialog-confirm";
 
 export const MainDashboardPage = (
     props: DataFunctionsScreen
@@ -18,6 +19,8 @@ export const MainDashboardPage = (
     const [noteSubjectChecked, setNoteSubjectChecked] = useState<boolean>(true);
     const [noteTopicChecked, setNoteTopicChecked] = useState<boolean>(true);
     const [noteAllChecked, setNoteAllChecked] = useState<boolean>(true);
+
+    const [confirmDeleteStudyTipsDialog, setConfirmDeleteStudyTipsDialog] = useState<boolean>(false);
     const [openDialog, setOpenDialog] = useState<boolean>(false);
 
     const [titleDialog, setTitleDialog] = useState<string>("");
@@ -27,6 +30,7 @@ export const MainDashboardPage = (
     const [publicTenders, setPublicTenders] = useState<PublicTenderResponse[]>([]);
     const [subjects, setSubjects] = useState<SubjectResponse[]>([]);
     const [topics, setTopics] = useState<TopicResponse[]>([]);
+    const [studyTips, setStudyTips] = useState<StudyTipsResponse[]>([]);
     /* Data Arrays */
 
     /* Getting Public Tenders */
@@ -45,8 +49,6 @@ export const MainDashboardPage = (
             const bodyJs = await response.json();
 
             if (!response.ok) {
-                console.error(bodyJs);
-
                 setPublicTenders([])
                 return;
             }
@@ -75,8 +77,6 @@ export const MainDashboardPage = (
             const bodyJs = await response.json();
 
             if (!response.ok) {
-                console.error(bodyJs);
-
                 setSubjects([])
                 return;
             }
@@ -105,8 +105,6 @@ export const MainDashboardPage = (
             const topicsBody = await response.json();
 
             if (!response.ok) {
-                console.error(topicsBody);
-
                 setTopics([]);
                 return;
             }
@@ -117,11 +115,41 @@ export const MainDashboardPage = (
     };
     /* Getting Topics */
 
+    /* Getting Study Tips */
+    const gettingStudyTips = async () => {
+        try {
+            const url = `${EnvironConstants.API_BASE_URL}/study-tips/${authUser?.user?.user_id}`;
+            const response = await fetch(url, {
+                method: HTTPTypes.GET,
+                headers: {
+                    "Content-Type": ContentTypes.JSON,
+                    "Authorization": `Bearer ${authUser?.token}`,
+                }
+            });
+
+            const tipsBody = await response.json();
+
+            if (!response.ok) {
+                setStudyTips([]);
+                return;
+            }
+
+            setStudyTips(tipsBody.data);
+        }
+        catch (error) {
+            setStudyTips([]);
+        }
+    };
+    /* Getting Study Tips */
+
     useEffect(() => {
         if (authUser?.isLoading) return;
 
         const getPubTender = async () => await gettingPublicTenders();
         getPubTender().then();
+
+        const getStudyTips = async () => await gettingStudyTips();
+        getStudyTips().then();
 
         props.setSelectedPublicTender(undefined);
     }, []);
@@ -155,6 +183,7 @@ export const MainDashboardPage = (
         props.setShowPublicTenderDetails(false);
         props.setShowSubjectDetails(false);
         props.setShowTopicDetails(false);
+        props.setShowStudyTipsDetails(false);
     }
 
     const showPublicTenderNew = () => {
@@ -217,13 +246,18 @@ export const MainDashboardPage = (
         settingAllFalse();
         props.setShowTopicDetails(true);
     }
+    const showStudyTipsDetails = () => {
+        settingAllFalse();
+        props.setShowStudyTipsDetails(true);
+    };
     /* UPDATER SCREENS */
 
     /* DATA SELECTED */
     const [selectPublicTender, setSelectPublicTender] = useState<PublicTenderResponse | undefined>(undefined);
     const [selectSubject, setSelectSubject] = useState<SubjectResponse | undefined>(undefined);
     const [selectTopic, setSelectTopic] = useState<TopicResponse | undefined>(undefined);
-    const [selectStudyTips, setSelectStudyTips] = useState<StudyTipsResponse[]>([]);
+    const [selectStudyTips, setSelectStudyTips] = useState<StudyTipsResponse | undefined>(undefined);
+    const [selectIDSStudyTips, setSelectIDSStudyTips] = useState<number[]>([]);
     /* DATA SELECTED */
 
     const handleSelectPublicTender = async (
@@ -277,8 +311,98 @@ export const MainDashboardPage = (
         }
     };
 
+    const handleSelectStudyTips = async (
+        studyTipData: StudyTipsResponse,
+        event: ChangeEvent<HTMLInputElement>,
+    ) => {
+        if (event.target.checked) {
+            setSelectStudyTips(studyTipData);
+            props.setSelectedStudyTips(studyTipData);
+            setSelectIDSStudyTips(ids => [...ids, studyTipData.study_tip_id])
+        }
+
+        else {
+            setSelectStudyTips(undefined);
+            props.setSelectedStudyTips(undefined);
+            setSelectIDSStudyTips(ids => ids.slice(0, selectIDSStudyTips.length - 1));
+        }
+    };
+
+    const handleDeleteStudyTips = async () => {
+        const payload = { ids: selectIDSStudyTips };
+
+        try {
+            const url = `${EnvironConstants.API_BASE_URL}/study-tips/${authUser?.user?.user_id}`;
+            const response = await fetch(url, {
+                method: HTTPTypes.DELETE,
+                body: JSON.stringify(payload),
+                headers: {
+                    "Content-Type": ContentTypes.JSON,
+                    "Authorization": `Bearer ${authUser?.token}`,
+                }
+            });
+
+            const deletedBody = await response.json();
+
+            if (!response.ok) {
+                console.log(deletedBody);
+
+                setTitleDialog("Erro na Exclusão");
+                setMessageDialog("Não foi possível excluir essa nota de estudo!");
+            }
+
+            setTitleDialog("Sucesso");
+            setMessageDialog("Nota de estudo excluída com sucesso!");
+            await gettingStudyTips();
+        }
+        catch (error) {
+            console.error(error);
+
+            setTitleDialog("Erro no Servidor");
+            setMessageDialog("Não foi possível excluir essa nota de estudo!");
+        }
+        finally {
+            setConfirmDeleteStudyTipsDialog(false);
+            setOpenDialog(true);
+        }
+    };
+
+    const manageDeleteHandle = async () => {
+        if (selectIDSStudyTips.length === 0) {
+            setTitleDialog("Erro na Exclusão");
+            setMessageDialog("Selecione pelo menos uma nota de estudo para excluir!");
+            setOpenDialog(true);
+            return;
+        }
+
+        const thisNote = selectIDSStudyTips.length > 1 ? "estas notas" : "esta nota";
+
+        setTitleDialog("Atenção");
+        setMessageDialog(`Tem certeza que deseja excluir ${thisNote} de estudo?`);
+
+        setConfirmDeleteStudyTipsDialog(true);
+    };
+
+    const seeDialogMainDashboard = () => (<Dialog
+        name={"main-dashboard-dialog"}
+        title={titleDialog}
+        message={messageDialog}
+        buttonText={"Fechar"}
+        closeFunction={setOpenDialog}
+        zIndex={1005}
+    />);
+
+    const seeConfirmDeleteStudyNoneDialog = () => (<DialogConfirm
+        name={"confirm-main-dashboard-dialog"}
+        title={titleDialog}
+        message={messageDialog}
+        yesFunction={handleDeleteStudyTips}
+        closeFunction={setConfirmDeleteStudyTipsDialog} />);
+
     return (
         <>
+            {confirmDeleteStudyTipsDialog && (seeConfirmDeleteStudyNoneDialog())}
+            {openDialog && (seeDialogMainDashboard())}
             <StyleMainSection />
             <div id="ContentTwice">
                 <div id="PublicTender">
@@ -321,23 +445,28 @@ export const MainDashboardPage = (
                 <div id="TipsHit">
                     <h1>Dicas de Estudo</h1>
                     <input type="button" className="button-add" value="Nova" onClick={showStudyTipsNew} />
-                    <input type="button" className="button-add bg-red" value="Excluir" />
+                    <input type="button" className="button-add bg-red" value="Excluir" onClick={manageDeleteHandle} />
                     <input type="button" className="button-add bg-golden color-black" value="Motiva AI" />
 
                     <ContentWide>
                         <ContentCard>
-                            <div className="check-tip">
-                                <input className="checkbutton" type="checkbox" />
-                                <section className="section-tip"><p className="text-section">Dica 1</p></section>
-                            </div>
-                            <div className="check-tip">
-                                <input className="checkbutton" type="checkbox" />
-                                <section className="section-tip"><p className="text-section">Dica 1</p></section>
-                            </div>
-                            <div className="check-tip">
-                                <input className="checkbutton" type="checkbox" />
-                                <section className="section-tip"><p className="text-section">Dica 1</p></section>
-                            </div>
+                            {studyTips.map((studyTip) => (
+                                <div className="check-tip">
+                                    <input
+                                        onChange={(event) =>
+                                            handleSelectStudyTips(studyTip, event)}
+                                        className="checkbutton"
+                                        type="checkbox"
+                                    />
+                                    <section className={
+                                        "section-tip"
+                                    } onClick={() => {
+                                        props.setSelectedStudyTips(studyTip);
+                                        showStudyTipsDetails();
+                                    }}><p className="text-section">{studyTip.name}</p>
+                                    </section>
+                                </div>
+                            ))}
                         </ContentCard>
                     </ContentWide>
                 </div>
@@ -396,11 +525,6 @@ export const MainDashboardPage = (
                 <ContentSquare>
                     <h2>Notas de Atenção</h2>
                     <input type="button" className="button-add" value="Adicionar" onClick={selectNote}/>
-
-                    {openDialog && (
-                        <Dialog name={"main-dashboard-dialog"} title={titleDialog} message={messageDialog} buttonText={"Fechar"} closeFunction={setOpenDialog} />
-                    )}
-
                     <ContentCard>
                         <div id="NoteCheck">
                             <div>
