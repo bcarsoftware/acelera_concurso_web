@@ -26,6 +26,7 @@ import {PublicTenderDashboardPage} from "~/pages/dashboard/tabs/public-tender-da
 import {SubjectDetails} from "~/pages/dashboard/data/subject/subject-details";
 import {TopicDetails} from "~/pages/dashboard/data/topic/topic-details";
 import {StudyTipsDetails} from "~/pages/dashboard/data/study-tips/study-tips-details";
+import SubjectDashboardPage from "~/pages/dashboard/tabs/subject-dashboard";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -63,7 +64,10 @@ export default function Index() {
         subject={selectedSubject}
         goingToMainPage={goingToMainPage}
     />);
-    const showNewScreenNoteSubject = () => (<NoteSubjectNew />);
+    const showNewScreenNoteSubject = () => (<NoteSubjectNew
+        subject={selectedSubject}
+        goingToMainPage={goingToMainPage}
+    />);
     const showNewScreenNoteTopic = () => (<NoteTopicNew />);
     const showNewScreenStudyTips = () => (<StudyTipsNew
         goingToMainPage={goingToMainPage}
@@ -165,6 +169,16 @@ export default function Index() {
         setShowPublicTenderDetails={setShowPublicTenderDetails}
         setSelectedPublicTender={setSelectedPublicTender}
     />);
+    const accessSubjectPage = () => (<SubjectDashboardPage
+        setShowNewNoteSubject={setShowNoteSubjectNew}
+        setShowNewSubject={setShowSubjectNew}
+
+        setShowDetailsSubject={setShowSubjectDetails}
+
+        dashboardPublicTender={setSelectedPublicTender}
+        dashboardSubject={setSelectedSubject}
+        showThisPage={setSubject}
+    />);
     const accessPomodoroPage = () => (<PomodoroDashboardPage />);
     const accessSettingsPage = () => (<SettingsDashboardPage />);
     const accessLogoutPage = () => (<LogoutDashBoardPage
@@ -204,6 +218,7 @@ export default function Index() {
                 {profilePage && (accessProfilePage())}
                 {mainPage && (accessMainPage())}
                 {publicTender && (accessPublicTenderPage())}
+                {subject && (accessSubjectPage())}
                 {pomodoro && (accessPomodoroPage())}
                 {settings && (accessSettingsPage())}
                 {logout && (accessLogoutPage())}
