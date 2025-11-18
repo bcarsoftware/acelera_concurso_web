@@ -21,12 +21,19 @@ import {LogoutDashBoardPage} from "~/pages/dashboard/tabs/logout-dashboad";
 import {useAuth} from "../../../context/auth-context";
 import {useNavigate} from "react-router";
 import {PublicTenderDetails} from "~/pages/dashboard/data/public-tender/public-tender-details";
-import type {PublicTenderResponse, StudyTipsResponse, SubjectResponse, TopicResponse} from "../../../data/data";
+import type {
+    NoteSubjectResponse,
+    PublicTenderResponse,
+    StudyTipsResponse,
+    SubjectResponse,
+    TopicResponse
+} from "../../../data/data";
 import {PublicTenderDashboardPage} from "~/pages/dashboard/tabs/public-tender-dashboard";
 import {SubjectDetails} from "~/pages/dashboard/data/subject/subject-details";
 import {TopicDetails} from "~/pages/dashboard/data/topic/topic-details";
 import {StudyTipsDetails} from "~/pages/dashboard/data/study-tips/study-tips-details";
 import SubjectDashboardPage from "~/pages/dashboard/tabs/subject-dashboard";
+import {NoteSubjectDetails} from "~/pages/dashboard/data/note-subject/note-subject-details";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -79,6 +86,7 @@ export default function Index() {
     const [selectedSubject, setSelectedSubject] = useState<SubjectResponse | undefined>(undefined);
     const [selectedTopic, setSelectedTopic] = useState<TopicResponse | undefined>(undefined);
     const [selectedStudyTips, setSelectedStudyTips] = useState<StudyTipsResponse | undefined>(undefined);
+    const [selectedNoteSubject, setSelectedNoteSubject] = useState<NoteSubjectResponse | undefined>(undefined);
     /* SELECTED DATA */
 
     /* UPDATER DATA DETAILS */
@@ -86,6 +94,7 @@ export default function Index() {
     const [showSubjectDetails, setShowSubjectDetails] = useState<boolean>(false);
     const [showTopicDetails, setShowTopicDetails] = useState<boolean>(false);
     const [showStudyTipsDetails, setShowStudyTipsDetails] = useState<boolean>(false);
+    const [showNoteSubjectDetails, setShowNoteSubjectDetails] = useState<boolean>(false);
     /* UPDATER DATA DETAILS */
     /* SHOW DETAILS SCREENS */
     const showPublicTenderDetailsScreen = () => (<PublicTenderDetails
@@ -105,6 +114,11 @@ export default function Index() {
     const showStudyTipsDetailsScreen = () => (<StudyTipsDetails
         studyTipData={selectedStudyTips}
         goingToMainPage={goingToMainPage}
+    />);
+    const showNoteSubjectDetailsScreen = () => (<NoteSubjectDetails
+        goingToMainPage={goingToMainPage}
+        noteSubject={selectedNoteSubject}
+        subjectName={selectedSubject?.name}
     />);
     /* SHOW DETAILS SCREENS */
 
@@ -139,6 +153,7 @@ export default function Index() {
         setShowSubjectDetails(false);
         setShowTopicDetails(false);
         setShowStudyTipsDetails(false);
+        setShowNoteSubjectDetails(false);
     }
     /* HIDDEN REGISTERS AND SEE MAIN PAGE */
 
@@ -160,6 +175,8 @@ export default function Index() {
             setSelectedTopic={setSelectedTopic}
             setShowStudyTipsDetails={setShowStudyTipsDetails}
             setSelectedStudyTips={setSelectedStudyTips}
+            setShowNoteSubjectDetails={setShowNoteSubjectDetails}
+            setSelectedNoteSubject={setSelectedNoteSubject}
         />);
     };
     const accessProfilePage = () => (<ProfileDashboardPage />);
@@ -174,9 +191,11 @@ export default function Index() {
         setShowNewSubject={setShowSubjectNew}
 
         setShowDetailsSubject={setShowSubjectDetails}
+        setShowDetailsNoteSubject={setShowNoteSubjectDetails}
 
         dashboardPublicTender={setSelectedPublicTender}
         dashboardSubject={setSelectedSubject}
+        dashboardNoteSubject={setSelectedNoteSubject}
         showThisPage={setSubject}
     />);
     const accessPomodoroPage = () => (<PomodoroDashboardPage />);
@@ -234,6 +253,7 @@ export default function Index() {
                 {showSubjectDetails && (showSubjectDetailsScreen())}
                 {showTopicDetails && (showTopicDetailsScreen())}
                 {showStudyTipsDetails && (showStudyTipsDetailsScreen())}
+                {showNoteSubjectDetails && (showNoteSubjectDetailsScreen())}
             </Content >
         </MainDashboardTag>
 

@@ -29,9 +29,11 @@ interface ISubject {
     setShowNewNoteSubject: (value: boolean) => void;
 
     setShowDetailsSubject: (value: boolean) => void;
+    setShowDetailsNoteSubject: (value: boolean) => void;
 
     dashboardSubject: (subject?: SubjectResponse) => void;
     dashboardPublicTender: (publicTender?: PublicTenderResponse) => void;
+    dashboardNoteSubject: (note?: NoteSubjectResponse) => void;
     showThisPage: (value: boolean) => void;
 }
 
@@ -41,9 +43,11 @@ export default function SubjectDashboardPage(
         setShowNewNoteSubject,
 
         setShowDetailsSubject,
+        setShowDetailsNoteSubject,
 
         dashboardSubject,
         dashboardPublicTender,
+        dashboardNoteSubject,
         showThisPage
     }: ISubject
 ) {
@@ -323,8 +327,13 @@ export default function SubjectDashboardPage(
                         Adicionar Nota</h2>}
                     <ContentCard>
                         {noteSubjects.map((noteSubject) => (
-                            <section>
-                                <p className={"text-section"}>{noteSubject.name + ": " + noteSubject.description}</p>
+                            <section
+                                onClick={() => {
+                                    dashboardNoteSubject(noteSubject);
+                                    showThisPage(false);
+                                    setShowDetailsNoteSubject(true);
+                                }}
+                            ><p className={"text-section"}>{noteSubject.name + ": " + noteSubject.description}</p>
                             </section>
                         ))}
                     </ContentCard>

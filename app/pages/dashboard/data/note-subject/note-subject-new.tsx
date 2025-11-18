@@ -12,7 +12,7 @@ import {HTTPTypes} from "../../../../../enums/http-types";
 import {ContentTypes, EnvironConstants} from "../../../../../enums/constants";
 
 interface INoteSubject {
-    subject?: SubjectResponse
+    subject?: SubjectResponse;
     goingToMainPage: () => void;
 }
 
@@ -130,7 +130,7 @@ export const NoteSubjectNew = (
                     />
 
                     <Button
-                        buttonContent={"Cadastrar Nota Disciplina"}
+                        buttonContent={"Cadastrar Nota de Disciplina"}
                         buttonType={HtmlType.BUTTON}
                         name={"new-note-subject-button"}
                         styles={{

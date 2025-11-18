@@ -1,4 +1,10 @@
-import type {PublicTenderResponse, StudyTipsResponse, SubjectResponse, TopicResponse} from "../data/data";
+import type {
+    NoteSubjectResponse,
+    PublicTenderResponse,
+    StudyTipsResponse,
+    SubjectResponse,
+    TopicResponse
+} from "../data/data";
 
 export interface DataFunctionsScreen {
     setMainPage: (arg: boolean) => void;
@@ -13,9 +19,11 @@ export interface DataFunctionsScreen {
     setShowSubjectDetails: (arg: boolean) => void;
     setShowTopicDetails: (arg: boolean) => void;
     setShowStudyTipsDetails: (arg: boolean) => void;
+    setShowNoteSubjectDetails: (arg: boolean) => void;
 
     setSelectedPublicTender: (arg?: PublicTenderResponse) => void;
     setSelectedSubject: (arg?: SubjectResponse) => void;
     setSelectedTopic: (arg?: TopicResponse) => void;
     setSelectedStudyTips: (arg?: StudyTipsResponse) => void;
+    setSelectedNoteSubject: (arg?: NoteSubjectResponse) => void;
 }
