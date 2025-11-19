@@ -259,6 +259,7 @@ export const NoteTopicDetails = (
                         }}
                         onClickFunction={handleUpdateNoteTopic}
                     />
+                    <div style={{ height: "12px", width: "100%" }}></div>
                     <ButtonNew
                         buttonContent={"Finalizar Nota de Assunto"}
                         buttonType={HtmlType.BUTTON}
@@ -270,6 +271,7 @@ export const NoteTopicDetails = (
                         }}
                         onClickFunction={handleFinishNoteTopic}
                     />
+                    <div style={{ height: "12px", width: "100%" }}></div>
                     <ButtonNew
                         buttonContent={"Excluir Nota de Assunto"}
                         buttonType={HtmlType.BUTTON}

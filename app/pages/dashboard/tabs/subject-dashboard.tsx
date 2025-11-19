@@ -93,6 +93,7 @@ export default function SubjectDashboardPage(
         }
         catch (error) {
             setNoteSubjects([]);
+            dashboardNoteSubject(undefined);
         }
     }
 

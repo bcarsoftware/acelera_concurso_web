@@ -86,7 +86,7 @@ const StyleBody = () => {
             background-color: #f9f9f9;
             border: 2px dashed ${Colors.BORDER_LIGHT};
             border-radius: 8px;
-            color: #aaa;
+            color: ${Colors.BLACK};
             cursor: pointer;
         }
         

@@ -35,6 +35,7 @@ import {StudyTipsDetails} from "~/pages/dashboard/data/study-tips/study-tips-det
 import SubjectDashboardPage from "~/pages/dashboard/tabs/subject-dashboard";
 import {NoteSubjectDetails} from "~/pages/dashboard/data/note-subject/note-subject-details";
 import {NoteTopicDetails} from "~/pages/dashboard/data/note-topic/note-topic-details";
+import TopicDashboardPage from "~/pages/dashboard/tabs/topic-dashboard";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -212,6 +213,18 @@ export default function Index() {
         dashboardNoteSubject={setSelectedNoteSubject}
         showThisPage={setSubject}
     />);
+    const accessTopicsPage = () => (<TopicDashboardPage
+        setShowNewTopic={setShowTopicNew}
+        setShowNewNoteTopic={setShowNoteTopicNew}
+
+        setShowDetailsTopic={setShowTopicDetails}
+        setShowDetailsNoteTopic={setShowNoteTopicDetails}
+
+        dashboardSubject={setSelectedSubject}
+        dashboardTopic={setSelectedTopic}
+        dashboardNoteTopic={setSelectedNoteTopic}
+        showThisPage={setTopic}
+    />);
     const accessPomodoroPage = () => (<PomodoroDashboardPage />);
     const accessSettingsPage = () => (<SettingsDashboardPage />);
     const accessLogoutPage = () => (<LogoutDashBoardPage
@@ -252,6 +265,7 @@ export default function Index() {
                 {mainPage && (accessMainPage())}
                 {publicTender && (accessPublicTenderPage())}
                 {subject && (accessSubjectPage())}
+                {topic && (accessTopicsPage())}
                 {pomodoro && (accessPomodoroPage())}
                 {settings && (accessSettingsPage())}
                 {logout && (accessLogoutPage())}
