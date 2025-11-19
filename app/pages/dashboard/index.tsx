@@ -22,7 +22,7 @@ import {useAuth} from "../../../context/auth-context";
 import {useNavigate} from "react-router";
 import {PublicTenderDetails} from "~/pages/dashboard/data/public-tender/public-tender-details";
 import type {
-    NoteSubjectResponse,
+    NoteSubjectResponse, NoteTopicResponse,
     PublicTenderResponse,
     StudyTipsResponse,
     SubjectResponse,
@@ -34,6 +34,7 @@ import {TopicDetails} from "~/pages/dashboard/data/topic/topic-details";
 import {StudyTipsDetails} from "~/pages/dashboard/data/study-tips/study-tips-details";
 import SubjectDashboardPage from "~/pages/dashboard/tabs/subject-dashboard";
 import {NoteSubjectDetails} from "~/pages/dashboard/data/note-subject/note-subject-details";
+import {NoteTopicDetails} from "~/pages/dashboard/data/note-topic/note-topic-details";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -90,6 +91,7 @@ export default function Index() {
     const [selectedTopic, setSelectedTopic] = useState<TopicResponse | undefined>(undefined);
     const [selectedStudyTips, setSelectedStudyTips] = useState<StudyTipsResponse | undefined>(undefined);
     const [selectedNoteSubject, setSelectedNoteSubject] = useState<NoteSubjectResponse | undefined>(undefined);
+    const [selectedNoteTopic, setSelectedNoteTopic] = useState<NoteTopicResponse | undefined>(undefined);
     /* SELECTED DATA */
 
     /* UPDATER DATA DETAILS */
@@ -98,6 +100,7 @@ export default function Index() {
     const [showTopicDetails, setShowTopicDetails] = useState<boolean>(false);
     const [showStudyTipsDetails, setShowStudyTipsDetails] = useState<boolean>(false);
     const [showNoteSubjectDetails, setShowNoteSubjectDetails] = useState<boolean>(false);
+    const [showNoteTopicDetails, setShowNoteTopicDetails] = useState<boolean>(false);
     /* UPDATER DATA DETAILS */
     /* SHOW DETAILS SCREENS */
     const showPublicTenderDetailsScreen = () => (<PublicTenderDetails
@@ -122,6 +125,11 @@ export default function Index() {
         goingToMainPage={goingToMainPage}
         noteSubject={selectedNoteSubject}
         subjectName={selectedSubject?.name}
+    />);
+    const showNoteTopicDetailsScreen = () => (<NoteTopicDetails
+        goingToMainPage={goingToMainPage}
+        noteTopic={selectedNoteTopic}
+        topicName={selectedTopic?.name}
     />);
     /* SHOW DETAILS SCREENS */
 
@@ -157,6 +165,7 @@ export default function Index() {
         setShowTopicDetails(false);
         setShowStudyTipsDetails(false);
         setShowNoteSubjectDetails(false);
+        setShowNoteTopicDetails(false);
     }
     /* HIDDEN REGISTERS AND SEE MAIN PAGE */
 
@@ -180,6 +189,8 @@ export default function Index() {
             setSelectedStudyTips={setSelectedStudyTips}
             setShowNoteSubjectDetails={setShowNoteSubjectDetails}
             setSelectedNoteSubject={setSelectedNoteSubject}
+            setShowNoteTopicDetails={setShowNoteTopicDetails}
+            setSelectedNoteTopic={setSelectedNoteTopic}
         />);
     };
     const accessProfilePage = () => (<ProfileDashboardPage />);
@@ -257,6 +268,7 @@ export default function Index() {
                 {showTopicDetails && (showTopicDetailsScreen())}
                 {showStudyTipsDetails && (showStudyTipsDetailsScreen())}
                 {showNoteSubjectDetails && (showNoteSubjectDetailsScreen())}
+                {showNoteTopicDetails && (showNoteTopicDetailsScreen())}
             </Content >
         </MainDashboardTag>
 

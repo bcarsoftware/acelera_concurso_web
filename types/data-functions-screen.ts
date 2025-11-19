@@ -1,5 +1,5 @@
 import type {
-    NoteSubjectResponse,
+    NoteSubjectResponse, NoteTopicResponse,
     PublicTenderResponse,
     StudyTipsResponse,
     SubjectResponse,
@@ -20,10 +20,12 @@ export interface DataFunctionsScreen {
     setShowTopicDetails: (arg: boolean) => void;
     setShowStudyTipsDetails: (arg: boolean) => void;
     setShowNoteSubjectDetails: (arg: boolean) => void;
+    setShowNoteTopicDetails: (arg: boolean) => void;
 
     setSelectedPublicTender: (arg?: PublicTenderResponse) => void;
     setSelectedSubject: (arg?: SubjectResponse) => void;
     setSelectedTopic: (arg?: TopicResponse) => void;
     setSelectedStudyTips: (arg?: StudyTipsResponse) => void;
     setSelectedNoteSubject: (arg?: NoteSubjectResponse) => void;
+    setSelectedNoteTopic: (arg?: NoteTopicResponse) => void;
 }

@@ -111,7 +111,7 @@ export const NoteTopicNew = (
                         value={topic?.name}
                     />
                     <InputText
-                        labelContent={"Nome da Nota de Assunto*"}
+                        labelContent={"Nota de Assunto*"}
                         name={"note-topic-name"}
                         placeholder={"Nome da Nota Assunto"}
                         required={true}
@@ -132,7 +132,7 @@ export const NoteTopicNew = (
                     <ButtonNew
                         buttonContent={"Cadastrar Nota de Assunto"}
                         buttonType={HtmlType.BUTTON}
-                        name={"new-note-subject-button"}
+                        name={"new-note-topic-button"}
                         styles={{
                             bg_color: Colors.GREEN,
                             bg_hover: Colors.GREEN_HOVER,

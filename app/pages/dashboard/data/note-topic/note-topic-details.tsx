@@ -4,110 +4,110 @@ import {InputText} from "~/pages/dashboard/components/input-text";
 import {HtmlType} from "../../../../../enums/html-type";
 import {Colors} from "../../../../../enums/colors";
 import {ButtonNew} from "~/pages/dashboard/components/button";
-import type {NoteSubjectResponse} from "../../../../../data/data";
+import type {NoteTopicResponse} from "../../../../../data/data";
+import {useAuth} from "../../../../../context/auth-context";
 import {useEffect, useState} from "react";
 import {Dialog} from "~/dialog/dialog";
-import {useAuth} from "../../../../../context/auth-context";
-import {HTTPTypes} from "../../../../../enums/http-types";
 import {ContentTypes, EnvironConstants} from "../../../../../enums/constants";
-import {Select} from "~/pages/dashboard/components/select";
+import {HTTPTypes} from "../../../../../enums/http-types";
 import {DialogConfirm} from "~/dialog/dialog-confirm";
+import {Select} from "~/pages/dashboard/components/select";
 
-interface INoteSubject {
-    subjectName?: string;
-    noteSubject?: NoteSubjectResponse;
+interface INoteTopicDetails {
+    topicName?: string;
+    noteTopic?: NoteTopicResponse;
     goingToMainPage: () => void;
 }
 
-export const NoteSubjectDetails = (
-    { subjectName, noteSubject, goingToMainPage }: INoteSubject
+export const NoteTopicDetails = (
+    { topicName, noteTopic, goingToMainPage }: INoteTopicDetails
 ) => {
-    const authUser = useAuth();
-    const [noteName, setNoteName] = useState<string>("");
-    const [noteDescription, setNoteDescription] = useState<string>("");
+    const [noteTopicName, setNoteTopicName] = useState<string>("");
+    const [noteTopicDescription, setNoteTopicDescription] = useState<string>("");
     const [rateSuccess, setRateSuccess] = useState<number | null>(null);
-
     const [showConfirmDeleteDialog, setShowConfirmDeleteDialog] = useState<boolean>(false);
+
     const [showDialog, setShowDialog] = useState<boolean>(false);
     const [dialogTitle, setDialogTitle] = useState<string>("");
     const [dialogMessage, setDialogMessage] = useState<string>("");
 
+    const userAuth = useAuth();
+
     const [success, setSuccess] = useState<boolean>(false);
 
     useEffect(() => {
-        if (authUser?.isLoading) return;
+        if (userAuth?.isLoading) return;
 
-        setNoteName(noteSubject?.name || "");
-        setNoteDescription(noteSubject?.description || "");
-        setRateSuccess(noteSubject?.rate_success || 0);
+        setNoteTopicName(noteTopic?.name || "");
+        setNoteTopicDescription(noteTopic?.description || "");
+        setRateSuccess(noteTopic?.rate_success || 0);
     }, []);
 
-    const handleUpdateNoteSubject = async () => {
+    const handleUpdateNoteTopic = async () => {
         const payload = {
-            subject_id: noteSubject?.subject_id,
-            name: noteName,
-            description: noteDescription,
+            topic_id: noteTopic?.topic_id,
+            name: noteTopicName,
+            description: noteTopicDescription,
             finish: false,
+            rate_success: null,
             deleted: false,
         };
 
         try {
-            const url = `${EnvironConstants.API_BASE_URL}/note-subject/${noteSubject?.note_subject_id}`;
+            const url = `${EnvironConstants.API_BASE_URL}/note-topic/${noteTopic?.note_topic_id}`;
+
             const response = await fetch(url, {
                 method: HTTPTypes.PATCH,
                 body: JSON.stringify(payload),
                 headers: {
                     "Content-Type": ContentTypes.JSON,
-                    "Authorization": `Bearer ${authUser?.token}`,
+                    "Authorization": `Bearer ${userAuth?.token}`,
                 }
             });
 
-            const noteSubjectNew = await response.json();
+            const updated = await response.json();
 
             if (!response.ok) {
-                console.log(noteSubjectNew);
+                console.log(updated);
 
                 setDialogTitle("Erro no Cadastro");
-                setDialogMessage("Não foi possível atualizar essa nota de disciplina!");
+                setDialogMessage("Não foi possível cadastrar essa nota de assunto!");
 
                 return;
             }
 
             setDialogTitle("Sucesso");
-            setDialogMessage("Nota de disciplina atualizada com sucesso!");
+            setDialogMessage("Nota de assunto cadastrada com sucesso!");
             setSuccess(true);
         }
         catch (error) {
             console.error(error);
 
             setDialogTitle("Erro no Servidor");
-            setDialogMessage("Não foi possível atualizar essa nota de disciplina!");
+            setDialogMessage("Não foi possível cadastrar essa nota de assunto!");
         }
-        finally {
-            setShowDialog(true);
-        }
+        finally { setShowDialog(true); }
     };
 
-    const handleFinishNoteSubject = async () => {
+    const handleFinishNoteTopic = async () => {
         const payload = {
-            subject_id: noteSubject?.subject_id,
-            name: noteName,
-            description: noteDescription,
+            topic_id: noteTopic?.topic_id,
+            name: noteTopicName,
+            description: noteTopicDescription,
             rate_success: rateSuccess,
             finish: true,
             deleted: false,
         };
 
         try {
-            const url = (
-                `${EnvironConstants.API_BASE_URL}/note-subject/${noteSubject?.note_subject_id}/finish`
-            );
+            const url = `${EnvironConstants.API_BASE_URL}/note-topic/${noteTopic?.note_topic_id}/finish`;
+
             const response = await fetch(url, {
                 method: HTTPTypes.PATCH,
                 body: JSON.stringify(payload),
                 headers: {
                     "Content-Type": ContentTypes.JSON,
-                    "Authorization": `Bearer ${authUser?.token}`,
+                    "Authorization": `Bearer ${userAuth?.token}`,
                 }
             });
 
@@ -117,33 +117,33 @@ export const NoteSubjectDetails = (
                 console.log(finished);
 
                 setDialogTitle("Erro ao Finalizar");
-                setDialogMessage("Não foi possível finalizar essa nota de disciplina!");
+                setDialogMessage("Não foi possível finalizar essa nota de assunto!");
+
                 return;
             }
 
             setDialogTitle("Sucesso");
-            setDialogMessage("Nota de disciplina finalizada com sucesso!");
+            setDialogMessage("Nota de assunto finalizada com sucesso!");
             setSuccess(true);
         }
         catch (error) {
             console.error(error);
 
             setDialogTitle("Erro no Servidor");
-            setDialogMessage("Não foi possível finalizar essa nota de disciplina!");
+            setDialogMessage("Não foi possível finalizar essa nota de assunto!");
         }
-        finally {
-            setShowDialog(true);
-        }
-    }
+        finally { setShowDialog(true); }
+    };
 
-    const handleDeleteNoteSubject = async () => {
+    const handleDeleteNoteTopic = async () => {
         try {
-            const url = `${EnvironConstants.API_BASE_URL}/note-subject/${noteSubject?.note_subject_id}`;
+            const url = `${EnvironConstants.API_BASE_URL}/note-topic/${noteTopic?.note_topic_id}`;
+
             const response = await fetch(url, {
                 method: HTTPTypes.DELETE,
                 headers: {
                     "Content-Type": ContentTypes.JSON,
-                    "Authorization": `Bearer ${authUser?.token}`,
+                    "Authorization": `Bearer ${userAuth?.token}`,
                 }
             });
 
@@ -152,26 +152,27 @@ export const NoteSubjectDetails = (
             if (!response.ok) {
                 console.log(deleted);
 
-                setDialogTitle("Erro na Exclusão");
-                setDialogMessage("Não foi possível excluir essa nota de disciplina!");
+                setDialogTitle("Erro ao Excluir");
+                setDialogMessage("Não foi possível excluir essa nota de assunto!");
+
                 return;
             }
 
-            setDialogTitle("Sucesso");
-            setDialogMessage("Nota de disciplina excluída com sucesso!");
             setSuccess(true);
+            setDialogTitle("Sucesso");
+            setDialogMessage("Nota de assunto excluída com sucesso!");
         }
         catch (error) {
             console.error(error);
 
             setDialogTitle("Erro no Servidor");
-            setDialogMessage("Não foi possível excluir essa nota de disciplina!");
+            setDialogMessage("Não foi possível excluir essa nota de assunto!");
         }
         finally {
             setShowConfirmDeleteDialog(false);
             setShowDialog(true);
         }
-    }
+    };
 
     const seeDialog = () => {
         const closingFunction = success ? (value: boolean) => {
@@ -188,93 +189,91 @@ export const NoteSubjectDetails = (
             closeFunction={closingFunction}
             zIndex={1001}
         />);
-    }
+    };
 
     const seeConfirmDeleteDialog = () => (<DialogConfirm
         name={"delete-subject-confirm"}
         title={"Atenção"}
-        message={"Tem certeza que deseja excluir essa nota de disciplina?"}
-        yesFunction={handleDeleteNoteSubject}
+        message={"Tem certeza que deseja excluir essa nota de assunto?"}
+        yesFunction={handleDeleteNoteTopic}
         closeFunction={setShowConfirmDeleteDialog} />);
 
     return (
         <form>
             {showDialog && (seeDialog())}
             {showConfirmDeleteDialog && (seeConfirmDeleteDialog())}
-            <h1>Detalhes da Disciplina</h1>
+            <h1>Detalhes da Nota de Assunto</h1>
             <ContentWide>
                 <ContentCard>
                     <InputText
-                        labelContent={"Nome da Disciplina"}
-                        name={"subject-id"}
-                        placeholder={"123"}
+                        labelContent={"Nome do Assunto"}
+                        name={"topic-name"}
+                        placeholder={"Nome do Assunto"}
                         required={true}
                         disabled={true}
-                        value={subjectName}
+                        value={topicName}
                     />
                     <InputText
-                        labelContent={"Nota Disciplina*"}
-                        name={"note-subject-name"}
-                        placeholder={"Nome da Nota Disciplina"}
+                        labelContent={"Nota de Assunto*"}
+                        name={"note-topic-name"}
+                        placeholder={"Nome da Nota Assunto"}
                         required={true}
                         disabled={false}
-                        value={noteName}
-                        updateValue={setNoteName}
+                        value={noteTopicName}
+                        updateValue={setNoteTopicName}
                     />
                     <InputText
-                        labelContent={"Descrição do Disciplina*"}
-                        name={"note-subject-description"}
-                        placeholder={"Descrição da Nota Disciplina"}
+                        labelContent={"Descrição do Assunto*"}
+                        name={"note-topic-description"}
+                        placeholder={"Descrição da Nota Assunto"}
                         required={true}
                         disabled={false}
-                        value={noteDescription}
-                        updateValue={setNoteDescription}
+                        value={noteTopicDescription}
+                        updateValue={setNoteTopicDescription}
                     />
                     <InputText
                         labelContent={"Taxa de Sucesso"}
                         name={"rate-success"}
                         placeholder={"0% ... 100%"}
                         required={true} disabled={true}
-                        value={`${noteSubject?.rate_success || 0}%`}
+                        value={`${noteTopic?.rate_success || 0}%`}
                     />
                     <Select
                         name={"finished-note-subject"}
                         required={true}
                         disabled={true}
                         label={"Finalizado?"}
-                        value={`${noteSubject?.finish}`}
+                        value={`${noteTopic?.finish}`}
                     ><option value={"true"}>SIM</option>
                         <option value={"false"}>NÃO</option>
                     </Select>
 
                     <ButtonNew
-                        buttonContent={"Atualizar Nota de Disciplina"}
+                        buttonContent={"Atualizar Nota de Assunto"}
                         buttonType={HtmlType.BUTTON}
-                        name={"update-note-subject-btn"}
+                        name={"new-note-topic-button"}
                         styles={{
                             bg_color: Colors.GREEN,
                             bg_hover: Colors.GREEN_HOVER,
                             font_color: Colors.WHITE
                         }}
-                        onClickFunction={handleUpdateNoteSubject}
+                        onClickFunction={handleUpdateNoteTopic}
                     />
-                    <div style={{ height: "12px", width: "100%" }}></div>
                     <ButtonNew
-                        buttonContent={"Finalizar Nota de Disciplina"}
+                        buttonContent={"Finalizar Nota de Assunto"}
                         buttonType={HtmlType.BUTTON}
-                        name={"finish-note-subject-btn"}
+                        name={"finish-note-topic-button"}
                         styles={{
                             bg_color: Colors.BLACK,
                             bg_hover: Colors.BLACK_HOVER,
-                            font_color: Colors.WHITE
+                            font_color: Colors.WHITE,
                         }}
-                        onClickFunction={handleFinishNoteSubject}
+                        onClickFunction={handleFinishNoteTopic}
                     />
-                    <div style={{ height: "12px", width: "100%" }}></div>
                     <ButtonNew
-                        buttonContent={"Excluir Nota de Disciplina"}
+                        buttonContent={"Excluir Nota de Assunto"}
                         buttonType={HtmlType.BUTTON}
-                        name={"delete-note-subject-btn"}
+                        name={"delete-note-topic-button"}
                         styles={{
                             bg_color: Colors.RED,
                             bg_hover: Colors.RED_HOVER,
