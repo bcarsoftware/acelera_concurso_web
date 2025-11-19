@@ -75,7 +75,10 @@ export default function Index() {
         subject={selectedSubject}
         goingToMainPage={goingToMainPage}
     />);
-    const showNewScreenNoteTopic = () => (<NoteTopicNew />);
+    const showNewScreenNoteTopic = () => (<NoteTopicNew
+        topic={selectedTopic}
+        goingToMainPage={goingToMainPage}
+    />);
     const showNewScreenStudyTips = () => (<StudyTipsNew
         goingToMainPage={goingToMainPage}
     />);
