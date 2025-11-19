@@ -8,12 +8,8 @@ export const HeaderDashboard = (props: StartScreen) => {
     const functions = getStartHeader(props);
     const authenticated = useAuth();
 
-    const [points, setPoints] = useState<number>(0);
-
     useEffect(() => {
         if (authenticated?.isLoading) return;
-
-        setPoints(authenticated?.user?.points || 0);
     }, [authenticated]);
 
     return (
@@ -32,7 +28,7 @@ export const HeaderDashboard = (props: StartScreen) => {
                 </div>
                 <div className="div-width-50-percent-right">
                     <div className="link-format flex-end">
-                        <h4 id={"POINTS"}>{points} PONTOS</h4>
+                        <h4 id={"POINTS"}>{props.userPoints} PONTOS</h4>
                         <h4 onClick={() => props.setLogout(true)}>SAIR</h4>
                     </div>
                 </div>

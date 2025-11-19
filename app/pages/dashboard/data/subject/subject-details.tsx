@@ -16,13 +16,14 @@ import {HTTPTypes} from "../../../../../enums/http-types";
 import {useAuth} from "../../../../../context/auth-context";
 
 interface ISubjectDetails {
-    subject?: SubjectResponse,
-    publicTenderName?: string,
-    goingToMainPage: () => void,
+    subject?: SubjectResponse;
+    publicTenderName?: string;
+    reflashUser: (value: boolean) => void;
+    goingToMainPage: () => void;
 }
 
 export const SubjectDetails = (
-    { subject, publicTenderName, goingToMainPage }: ISubjectDetails
+    { subject, publicTenderName, reflashUser, goingToMainPage }: ISubjectDetails
 ) => {
     const authUser = useAuth();
 
@@ -78,9 +79,10 @@ export const SubjectDetails = (
                 return;
             }
 
-            setSuccess(true);
             setDialogTitle("Sucesso");
             setDialogMessage("Disciplina finalizada com sucesso!");
+            setSuccess(true);
+            reflashUser(true);
         }
         catch (error) {
             console.log(error);
@@ -115,9 +117,10 @@ export const SubjectDetails = (
                 return;
             }
 
-            setSuccess(true);
             setDialogTitle("Sucesso");
             setDialogMessage("Disciplina excluída com sucesso!");
+            setSuccess(true);
+            reflashUser(true);
         }
         catch (error) {
             console.error(error);
@@ -234,7 +237,7 @@ export const SubjectDetails = (
                         updateValue={setName}
                     />
                     <SelectCategory value={category} updateValue={setCategory} disable={false} />
-                    <SelectStatus value={status} updateValue={setStatus} disable={false} />
+                    <SelectStatus value={status} updateValue={setStatus} disable={true} />
 
                     <ButtonNew
                         buttonContent={"Atualizar Disciplina"}

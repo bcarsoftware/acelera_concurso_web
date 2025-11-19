@@ -36,6 +36,8 @@ import SubjectDashboardPage from "~/pages/dashboard/tabs/subject-dashboard";
 import {NoteSubjectDetails} from "~/pages/dashboard/data/note-subject/note-subject-details";
 import {NoteTopicDetails} from "~/pages/dashboard/data/note-topic/note-topic-details";
 import TopicDashboardPage from "~/pages/dashboard/tabs/topic-dashboard";
+import {ContentTypes, EnvironConstants} from "../../../enums/constants";
+import {HTTPTypes} from "../../../enums/http-types";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -54,6 +56,9 @@ export default function Index() {
     const [settings, setSettings] = useState<boolean>(false);
     const [pomodoro, setPomodoro] = useState<boolean>(false);
     const [logout, setLogout] = useState<boolean>(false);
+
+    const [userPoints, setUserPoints] = useState<number>(0);
+    const [reflashUser, setReflashUser] = useState<boolean>(true);
 
     /* REGISTER NEW REGISTER */
     const [showPublicTenderNew, setShowPublicTenderNew] = useState<boolean>(false);
@@ -110,11 +115,13 @@ export default function Index() {
     />);
     const showSubjectDetailsScreen = () => (<SubjectDetails
         goingToMainPage={goingToMainPage}
+        reflashUser={setReflashUser}
         subject={selectedSubject}
         publicTenderName={selectedPublicTender?.tender_name}
     />);
     const showTopicDetailsScreen = () => (<TopicDetails
         goingToMainPage={goingToMainPage}
+        reflashUser={setReflashUser}
         subjectName={selectedSubject?.name}
         topic={selectedTopic}
     />);
@@ -124,11 +131,13 @@ export default function Index() {
     />);
     const showNoteSubjectDetailsScreen = () => (<NoteSubjectDetails
         goingToMainPage={goingToMainPage}
+        reflashUser={setReflashUser}
         noteSubject={selectedNoteSubject}
         subjectName={selectedSubject?.name}
     />);
     const showNoteTopicDetailsScreen = () => (<NoteTopicDetails
         goingToMainPage={goingToMainPage}
+        reflashUser={setReflashUser}
         noteTopic={selectedNoteTopic}
         topicName={selectedTopic?.name}
     />);
@@ -150,6 +159,12 @@ export default function Index() {
             return;
         }
     }, [authenticated, navigate]);
+
+    useEffect(() => {
+        const isSafeToFetch = !authenticated?.isLoading && authenticated?.token;
+
+        if (isSafeToFetch && reflashUser) gettingLoggedUser().then();
+    }, [reflashUser, authenticated]);
     /* USE EFFECT */
 
     /* HIDDEN REGISTERS AND SEE MAIN PAGE */
@@ -238,10 +253,33 @@ export default function Index() {
         setMainPage(true);
     };
 
+    const gettingLoggedUser = async () => {
+        try {
+            const userId = authenticated?.user?.user_id;
+            const url = `${EnvironConstants.API_BASE_URL}/user/${userId}`;
+
+            const response = await fetch(url, {
+                method: HTTPTypes.GET,
+                headers: {
+                    "Content-Type": ContentTypes.JSON,
+                    "Authorization": `Bearer ${authenticated?.token}`,
+                    "UserID": `${userId}`,
+                }
+            });
+
+            const user = await response.json();
+            await authenticated?.reflash(user.data);
+            setUserPoints(user.data.points);
+        }
+        catch (error) {}
+        finally { setReflashUser(false); }
+    }
+
     return (
         <BodyDashboard>
             <StyleDashboard />
         <HeaderDashboard
+            userPoints={userPoints}
             setMainPage={setMainPage}
             hiddenScreens={hiddenScreens}
             setLogout={setLogout}

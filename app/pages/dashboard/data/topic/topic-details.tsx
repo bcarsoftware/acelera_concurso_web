@@ -14,13 +14,14 @@ import {HTTPTypes} from "../../../../../enums/http-types";
 import {DialogConfirm} from "~/dialog/dialog-confirm";
 
 interface ITopicUpdate {
-    topic?: TopicResponse,
-    subjectName?: string,
-    goingToMainPage: () => void,
+    topic?: TopicResponse;
+    subjectName?: string;
+    reflashUser: (value: boolean) => void;
+    goingToMainPage: () => void;
 }
 
 export const TopicDetails = (
-    { topic, subjectName, goingToMainPage }: ITopicUpdate
+    { topic, subjectName, reflashUser, goingToMainPage }: ITopicUpdate
 ) => {
     const authUser = useAuth();
 
@@ -71,6 +72,8 @@ export const TopicDetails = (
 
             setDialogTitle("Sucesso");
             setDialogMessage("Tarefa finalizada com sucesso!");
+            setSuccess(true);
+            reflashUser(true);
         }
         catch (error) {
             console.error(error);
@@ -105,9 +108,9 @@ export const TopicDetails = (
                 return;
             }
 
-            setSuccess(true);
             setDialogTitle("Sucesso");
             setDialogMessage("Assunto excluído com sucesso!");
+            setSuccess(true);
         }
         catch (error) {
             console.error(error);
@@ -153,9 +156,9 @@ export const TopicDetails = (
                 return;
             }
 
-            setSuccess(true);
             setDialogTitle("Sucesso");
             setDialogMessage("Assunto atualizado com sucesso!");
+            setSuccess(true);
         }
         catch (error) {
             console.error(error);

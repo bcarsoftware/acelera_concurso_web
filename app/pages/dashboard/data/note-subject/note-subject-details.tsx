@@ -16,11 +16,12 @@ import {DialogConfirm} from "~/dialog/dialog-confirm";
 interface INoteSubject {
     subjectName?: string;
     noteSubject?: NoteSubjectResponse;
+    reflashUser: (value: boolean) => void;
     goingToMainPage: () => void;
 }
 
 export const NoteSubjectDetails = (
-    { subjectName, noteSubject, goingToMainPage }: INoteSubject
+    { subjectName, noteSubject, reflashUser, goingToMainPage }: INoteSubject
 ) => {
     const authUser = useAuth();
     const [noteName, setNoteName] = useState<string>("");
@@ -124,6 +125,7 @@ export const NoteSubjectDetails = (
             setDialogTitle("Sucesso");
             setDialogMessage("Nota de disciplina finalizada com sucesso!");
             setSuccess(true);
+            reflashUser(true);
         }
         catch (error) {
             console.error(error);

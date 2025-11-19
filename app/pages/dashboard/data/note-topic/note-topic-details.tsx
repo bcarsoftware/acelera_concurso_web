@@ -16,11 +16,12 @@ import {Select} from "~/pages/dashboard/components/select";
 interface INoteTopicDetails {
     topicName?: string;
     noteTopic?: NoteTopicResponse;
+    reflashUser: (value: boolean) => void;
     goingToMainPage: () => void;
 }
 
 export const NoteTopicDetails = (
-    { topicName, noteTopic, goingToMainPage }: INoteTopicDetails
+    { topicName, noteTopic, reflashUser, goingToMainPage }: INoteTopicDetails
 ) => {
     const [noteTopicName, setNoteTopicName] = useState<string>("");
     const [noteTopicDescription, setNoteTopicDescription] = useState<string>("");
@@ -125,6 +126,7 @@ export const NoteTopicDetails = (
             setDialogTitle("Sucesso");
             setDialogMessage("Nota de assunto finalizada com sucesso!");
             setSuccess(true);
+            reflashUser(true);
         }
         catch (error) {
             console.error(error);
@@ -158,9 +160,9 @@ export const NoteTopicDetails = (
                 return;
             }
 
-            setSuccess(true);
             setDialogTitle("Sucesso");
             setDialogMessage("Nota de assunto excluída com sucesso!");
+            setSuccess(true);
         }
         catch (error) {
             console.error(error);
