@@ -29,8 +29,6 @@ export const MainDashboardPage = (
     const [confirmDeleteStudyTipsDialog, setConfirmDeleteStudyTipsDialog] = useState<boolean>(false);
     const [openDialog, setOpenDialog] = useState<boolean>(false);
 
-    const [disableMotivateAI, setDisableMotivateAI] = useState<boolean>(false);
-
     const [titleDialog, setTitleDialog] = useState<string>("");
     const [messageDialog, setMessageDialog] = useState<string>("");
 
@@ -462,8 +460,6 @@ export const MainDashboardPage = (
     };
 
     const handleGettingAIStudyTips = async () => {
-        setDisableMotivateAI(true);
-
         const payload = {
             prompt: `
             Write a study tip sentence for public service exams, in Brazilian Portuguese,
@@ -512,7 +508,6 @@ export const MainDashboardPage = (
             setMessageDialog("Não foi possível gerar a dica de estudo!");
         }
         finally {
-            setDisableMotivateAI(false);
             setOpenDialog(true);
         }
     }
@@ -580,8 +575,7 @@ export const MainDashboardPage = (
                     <h1>Dicas de Estudo</h1>
                     <input type="button" className="button-add" value="Nova" onClick={showStudyTipsNew} />
                     <input type="button" className="button-add bg-red" value="Excluir" onClick={manageDeleteStudyTipsHandle} />
-                    <input type="button" className="button-add bg-golden color-black" disabled={disableMotivateAI}
-                           value="Motiva AI" onClick={handleGettingAIStudyTips}/>
+                    <input type="button" className="button-add bg-golden color-black" value="Motiva AI" onClick={handleGettingAIStudyTips}/>
 
                     <ContentWide>
                         <ContentCard>
