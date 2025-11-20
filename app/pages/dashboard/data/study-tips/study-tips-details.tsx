@@ -45,6 +45,52 @@ export const StudyTipsDetails = (
         setGenAI(`${studyTipData?.ai_generate}`);
     }, []);
 
+    const handleSaveStudyTipAIGenerate = async () => {
+        const payload = {
+            user_id: userId,
+            name: name.replace("[AI] ", ""),
+            ai_generate: eval(genAI),
+            description: description,
+            deleted: false,
+        };
+
+        try {
+            const url = `${EnvironConstants.API_BASE_URL}/study-tips`;
+            const response = await fetch(url, {
+                method: HTTPTypes.POST,
+                body: JSON.stringify(payload),
+                headers: {
+                    "Content-Type": ContentTypes.JSON,
+                    "Authorization": `Bearer ${authUser?.token}`,
+                }
+            });
+
+            const json = await response.json();
+
+            if (!response.ok) {
+                console.log(json);
+
+                setDialogTitle("Erro no Cadastro");
+                setDialogMessage("Não foi possível cadastrar esta nota de estudo!");
+
+                return;
+            }
+
+            setSuccess(true);
+            setDialogTitle("Sucesso");
+            setDialogMessage("Nota de estudo gerada por AI salva com sucesso!");
+        }
+        catch (error) {
+            console.error(error);
+
+            setDialogTitle("Erro no Cadastro");
+            setDialogMessage("Não foi possível cadastrar esta nota de estudo!");
+        }
+        finally {
+            setShowDialog(true);
+        }
+    };
+
     const handleUpdateStudyTip = async () => {
         const payload = {
             user_id: userId,
@@ -152,17 +198,30 @@ export const StudyTipsDetails = (
                         <option value={"false"}>NÃO</option>
                     </Select>
 
-                    <Button
-                        buttonContent={"Atualizar de Estudo"}
-                        buttonType={HtmlType.BUTTON}
-                        name={"update-study-tip-button"}
-                        styles={{
-                            bg_color: Colors.GREEN,
-                            bg_hover: Colors.GREEN_HOVER,
-                            font_color: Colors.WHITE
-                        }}
-                        onClickFunction={handleUpdateStudyTip}
-                    />
+                    {studyTipData?.name.startsWith("[AI] ") ?
+                        (<Button
+                            buttonContent={"Cadastrar Nota de Estudo [AI]"}
+                            buttonType={HtmlType.BUTTON}
+                            name={"new-ai-study-tip-button"}
+                            styles={{
+                                bg_color: Colors.GOLDEN,
+                                bg_hover: Colors.GOLDEN_HOVER,
+                                font_color: Colors.BLACK
+                            }}
+                            onClickFunction={handleSaveStudyTipAIGenerate}
+                        />) :
+                        (<Button
+                            buttonContent={"Atualizar de Estudo"}
+                            buttonType={HtmlType.BUTTON}
+                            name={"update-study-tip-button"}
+                            styles={{
+                                bg_color: Colors.GREEN,
+                                bg_hover: Colors.GREEN_HOVER,
+                                font_color: Colors.WHITE
+                            }}
+                            onClickFunction={handleUpdateStudyTip}
+                        />)
+                    }
                 </ContentCard>
             </ContentWide>
         </form>

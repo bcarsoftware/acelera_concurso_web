@@ -443,7 +443,7 @@ export const MainDashboardPage = (
         }
     };
 
-    const manageDeleteHandle = async () => {
+    const manageDeleteStudyTipsHandle = async () => {
         if (selectIDSStudyTips.length === 0) {
             setTitleDialog("Erro na Exclusão");
             setMessageDialog("Selecione pelo menos uma nota de estudo para excluir!");
@@ -458,6 +458,51 @@ export const MainDashboardPage = (
 
         setConfirmDeleteStudyTipsDialog(true);
     };
+
+    const handleGettingAIStudyTips = async () => {
+        const payload = {
+            prompt: `
+            Write a study tip sentence for public service exams, in Brazilian Portuguese,
+            consisting of a short phrase "name" and its description "description".
+            I'm sending the other parameters in the description and prompt fields.
+            `,
+        }
+
+        try {
+            const url = `${EnvironConstants.API_AI_BASE_URL}/prompt-questions/study-tip`;
+            const response = await fetch(url, {
+                method: HTTPTypes.POST,
+                body: JSON.stringify(payload),
+                headers: {
+                    "Content-Type": ContentTypes.JSON,
+                }
+            });
+
+            const aiStudyTips = await response.json();
+
+            if (!response.ok) {
+                return;
+            }
+
+            console.log(aiStudyTips)
+
+            const studyTip: StudyTipsResponse = {
+                "study_tip_id": 0,
+                "user_id": authUser?.user?.user_id || 0,
+                "name": aiStudyTips.name,
+                "description": aiStudyTips.description,
+                "ai_generate": aiStudyTips.ai_generate,
+                "deleted": false,
+                "create_at": ""
+            }
+
+            setStudyTips(studyTips => [...studyTips, studyTip]);
+        }
+        catch (error) {
+            console.error(error);
+            alert((error as Error).message);
+        }
+    }
 
     const seeDialogMainDashboard = () => (<Dialog
         name={"main-dashboard-dialog"}
@@ -521,8 +566,8 @@ export const MainDashboardPage = (
                 <div id="TipsHit">
                     <h1>Dicas de Estudo</h1>
                     <input type="button" className="button-add" value="Nova" onClick={showStudyTipsNew} />
-                    <input type="button" className="button-add bg-red" value="Excluir" onClick={manageDeleteHandle} />
-                    <input type="button" className="button-add bg-golden color-black" value="Motiva AI" />
+                    <input type="button" className="button-add bg-red" value="Excluir" onClick={manageDeleteStudyTipsHandle} />
+                    <input type="button" className="button-add bg-golden color-black" value="Motiva AI" onClick={handleGettingAIStudyTips}/>
 
                     <ContentWide>
                         <ContentCard>
