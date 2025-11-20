@@ -6,7 +6,14 @@ import type {DataFunctionsScreen} from "../../../../types/data-functions-screen"
 import {Dialog} from "~/dialog/dialog";
 import {Colors} from "../../../../enums/colors";
 import {HtmlFont, HtmlType} from "../../../../enums/html-type";
-import type {PublicTenderResponse, StudyTipsResponse, SubjectResponse, TopicResponse} from "../../../../data/data";
+import type {
+    NoteSubjectResponse,
+    NoteTopicResponse,
+    PublicTenderResponse,
+    StudyTipsResponse,
+    SubjectResponse,
+    TopicResponse
+} from "../../../../data/data";
 import {useAuth} from "../../../../context/auth-context";
 import {ContentTypes, EnvironConstants} from "../../../../enums/constants";
 import {HTTPTypes} from "../../../../enums/http-types";
@@ -16,9 +23,8 @@ export const MainDashboardPage = (
     props: DataFunctionsScreen
 ) => {
     const authUser = useAuth();
-    const [noteSubjectChecked, setNoteSubjectChecked] = useState<boolean>(true);
-    const [noteTopicChecked, setNoteTopicChecked] = useState<boolean>(true);
-    const [noteAllChecked, setNoteAllChecked] = useState<boolean>(true);
+    const [noteSubjectChecked, setNoteSubjectChecked] = useState<boolean>(false);
+    const [noteTopicChecked, setNoteTopicChecked] = useState<boolean>(false);
 
     const [confirmDeleteStudyTipsDialog, setConfirmDeleteStudyTipsDialog] = useState<boolean>(false);
     const [openDialog, setOpenDialog] = useState<boolean>(false);
@@ -31,6 +37,8 @@ export const MainDashboardPage = (
     const [subjects, setSubjects] = useState<SubjectResponse[]>([]);
     const [topics, setTopics] = useState<TopicResponse[]>([]);
     const [studyTips, setStudyTips] = useState<StudyTipsResponse[]>([]);
+    const [noteSubjects, setNoteSubjects] = useState<NoteSubjectResponse[]>([]);
+    const [noteTopics, setNoteTopics] = useState<NoteTopicResponse[]>([]);
     /* Data Arrays */
 
     /* Getting Public Tenders */
@@ -142,6 +150,64 @@ export const MainDashboardPage = (
     };
     /* Getting Study Tips */
 
+    /* Getting Note Topics */
+    const gettingNoteTopics = async () => {
+        if (!selectTopic) return;
+
+        try {
+            const url = `${EnvironConstants.API_BASE_URL}/note-topic/${selectTopic?.topic_id}/topic`;
+            const response = await fetch(url, {
+                method: HTTPTypes.GET,
+                headers: {
+                    "Content-Type": ContentTypes.JSON,
+                    "Authorization": `Bearer ${authUser?.token}`,
+                }
+            });
+
+            const noteTopicsBody = await response.json();
+
+            if (!response.ok) {
+                setNoteTopics([]);
+                return;
+            }
+
+            setNoteTopics(noteTopicsBody.data);
+        }
+        catch (error) {
+            setNoteTopics([]);
+        }
+    }
+    /* Getting Note Topics */
+
+    /* Getting Note Subjects */
+    const gettingNoteSubjects = async () => {
+        if (!selectSubject) return;
+
+        try {
+            const url = `${EnvironConstants.API_BASE_URL}/note-subject/${selectSubject?.subject_id}/subject`;
+            const response = await fetch(url, {
+                method: HTTPTypes.GET,
+                headers: {
+                    "Content-Type": ContentTypes.JSON,
+                    "Authorization": `Bearer ${authUser?.token}`,
+                }
+            });
+
+            const noteSubjectsBody = await response.json();
+
+            if (!response.ok) {
+                setNoteSubjects([]);
+                return;
+            }
+
+            setNoteSubjects(noteSubjectsBody.data);
+        }
+        catch (error) {
+            setNoteSubjects([]);
+        }
+    }
+    /* Getting Note Subjects */
+
     useEffect(() => {
         if (authUser?.isLoading) return;
 
@@ -154,21 +220,29 @@ export const MainDashboardPage = (
         props.setSelectedPublicTender(undefined);
     }, []);
 
-    const checkNoteSubject = () => {
-        setNoteSubjectChecked(!noteSubjectChecked);
-        setNoteTopicChecked(noteSubjectChecked);
+    const checkNoteSubject = async () => {
+        if (!noteSubjectChecked) {
+            setNoteSubjectChecked(!noteSubjectChecked);
+            setNoteTopicChecked(noteSubjectChecked);
+            setNoteTopics([]);
+            await gettingNoteSubjects();
+        } else {
+            setNoteSubjectChecked(false);
+            setNoteSubjects([]);
+        }
     };
 
-    const checkNoteTopic = () => {
-        setNoteTopicChecked(!noteTopicChecked);
-        setNoteSubjectChecked(noteTopicChecked);
+    const checkNoteTopic = async () => {
+        if (!noteTopicChecked) {
+            setNoteTopicChecked(!noteTopicChecked);
+            setNoteSubjectChecked(noteTopicChecked);
+            setNoteSubjects([]);
+            await gettingNoteTopics();
+        } else {
+            setNoteTopicChecked(false);
+            setNoteTopics([]);
+        }
     }
-
-    const checkAllNotes = () => {
-        setNoteAllChecked(!noteAllChecked);
-        setNoteSubjectChecked(!noteAllChecked);
-        setNoteTopicChecked(!noteAllChecked);
-    };
 
     /* REGISTERS SCREENS */
     const settingAllFalse = () => {
@@ -184,6 +258,8 @@ export const MainDashboardPage = (
         props.setShowSubjectDetails(false);
         props.setShowTopicDetails(false);
         props.setShowStudyTipsDetails(false);
+        props.setShowNoteSubjectDetails(false);
+        props.setShowNoteTopicDetails(false);
     }
 
     const showPublicTenderNew = () => {
@@ -214,12 +290,7 @@ export const MainDashboardPage = (
         setMessageDialog("Selecione apenas um tipo de Nota!");
         setTitleDialog("Erro no Cadastro de Nota");
 
-        if (noteAllChecked) {
-            setOpenDialog(true);
-            settingAllFalse();
-            props.setMainPage(true);
-        }
-        else if (noteSubjectChecked) {
+        if (noteSubjectChecked) {
             return showNoteSubjectNew();
         }
         else if (noteTopicChecked) {
@@ -250,13 +321,20 @@ export const MainDashboardPage = (
         settingAllFalse();
         props.setShowStudyTipsDetails(true);
     };
+    const showNoteTopicDetails = () => {
+        settingAllFalse();
+        props.setShowNoteTopicDetails(true);
+    };
+    const showNoteSubjectDetails = () => {
+        settingAllFalse();
+        props.setShowNoteSubjectDetails(true);
+    };
     /* UPDATER SCREENS */
 
     /* DATA SELECTED */
     const [selectPublicTender, setSelectPublicTender] = useState<PublicTenderResponse | undefined>(undefined);
     const [selectSubject, setSelectSubject] = useState<SubjectResponse | undefined>(undefined);
     const [selectTopic, setSelectTopic] = useState<TopicResponse | undefined>(undefined);
-    const [selectStudyTips, setSelectStudyTips] = useState<StudyTipsResponse | undefined>(undefined);
     const [selectIDSStudyTips, setSelectIDSStudyTips] = useState<number[]>([]);
     /* DATA SELECTED */
 
@@ -316,13 +394,11 @@ export const MainDashboardPage = (
         event: ChangeEvent<HTMLInputElement>,
     ) => {
         if (event.target.checked) {
-            setSelectStudyTips(studyTipData);
             props.setSelectedStudyTips(studyTipData);
             setSelectIDSStudyTips(ids => [...ids, studyTipData.study_tip_id])
         }
 
         else {
-            setSelectStudyTips(undefined);
             props.setSelectedStudyTips(undefined);
             setSelectIDSStudyTips(ids => ids.slice(0, selectIDSStudyTips.length - 1));
         }
@@ -535,16 +611,27 @@ export const MainDashboardPage = (
                                 <input type="checkbox" checked={noteTopicChecked} onChange={checkNoteTopic} name="topic" id="topic"/>
                                 <label htmlFor="topic" className="padding-check-button">Assunto</label>
                             </div>
-                            <div>
-                                <input type="checkbox" checked={noteAllChecked} onChange={checkAllNotes} name="all-notes" id="all-notes"/>
-                                <label htmlFor="all-notes" className="padding-check-button">Todos</label>
-                            </div>
                         </div>
 
-                        <section><p className="text-section">Nota 1</p></section>
-                        <section><p className="text-section">Nota 2</p></section>
-                        <section><p className="text-section">Nota 3</p></section>
-                        <section><p className="text-section">Nota 4</p></section>
+                        {noteSubjectChecked && noteSubjects.map((note) => (
+                            <section key={note.note_subject_id}
+                            onClick={() => {
+                                props.setSelectedNoteSubject(note);
+                                showNoteSubjectDetails();
+                            }}><p className="text-section">{
+                                `${note.name}: ${note.description}`
+                            }</p></section>
+                        ))}
+
+                        {noteTopicChecked && noteTopics.map((note) => (
+                            <section key={note.note_topic_id}
+                            onClick={() => {
+                                props.setSelectedNoteTopic(note);
+                                showNoteTopicDetails();
+                            }}><p className="text-section">{
+                                `${note.name}: ${note.description}`
+                            }</p></section>
+                        ))}
                     </ContentCard>
                 </ContentSquare>
             </div>

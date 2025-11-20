@@ -203,7 +203,7 @@ export const NoteSubjectDetails = (
         <form>
             {showDialog && (seeDialog())}
             {showConfirmDeleteDialog && (seeConfirmDeleteDialog())}
-            <h1>Detalhes da Disciplina</h1>
+            <h1>Detalhes da Nota de Disciplina</h1>
             <ContentWide>
                 <ContentCard>
                     <InputText
