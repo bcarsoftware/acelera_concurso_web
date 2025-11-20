@@ -29,6 +29,8 @@ export const MainDashboardPage = (
     const [confirmDeleteStudyTipsDialog, setConfirmDeleteStudyTipsDialog] = useState<boolean>(false);
     const [openDialog, setOpenDialog] = useState<boolean>(false);
 
+    const [disableMotivateAI, setDisableMotivateAI] = useState<boolean>(false);
+
     const [titleDialog, setTitleDialog] = useState<string>("");
     const [messageDialog, setMessageDialog] = useState<string>("");
 
@@ -460,6 +462,8 @@ export const MainDashboardPage = (
     };
 
     const handleGettingAIStudyTips = async () => {
+        setDisableMotivateAI(true);
+
         const payload = {
             prompt: `
             Write a study tip sentence for public service exams, in Brazilian Portuguese,
@@ -475,12 +479,15 @@ export const MainDashboardPage = (
                 body: JSON.stringify(payload),
                 headers: {
                     "Content-Type": ContentTypes.JSON,
+                    "Authorization": `Bearer ${EnvironConstants.AI_API_KEY}`,
                 }
             });
 
             const aiStudyTips = await response.json();
 
             if (!response.ok) {
+                setTitleDialog("Erro no Servidor");
+                setMessageDialog("Não foi possível gerar a dica de estudo!");
                 return;
             }
 
@@ -497,10 +504,16 @@ export const MainDashboardPage = (
             }
 
             setStudyTips(studyTips => [...studyTips, studyTip]);
+            setTitleDialog("Sucesso");
+            setMessageDialog("Dica de estudo I.A. gerada com sucesso!");
         }
         catch (error) {
-            console.error(error);
-            alert((error as Error).message);
+            setTitleDialog("Erro no Servidor");
+            setMessageDialog("Não foi possível gerar a dica de estudo!");
+        }
+        finally {
+            setDisableMotivateAI(false);
+            setOpenDialog(true);
         }
     }
 
@@ -567,7 +580,8 @@ export const MainDashboardPage = (
                     <h1>Dicas de Estudo</h1>
                     <input type="button" className="button-add" value="Nova" onClick={showStudyTipsNew} />
                     <input type="button" className="button-add bg-red" value="Excluir" onClick={manageDeleteStudyTipsHandle} />
-                    <input type="button" className="button-add bg-golden color-black" value="Motiva AI" onClick={handleGettingAIStudyTips}/>
+                    <input type="button" className="button-add bg-golden color-black" disabled={disableMotivateAI}
+                           value="Motiva AI" onClick={handleGettingAIStudyTips}/>
 
                     <ContentWide>
                         <ContentCard>

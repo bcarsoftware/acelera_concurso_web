@@ -18,4 +18,5 @@ export enum ContentTypes {
 export const EnvironConstants = {
     API_BASE_URL: import.meta.env.VITE_API_BASE_URL || "http://localhost",
     API_AI_BASE_URL: import.meta.env.VITE_API_AI_BASE_URL || "http://localhost",
+    AI_API_KEY: import.meta.env.VITE_AI_API_PUBLIC_KEY || "public-key",
 };
