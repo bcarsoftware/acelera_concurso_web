@@ -174,7 +174,7 @@ export const PublicTenderDetails = (
                         placeholder={"123"}
                         required={true}
                         disabled={true}
-                        value={tenderID}
+                        value={parseInt(tenderID || "0")}
                     />
 
                     <InputText

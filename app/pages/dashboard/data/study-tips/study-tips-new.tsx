@@ -113,7 +113,7 @@ export const StudyTipsNew = (
                         placeholder={"123"}
                         required={true}
                         disabled={true}
-                        value={`${userId}`}
+                        value={userId}
                     />
                     <InputText
                         labelContent={"Nome da Dica*"}

@@ -38,6 +38,8 @@ import {NoteTopicDetails} from "~/pages/dashboard/data/note-topic/note-topic-det
 import TopicDashboardPage from "~/pages/dashboard/tabs/topic-dashboard";
 import {ContentTypes, EnvironConstants} from "../../../enums/constants";
 import {HTTPTypes} from "../../../enums/http-types";
+import {QuestionsDashboardPage} from "~/pages/dashboard/tabs/questions-dashboard";
+import {QuestionScreen} from "../../../enums/question-screen";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -59,6 +61,8 @@ export default function Index() {
 
     const [userPoints, setUserPoints] = useState<number>(0);
     const [reflashUser, setReflashUser] = useState<boolean>(true);
+
+    const [questionScreen, setQuestionScreen] = useState<QuestionScreen>(QuestionScreen.CUSTOMIZED);
 
     /* REGISTER NEW REGISTER */
     const [showPublicTenderNew, setShowPublicTenderNew] = useState<boolean>(false);
@@ -240,6 +244,9 @@ export default function Index() {
         dashboardNoteTopic={setSelectedNoteTopic}
         showThisPage={setTopic}
     />);
+    const accessQuestionsPage = () => (<QuestionsDashboardPage
+        screen={questionScreen}
+    />);
     const accessPomodoroPage = () => (<PomodoroDashboardPage />);
     const accessSettingsPage = () => (<SettingsDashboardPage />);
     const accessLogoutPage = () => (<LogoutDashBoardPage
@@ -304,6 +311,7 @@ export default function Index() {
                 {publicTender && (accessPublicTenderPage())}
                 {subject && (accessSubjectPage())}
                 {topic && (accessTopicsPage())}
+                {questions && (accessQuestionsPage())}
                 {pomodoro && (accessPomodoroPage())}
                 {settings && (accessSettingsPage())}
                 {logout && (accessLogoutPage())}

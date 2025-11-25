@@ -217,7 +217,7 @@ export const SubjectDetails = (
                         placeholder={"123"}
                         required={true}
                         disabled={true}
-                        value={`${subjectId}`}
+                        value={subjectId}
                     />
                     <InputText
                         labelContent={"Nome do Concurso"}
