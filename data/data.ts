@@ -116,6 +116,7 @@ export interface TopicResponse {
     name: string;
     description?: string | null;
     status: EnumStatus;
+    law_link?: string;
     fulfillment?: number | null;
     deleted?: boolean;
     create_at: string;

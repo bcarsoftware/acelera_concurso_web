@@ -28,6 +28,7 @@ export const TopicDetails = (
     const [success, setSuccess] = useState<boolean>(false);
 
     const [topicName, setTopicName] = useState<string>("");
+    const [topicLawLink, setTopicLawLink] = useState<string | undefined>(undefined);
 
     const [showConfirmDeleteDialog, setShowConfirmDeleteDialog] = useState<boolean>(false);
     const [topicDescription, setTopicDescription] = useState<string | undefined>(undefined);
@@ -46,6 +47,7 @@ export const TopicDetails = (
         setTopicName(topic?.name as string);
         setTopicDescription(topic?.description || undefined);
         setStatus(topic?.status as EnumStatus);
+        setTopicLawLink(topic?.law_link || undefined)
     }, []);
 
     const handleFinishTopic = async () => {
@@ -129,6 +131,7 @@ export const TopicDetails = (
             subject_id: topic?.subject_id,
             name: topicName,
             description: topicDescription,
+            law_link: topicLawLink,
             fulfillment: null,
             status: status,
             deleted: false,
@@ -227,6 +230,15 @@ export const TopicDetails = (
                         disabled={false}
                         value={topicDescription}
                         updateValue={setTopicDescription}
+                    />
+                    <InputText
+                        labelContent={"Link de Legislação"}
+                        name={"law-link"}
+                        placeholder={"https://law-link.gov"}
+                        required={false}
+                        disabled={false}
+                        value={topicLawLink}
+                        updateValue={setTopicLawLink}
                     />
                     <SelectStatus value={status} updateValue={setStatus} disable={true} />
 

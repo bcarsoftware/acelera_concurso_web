@@ -26,6 +26,8 @@ export const TopicNew = (
     const [topicDescription, setTopicDescription] = useState<string | undefined>(undefined);
     const [status, setStatus] = useState<EnumStatus | string>(EnumStatus.INCOMPLETE);
 
+    const [topicLawLink, setTopicLawLink] = useState<string | undefined>(undefined);
+
     const [showDialog, setShowDialog] = useState<boolean>(false);
     const [dialogTitle, setDialogTitle] = useState<string>("");
     const [dialogMessage, setDialogMessage] = useState<string>("");
@@ -43,6 +45,7 @@ export const TopicNew = (
             subject_id: subject?.subject_id,
             name: topicName,
             description: topicDescription,
+            law_link: topicLawLink,
             fulfillment: null,
             status: status,
             deleted: false,
@@ -133,6 +136,15 @@ export const TopicNew = (
                         disabled={false}
                         value={topicDescription}
                         updateValue={setTopicDescription}
+                    />
+                    <InputText
+                        labelContent={"Link de Legislação"}
+                        name={"law-link"}
+                        placeholder={"https://law-link.gov"}
+                        required={false}
+                        disabled={false}
+                        value={topicLawLink}
+                        updateValue={setTopicLawLink}
                     />
                     <SelectStatus value={status} updateValue={setStatus} disable={true} />
 
