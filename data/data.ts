@@ -145,3 +145,16 @@ export interface UserResponse {
     create_at: string;
     update_at?: string | null;
 }
+
+interface Question {
+    id: number;
+    question: string;
+    alternatives: string[];
+    answer: string;
+}
+
+export interface QuestionResponse {
+    public_tender?: string;
+    board_name?: string;
+    questions: Question[];
+}
