@@ -8,8 +8,11 @@ import {useAuth} from "../../../../context/auth-context";
 import {ContentTypes, EnvironConstants} from "../../../../enums/constants";
 import {HTTPTypes} from "../../../../enums/http-types";
 import {StringToTitle} from "../../../../utils/string.utils";
-import {InputTypes} from "../../../../enums/html-type";
+import {HtmlType, InputTypes} from "../../../../enums/html-type";
 import {InputNumber} from "~/pages/dashboard/components/input-number";
+import {ContentCard} from "~/pages/dashboard/components/content-card";
+import {ButtonNew} from "~/pages/dashboard/components/button";
+import {Colors} from "../../../../enums/colors";
 
 interface IQuestion {
     screen: QuestionScreen;
@@ -31,6 +34,7 @@ export const QuestionsDashboardPage = (
     const [otherBoard, setOtherBoard] = useState<boolean>(false);
     const [sail, setSail] = useState<string>("");
     const [boardName, setBoardName] = useState<string>("");
+    const [publicTenderName, setPublicTenderName] = useState<string | undefined>(undefined);
 
     const [boards, setBoards] = useState<string[]>([]);
 
@@ -38,6 +42,8 @@ export const QuestionsDashboardPage = (
         if (authUser?.isLoading) return;
 
         gettingPublicTenderBoards().then();
+
+        setSelectedPdf(undefined);
     }, []);
 
     const changeOtherBoard = () => {
@@ -69,61 +75,55 @@ export const QuestionsDashboardPage = (
         }
     };
 
-    const Customized = () => (<ContentWide>
-        <Select
-            name={"school-requirements"}
-            required={true}
+    const Standard = () => (<ContentWide>
+        <InputText
+            labelContent={"Nome do Concurso"}
+            name={"public-tender-name"}
+            placeholder={"Nome do Concurso"}
+            required={false}
             disabled={false}
-            label={"Escolaridade*"}
-            value={level}
-            updateValue={setLevel}>
-            <option value={"UNDEFINED"}>Não Definido</option>
-            <option value={"GRADUATED"}>Nível Superior</option>
-            <option value={"HIGH_SCHOOL"}>Nível Médio</option>
-            <option value={"TECHNICAL"}>Nível Técnico</option>
-        </Select>
+            value={publicTenderName}
+            updateValue={setPublicTenderName}
+        />
 
         {otherBoard ? (
-        <div id={"OtherBoardInfo"}>
-            <div className={"div-25"}>
-                <InputText
-                    labelContent={"Sigla da Banca*"}
-                    name={"public-tender-sail"}
-                    placeholder={"ABCD"}
-                    required={true}
-                    disabled={false}
-                    value={sail.toUpperCase()}
-                    updateValue={(value: string) => setSail(value.toUpperCase())}
-                />
+            <div id={"OtherBoardInfo"}>
+                <div className={"div-25"}>
+                    <InputText
+                        labelContent={"Sigla da Banca*"}
+                        name={"public-tender-sail"}
+                        placeholder={"ABCD"}
+                        required={true}
+                        disabled={false}
+                        value={sail.toUpperCase()}
+                        updateValue={(value: string) => setSail(value.toUpperCase())}
+                    />
+                </div>
+                <div className={"margin-left div-100"}>
+                    <InputText
+                        labelContent={"Banca do Concurso*"}
+                        name={"public-tender-board"}
+                        placeholder={"Nome da Banca do Concurso"}
+                        required={true}
+                        disabled={false}
+                        value={StringToTitle(boardName)}
+                        updateValue={(value: string) => setBoardName(StringToTitle(value))}
+                    />
+                </div>
             </div>
-            <div className={"margin-left div-100"}>
-                <InputText
-                    labelContent={"Banca do Concurso*"}
-                    name={"public-tender-board"}
-                    placeholder={"Nome da Banca do Concurso"}
-                    required={true}
-                    disabled={false}
-                    value={StringToTitle(boardName)}
-                    updateValue={(value: string) => setBoardName(StringToTitle(value))}
-                />
-            </div>
-        </div>
         ): (
-        <Select
-            name={"questions-number"}
-            required={true}
-            disabled={false}
-            label={"Número de Alternativas*"}
-            value={status}
-            updateValue={setStatus}
-            >
-            <option value={""}>Selecione</option>
-            <option value={"right wrong alternatives"}>2 Alternativas (Certo; Errado)</option>
-            <option value={"three alternatives"}>3 Alternativas</option>
-            <option value={"four alternatives"}>4 Alternativas</option>
-            <option value={"five alternatives"}>5 Alternativas</option>
-            <option value={"six alternatives"}>6 Alternativas</option>
-        </Select>
+            <Select
+                name={"board-name"}
+                required={true}
+                disabled={false}
+                label={"Selecione a Banca do Concurso*"}
+                value={boardName}
+                updateValue={setBoardName}
+            ><option value={""}>Selecione a Banca</option>
+                {boards.map((board) => (
+                    <option value={board}>{board}</option>
+                ))}
+            </Select>
         )}
 
         <div id={"OtherBoard"}>
@@ -136,38 +136,58 @@ export const QuestionsDashboardPage = (
             />
         </div>
 
-        <Select
-            name={"board-name"}
-            required={true}
-            disabled={false}
-            label={"Selecione a Banca do Concurso*"}
-            value={boardName}
-            updateValue={setBoardName}
-        ><option value={""}>Selecione a Banca</option>
-            {boards.map((board) => (
-                <option value={board}>{board}</option>
-            ))}
-        </Select>
+        <div className={"div-flex"}>
+            <div className={"div-100"}>
+                <Select
+                    name={"school-requirements"}
+                    required={true}
+                    disabled={false}
+                    label={"Escolaridade*"}
+                    value={level}
+                    updateValue={setLevel}>
+                    <option value={"UNDEFINED"}>Não Definido</option>
+                    <option value={"GRADUATED"}>Nível Superior</option>
+                    <option value={"HIGH_SCHOOL"}>Nível Médio</option>
+                    <option value={"TECHNICAL"}>Nível Técnico</option>
+                </Select>
+            </div>
 
-        <InputNumber
-            labelContent={"Número de Questões"}
-            name={"questions-number"}
-            placeholder={"123"}
-            required={true}
-            disabled={false}
-            value={questions}
-            updateValue={setQuestions}
-        />
+            <Separator />
 
-        <InputText
-            labelContent={"Informação adicional"}
-            name={"extra-info"}
-            placeholder={"Como você deseja que seja o estilo da prova"}
-            required={false}
-            disabled={false}
-            value={prompt}
-            updateValue={setPrompt}
-        />
+            <div className={"div-100"}>
+                <Select
+                    name={"questions-number"}
+                    required={true}
+                    disabled={false}
+                    label={"Número de Alternativas*"}
+                    value={status}
+                    updateValue={setStatus}
+                >
+                    <option value={""}>Selecione</option>
+                    <option value={"right wrong alternatives"}>2 Alternativas (Certo; Errado)</option>
+                    <option value={"three alternatives"}>3 Alternativas</option>
+                    <option value={"four alternatives"}>4 Alternativas</option>
+                    <option value={"five alternatives"}>5 Alternativas</option>
+                    <option value={"six alternatives"}>6 Alternativas</option>
+                </Select>
+            </div>
+
+            <Separator />
+
+            <div className={"div-100"}>
+                <InputNumber
+                    labelContent={"Número de Questões"}
+                    name={"questions-number"}
+                    placeholder={"123"}
+                    required={true}
+                    disabled={false}
+                    value={questions}
+                    updateValue={setQuestions}
+                />
+            </div>
+        </div>
+
+        <InputFile id={"input-pdf"} selectedPDF={selectedPdf} settingFileFunction={setSelectedPdf} />
 
         {!selectedPdf && (
             <InputText
@@ -181,8 +201,52 @@ export const QuestionsDashboardPage = (
             />
         )}
 
-        <InputFile settingFileFunction={setSelectedPdf} />
+        <InputText
+            labelContent={"Informação adicional"}
+            name={"extra-info"}
+            placeholder={"Como você deseja que seja o estilo da prova"}
+            required={false}
+            disabled={false}
+            value={prompt}
+            updateValue={setPrompt}
+        />
     </ContentWide>);
+    const PanelButtons = () => (
+        <ContentWide>
+            <div className={"div-flex"}>
+                <div className={"div-100"}>
+                    <ButtonNew
+                        buttonContent={"Gerar Questões por AI"}
+                        buttonType={HtmlType.BUTTON}
+                        name={"generate-questions-btn"}
+                        styles={{
+                            bg_color: Colors.GREEN,
+                            bg_hover: Colors.GREEN_HOVER,
+                            font_color: Colors.WHITE,
+                        }}
+                    />
+                </div>
+
+                <Separator />
+
+                <div className={"div-100"}>
+                    <ButtonNew
+                        buttonContent={"Gerar PDF + Gabarito"}
+                        buttonType={HtmlType.BUTTON}
+                        name={"generate-questions-pdf-btn"}
+                        styles={{
+                            bg_color: Colors.RED,
+                            bg_hover: Colors.RED_HOVER,
+                            font_color: Colors.WHITE,
+                        }}
+                    />
+                </div>
+            </div>
+        </ContentWide>
+    );
+
+    const Customized = () => (<ContentWide>
+        <ContentCard><Standard /><PanelButtons /></ContentCard></ContentWide>);
     const Subject = () => (<div></div>);
     const Topic = () => (<div></div>);
     const NoteSubject = () => (<div></div>);
@@ -190,7 +254,15 @@ export const QuestionsDashboardPage = (
 
     return (<div>
         <StyleQuestion />
-        <h1>Mural de Questões</h1>
+        <h1>{
+            "Gerador de Questões" + {
+                SUBJECT: ": Disciplina",
+                TOPIC: ": Assunto",
+                NOTE_SUBJECT: ": Nota de Disciplina",
+                NOTE_TOPIC: ": Nota de Assunto",
+                CUSTOMIZED: "",
+            }[screen]
+        }</h1>
         <h2>Resolva questões e melhore seu nível!</h2>
         {screen === QuestionScreen.CUSTOMIZED && (Customized())}
         {screen === QuestionScreen.SUBJECT && (Subject())}
@@ -200,7 +272,13 @@ export const QuestionsDashboardPage = (
     </div>);
 };
 
+const Separator = () => (<div style={{width: "22px"}}></div>);
+
 const StyleQuestion = () => (<style>{`
+    .div-flex {
+        display: flex;
+        width: 100%;
+    }
     #OtherBoard {
         margin-bottom: 12px;
         display: flex;
