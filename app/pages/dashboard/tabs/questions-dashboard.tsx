@@ -13,13 +13,15 @@ import {InputNumber} from "~/pages/dashboard/components/input-number";
 import {ContentCard} from "~/pages/dashboard/components/content-card";
 import {ButtonNew} from "~/pages/dashboard/components/button";
 import {Colors} from "../../../../enums/colors";
+import {Dialog} from "~/dialog/dialog";
 
 interface IQuestion {
     screen: QuestionScreen;
+    goingToMainPage: () => void;
 }
 
 export const QuestionsDashboardPage = (
-    { screen }: IQuestion
+    { screen, goingToMainPage }: IQuestion
 ) => {
     const authUser = useAuth();
 
@@ -37,6 +39,11 @@ export const QuestionsDashboardPage = (
     const [publicTenderName, setPublicTenderName] = useState<string | undefined>(undefined);
 
     const [boards, setBoards] = useState<string[]>([]);
+
+    const [success, setSuccess] = useState<boolean>(false);
+    const [showDialog, setShowDialog] = useState<boolean>(false);
+    const [dialogTitle, setDialogTitle] = useState<string>("");
+    const [dialogMessage, setDialogMessage] = useState<string>("");
 
     useEffect(() => {
         if (authUser?.isLoading) return;
@@ -241,6 +248,21 @@ export const QuestionsDashboardPage = (
                         }}
                     />
                 </div>
+
+                <Separator />
+
+                <div className={"div-100"}>
+                    <ButtonNew
+                        buttonContent={"Resolver Questões"}
+                        buttonType={HtmlType.BUTTON}
+                        name={"solve-questions-pdf-btn"}
+                        styles={{
+                            bg_color: Colors.BLACK,
+                            bg_hover: Colors.BLACK_HOVER,
+                            font_color: Colors.WHITE,
+                        }}
+                    />
+                </div>
             </div>
         </ContentWide>
     );
@@ -252,7 +274,25 @@ export const QuestionsDashboardPage = (
     const NoteSubject = () => (<div></div>);
     const NoteTopic = () => (<div></div>);
 
+    const seeDialog = () => {
+        const closingFunction = success ? (value: boolean) => {
+            setShowDialog(value);
+            setSuccess(value);
+            goingToMainPage();
+        } : setShowDialog;
+
+        return (<Dialog
+            name={"dialog-result"}
+            title={dialogTitle}
+            message={dialogMessage}
+            buttonText={"Fechar"}
+            closeFunction={closingFunction}
+            zIndex={1001}
+        />);
+    }
+
     return (<div>
+        {showDialog && (seeDialog())}
         <StyleQuestion />
         <h1>{
             "Gerador de Questões" + {

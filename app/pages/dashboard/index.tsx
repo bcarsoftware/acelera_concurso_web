@@ -246,6 +246,7 @@ export default function Index() {
     />);
     const accessQuestionsPage = () => (<QuestionsDashboardPage
         screen={questionScreen}
+        goingToMainPage={goingToMainPage}
     />);
     const accessPomodoroPage = () => (<PomodoroDashboardPage />);
     const accessSettingsPage = () => (<SettingsDashboardPage />);
