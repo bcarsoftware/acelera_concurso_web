@@ -14,25 +14,41 @@ import {ContentCard} from "~/pages/dashboard/components/content-card";
 import {ButtonNew} from "~/pages/dashboard/components/button";
 import {Colors} from "../../../../enums/colors";
 import {Dialog} from "~/dialog/dialog";
-import type {NoteSubjectResponse, NoteTopicResponse, SubjectResponse, TopicResponse} from "../../../../data/data";
+import {
+    EnumLevel,
+    type NoteSubjectResponse,
+    type NoteTopicResponse,
+    type PublicTenderResponse,
+    type QuestionResponse,
+    type SubjectResponse,
+    type TopicResponse
+} from "../../../../data/data";
 
 interface IQuestion {
     screen: QuestionScreen;
+    publicTender?: PublicTenderResponse;
     subject?: SubjectResponse;
     topic?: TopicResponse;
     noteSubject?: NoteSubjectResponse;
     noteTopic?: NoteTopicResponse;
-    goingToMainPage: () => void;
+    questionsGenerated?: QuestionResponse;
+    settingQuestions: (questions?: QuestionResponse) => void;
+    setSolveQuestionScreen: (value: boolean) => void;
+    currentScreen: (value: boolean) => void;
 }
 
 export const QuestionsDashboardPage = (
     {
         screen,
+        publicTender,
         subject,
         topic,
         noteSubject,
         noteTopic,
-        goingToMainPage,
+        questionsGenerated,
+        settingQuestions,
+        setSolveQuestionScreen,
+        currentScreen
     }: IQuestion
 ) => {
     const authUser = useAuth();
@@ -43,7 +59,7 @@ export const QuestionsDashboardPage = (
     const [lawLink, setLawLink] = useState<string | undefined>(undefined);
     const [selectedPdf, setSelectedPdf] = useState<File | undefined>(undefined);
 
-    const [questions, setQuestions] = useState<number>(1);
+    const [questions, setQuestions] = useState<number>(20);
 
     const [otherBoard, setOtherBoard] = useState<boolean>(false);
     const [sail, setSail] = useState<string>("");
@@ -62,7 +78,6 @@ export const QuestionsDashboardPage = (
 
     const [boards, setBoards] = useState<string[]>([]);
 
-    const [success, setSuccess] = useState<boolean>(false);
     const [showDialog, setShowDialog] = useState<boolean>(false);
     const [dialogTitle, setDialogTitle] = useState<string>("");
     const [dialogMessage, setDialogMessage] = useState<string>("");
@@ -73,6 +88,17 @@ export const QuestionsDashboardPage = (
         gettingPublicTenderBoards().then();
 
         setSelectedPdf(undefined);
+
+        setPublicTenderName(publicTender?.tender_name);
+        setBoardName(publicTender?.tender_board || "");
+        setLevel(publicTender?.tender_level || "");
+        setSubjectName(subject?.name);
+        setTopicName(topic?.name);
+        setTopicDescription(topic?.description || undefined);
+        setNoteTopicName(noteTopic?.name);
+        setNoteTopicDescription(noteTopic?.description);
+        setNoteSubjectName(noteSubject?.name);
+        setNoteSubjectDescription(noteSubject?.description);
     }, []);
 
     const changeOtherBoard = () => {
@@ -102,6 +128,142 @@ export const QuestionsDashboardPage = (
         catch (error) {
             setBoards([]);
         }
+    };
+
+    const handleGenerateQuestions = async () => {
+        const url = `${EnvironConstants.API_AI_BASE_URL}/question` + (
+            selectedPdf ? "/from-pdf" : "/"
+        );
+
+        const payload = {
+            level: level || EnumLevel.UNDEFINED,
+            status: status,
+            prompt: ("Please generate questions for public tender exam in Brazil. " + prompt).trim(),
+            questions: questions,
+            public_tender: publicTenderName,
+            subject: subjectName,
+            board_name: boardName,
+            topic: topicName,
+            law_link: lawLink,
+        };
+
+        const requestParams: { method: string, headers: {}, body: FormData | string | null } = {
+            method: HTTPTypes.POST,
+            headers: {},
+            body: null,
+        };
+
+        if (selectedPdf) {
+            const formData = new FormData();
+            Object.entries(payload).forEach(([key, value]) => {
+                const result = value != undefined ? value.toString() : "";
+                formData.append(key.toString(), result);
+            });
+            formData.append("pdf_file", selectedPdf);
+
+            requestParams.body = formData;
+
+            requestParams.headers = {
+                "Authorization": `Bearer ${EnvironConstants.AI_API_KEY}`,
+            }
+        }
+        else {
+            requestParams.headers = {
+                "Content-Type": ContentTypes.JSON,
+                "Authorization": `Bearer ${EnvironConstants.AI_API_KEY}`,
+            };
+            requestParams.body = JSON.stringify(payload);
+        }
+
+        try {
+            const response = await fetch(url, requestParams);
+
+            if (!response.ok) {
+                setDialogTitle("Erro nas Questões");
+                setDialogMessage("Não foi possível gerar as questões por inteligência artificial!");
+                return;
+            }
+
+            const questions = await response.json();
+
+            settingQuestions(questions);
+
+            setDialogTitle("Sucesso");
+            setDialogMessage("As questões foram geradas com sucesso!");
+        }
+        catch (error) {
+            console.error(error);
+
+            setDialogTitle("Erro no Servidor");
+            setDialogMessage("Não foi possível gerar as questões por inteligência artificial!");
+            settingQuestions(undefined);
+        }
+        finally {
+            setShowDialog(true);
+        }
+    };
+
+    const handlePdfGeneratedQuestions = async () => {
+        if (!questionsGenerated) {
+            setDialogTitle("Erro nas Questões");
+            setDialogMessage("Primeiro gere as questões para obter o pdf!");
+            setShowDialog(true);
+            return;
+        }
+
+        const payload = {...questionsGenerated, public_tender: publicTenderName, board_name: boardName};
+
+        try {
+            const url = `${EnvironConstants.API_AI_BASE_URL}/question/convert/to-pdf`;
+            const response = await fetch(url, {
+                method: HTTPTypes.POST,
+                body: JSON.stringify(payload),
+                headers: {
+                    "Content-Type": ContentTypes.JSON,
+                    "Authorization": `Bearer ${EnvironConstants.AI_API_KEY}`,
+                }
+            });
+
+            if (!response.ok) {
+                setDialogTitle("Erro no PDF");
+                setDialogMessage("Não foi possível obter o pdf das questões!");
+                setShowDialog(true);
+                return;
+            }
+
+            const pdfFile = await response.blob();
+
+            const downloadUrl = URL.createObjectURL(pdfFile);
+            const a = document.createElement("a");
+            a.href = downloadUrl;
+            a.download = "concurso-publico-e-gabarito.pdf";
+            a.style.display = "none";
+
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            URL.revokeObjectURL(downloadUrl);
+        }
+        catch (error) {
+            console.error(error);
+
+            setDialogTitle("Erro no Servidor");
+            setDialogMessage("Não foi possível obter o pdf das questões!");
+            setShowDialog(true);
+        }
+    };
+
+    const handleSolveQuestions = async () => {
+        if (!questionsGenerated) {
+            setDialogTitle("Erro nas Questões");
+            setDialogMessage("Primeiro gere as questões para resolvê-las!");
+            setShowDialog(true);
+            return;
+        }
+
+        currentScreen(false);
+        setSolveQuestionScreen(true);
     };
 
     const Standard = () => (<ContentWide>
@@ -243,6 +405,7 @@ export const QuestionsDashboardPage = (
                             bg_hover: Colors.GREEN_HOVER,
                             font_color: Colors.WHITE,
                         }}
+                        onClickFunction={handleGenerateQuestions}
                     />
                 </div>
 
@@ -250,7 +413,7 @@ export const QuestionsDashboardPage = (
 
                 <div className={"div-100"}>
                     <ButtonNew
-                        buttonContent={"Gerar PDF + Gabarito"}
+                        buttonContent={"Baixar PDF + Gabarito"}
                         buttonType={HtmlType.BUTTON}
                         name={"generate-questions-pdf-btn"}
                         styles={{
@@ -258,6 +421,7 @@ export const QuestionsDashboardPage = (
                             bg_hover: Colors.RED_HOVER,
                             font_color: Colors.WHITE,
                         }}
+                        onClickFunction={handlePdfGeneratedQuestions}
                     />
                 </div>
 
@@ -273,6 +437,7 @@ export const QuestionsDashboardPage = (
                             bg_hover: Colors.BLACK_HOVER,
                             font_color: Colors.WHITE,
                         }}
+                        onClickFunction={handleSolveQuestions}
                     />
                 </div>
             </div>
@@ -374,22 +539,14 @@ export const QuestionsDashboardPage = (
         <PanelButtons />
     </ContentCard></ContentWide>);
 
-    const seeDialog = () => {
-        const closingFunction = success ? (value: boolean) => {
-            setShowDialog(value);
-            setSuccess(value);
-            goingToMainPage();
-        } : setShowDialog;
-
-        return (<Dialog
-            name={"dialog-result"}
-            title={dialogTitle}
-            message={dialogMessage}
-            buttonText={"Fechar"}
-            closeFunction={closingFunction}
-            zIndex={1001}
-        />);
-    }
+    const seeDialog = () => (<Dialog
+        name={"dialog-result"}
+        title={dialogTitle}
+        message={dialogMessage}
+        buttonText={"Fechar"}
+        closeFunction={setShowDialog}
+        zIndex={1001}
+    />);
 
     return (<div>
         {showDialog && (seeDialog())}
