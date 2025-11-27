@@ -22,7 +22,8 @@ import {useAuth} from "../../../context/auth-context";
 import {useNavigate} from "react-router";
 import {PublicTenderDetails} from "~/pages/dashboard/data/public-tender/public-tender-details";
 import type {
-    NoteSubjectResponse, NoteTopicResponse,
+    NoteSubjectResponse,
+    NoteTopicResponse,
     PublicTenderResponse,
     StudyTipsResponse,
     SubjectResponse,
@@ -121,12 +122,18 @@ export default function Index() {
         goingToMainPage={goingToMainPage}
         reflashUser={setReflashUser}
         subject={selectedSubject}
+        settingQuestion={setQuestions}
+        selectScreen={setQuestionScreen}
+        currentScreen={setShowSubjectDetails}
         publicTenderName={selectedPublicTender?.tender_name}
     />);
     const showTopicDetailsScreen = () => (<TopicDetails
         goingToMainPage={goingToMainPage}
         reflashUser={setReflashUser}
         subjectName={selectedSubject?.name}
+        settingQuestion={setQuestions}
+        selectScreen={setQuestionScreen}
+        currentScreen={setShowTopicDetails}
         topic={selectedTopic}
     />);
     const showStudyTipsDetailsScreen = () => (<StudyTipsDetails
@@ -135,12 +142,18 @@ export default function Index() {
     />);
     const showNoteSubjectDetailsScreen = () => (<NoteSubjectDetails
         goingToMainPage={goingToMainPage}
+        settingQuestion={setQuestions}
+        selectScreen={setQuestionScreen}
+        currentScreen={setShowNoteSubjectDetails}
         reflashUser={setReflashUser}
         noteSubject={selectedNoteSubject}
         subjectName={selectedSubject?.name}
     />);
     const showNoteTopicDetailsScreen = () => (<NoteTopicDetails
         goingToMainPage={goingToMainPage}
+        settingQuestion={setQuestions}
+        selectScreen={setQuestionScreen}
+        currentScreen={setShowNoteTopicDetails}
         reflashUser={setReflashUser}
         noteTopic={selectedNoteTopic}
         topicName={selectedTopic?.name}
@@ -246,6 +259,10 @@ export default function Index() {
     />);
     const accessQuestionsPage = () => (<QuestionsDashboardPage
         screen={questionScreen}
+        subject={selectedSubject}
+        topic={selectedTopic}
+        noteSubject={selectedNoteSubject}
+        noteTopic={selectedNoteTopic}
         goingToMainPage={goingToMainPage}
     />);
     const accessPomodoroPage = () => (<PomodoroDashboardPage />);
@@ -300,7 +317,10 @@ export default function Index() {
                 setPublicTender={setPublicTender}
                 setSubject={setSubject}
                 setTopic={setTopic}
-                setQuestions={setQuestions}
+                setQuestions={(value: boolean) => {
+                    setQuestions(value);
+                    setQuestionScreen(QuestionScreen.CUSTOMIZED);
+                }}
                 setPomodoro={setPomodoro}
                 setSettings={setSettings}
                 setLogout={setLogout}

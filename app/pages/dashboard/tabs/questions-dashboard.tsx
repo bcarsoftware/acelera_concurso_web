@@ -14,14 +14,26 @@ import {ContentCard} from "~/pages/dashboard/components/content-card";
 import {ButtonNew} from "~/pages/dashboard/components/button";
 import {Colors} from "../../../../enums/colors";
 import {Dialog} from "~/dialog/dialog";
+import type {NoteSubjectResponse, NoteTopicResponse, SubjectResponse, TopicResponse} from "../../../../data/data";
 
 interface IQuestion {
     screen: QuestionScreen;
+    subject?: SubjectResponse;
+    topic?: TopicResponse;
+    noteSubject?: NoteSubjectResponse;
+    noteTopic?: NoteTopicResponse;
     goingToMainPage: () => void;
 }
 
 export const QuestionsDashboardPage = (
-    { screen, goingToMainPage }: IQuestion
+    {
+        screen,
+        subject,
+        topic,
+        noteSubject,
+        noteTopic,
+        goingToMainPage,
+    }: IQuestion
 ) => {
     const authUser = useAuth();
 
@@ -35,6 +47,16 @@ export const QuestionsDashboardPage = (
 
     const [otherBoard, setOtherBoard] = useState<boolean>(false);
     const [sail, setSail] = useState<string>("");
+
+    const [subjectName, setSubjectName] = useState<string | undefined>(undefined);
+    const [topicName, setTopicName] = useState<string | undefined>(undefined);
+    const [topicDescription, setTopicDescription] = useState<string | undefined>(undefined);
+
+    const [noteSubjectName, setNoteSubjectName] = useState<string | undefined>(undefined);
+    const [noteTopicName, setNoteTopicName] = useState<string | undefined>(undefined);
+    const [noteSubjectDescription, setNoteSubjectDescription] = useState<string | undefined>(undefined);
+    const [noteTopicDescription, setNoteTopicDescription] = useState<string | undefined>(undefined);
+
     const [boardName, setBoardName] = useState<string>("");
     const [publicTenderName, setPublicTenderName] = useState<string | undefined>(undefined);
 
@@ -207,16 +229,6 @@ export const QuestionsDashboardPage = (
                 updateValue={setLawLink}
             />
         )}
-
-        <InputText
-            labelContent={"Informação adicional"}
-            name={"extra-info"}
-            placeholder={"Como você deseja que seja o estilo da prova"}
-            required={false}
-            disabled={false}
-            value={prompt}
-            updateValue={setPrompt}
-        />
     </ContentWide>);
     const PanelButtons = () => (
         <ContentWide>
@@ -268,11 +280,99 @@ export const QuestionsDashboardPage = (
     );
 
     const Customized = () => (<ContentWide>
-        <ContentCard><Standard /><PanelButtons /></ContentCard></ContentWide>);
-    const Subject = () => (<div></div>);
-    const Topic = () => (<div></div>);
-    const NoteSubject = () => (<div></div>);
-    const NoteTopic = () => (<div></div>);
+        <ContentCard><Standard />
+            <InputText
+                labelContent={"Informação adicional"}
+                name={"extra-info"}
+                placeholder={"Como você deseja que seja o estilo da prova"}
+                required={false}
+                disabled={false}
+                value={prompt}
+                updateValue={setPrompt}
+            />
+        <PanelButtons /></ContentCard></ContentWide>);
+    const Subject = () => (<ContentWide>
+        <ContentCard><Standard />
+            <InputText
+                labelContent={"Disciplina*"}
+                name={"subject-name"}
+                placeholder={"Nome da Disciplina"}
+                required={true}
+                disabled={false}
+                value={subjectName}
+                updateValue={setSubjectName}
+            />
+        <PanelButtons /></ContentCard>
+    </ContentWide>);
+    const Topic = () => (<ContentWide><ContentCard>
+        <Standard />
+            <InputText
+                labelContent={"Nome do Assunto*"}
+                name={"topic-name"}
+                placeholder={"Nome do Assunto"}
+                required={true}
+                disabled={false}
+                value={topicName}
+                updateValue={setTopicName}
+            />
+
+            <InputText
+                labelContent={"Descrição do Assunto"}
+                name={"topic-description"}
+                placeholder={"Descrição do Assunto"}
+                required={false}
+                disabled={false}
+                value={topicDescription}
+                updateValue={setTopicDescription}
+            />
+        <PanelButtons />
+    </ContentCard></ContentWide>);
+    const NoteSubject = () => (<ContentWide><ContentCard>
+        <Standard />
+            <InputText
+                labelContent={"Nome da Nota de Disciplina*"}
+                name={"note-subject-name"}
+                placeholder={"Nome do Assunto"}
+                required={true}
+                disabled={false}
+                value={noteSubjectName}
+                updateValue={setNoteSubjectName}
+            />
+
+            <InputText
+                labelContent={"Descrição da Nota de Disciplina*"}
+                name={"topic-description"}
+                placeholder={"Descrição da Nota de Disciplina"}
+                required={true}
+                disabled={false}
+                value={noteSubjectDescription}
+                updateValue={setNoteSubjectDescription}
+            />
+        <PanelButtons />
+    </ContentCard></ContentWide>);
+    const NoteTopic = () => (<ContentWide><ContentCard>
+        <Standard />
+            <InputText
+                labelContent={"Nome da Nota de Assunto*"}
+                name={"note-topic-name"}
+                placeholder={"Nome da Nota de Assunto"}
+                required={true}
+                disabled={false}
+                value={noteTopicName}
+                updateValue={setNoteTopicName}
+            />
+
+            <InputText
+                labelContent={"Descrição da Nota de Assunto*"}
+                name={"note-topic-description"}
+                placeholder={"Descrição da Nota de Assunto"}
+                required={true}
+                disabled={false}
+                value={noteTopicDescription}
+                updateValue={setNoteTopicDescription}
+            />
+        <PanelButtons />
+    </ContentCard></ContentWide>);
 
     const seeDialog = () => {
         const closingFunction = success ? (value: boolean) => {

@@ -12,16 +12,21 @@ import {HTTPTypes} from "../../../../../enums/http-types";
 import {ContentTypes, EnvironConstants} from "../../../../../enums/constants";
 import {Select} from "~/pages/dashboard/components/select";
 import {DialogConfirm} from "~/dialog/dialog-confirm";
+import {QuestionScreen} from "../../../../../enums/question-screen";
 
 interface INoteSubject {
     subjectName?: string;
     noteSubject?: NoteSubjectResponse;
     reflashUser: (value: boolean) => void;
+    settingQuestion: (value: boolean) => void;
+    selectScreen: (value: QuestionScreen) => void;
+    currentScreen: (value: boolean) => void;
     goingToMainPage: () => void;
 }
 
 export const NoteSubjectDetails = (
-    { subjectName, noteSubject, reflashUser, goingToMainPage }: INoteSubject
+    { subjectName, noteSubject, reflashUser,
+        settingQuestion, selectScreen, currentScreen, goingToMainPage }: INoteSubject
 ) => {
     const authUser = useAuth();
     const [noteName, setNoteName] = useState<string>("");
@@ -173,6 +178,12 @@ export const NoteSubjectDetails = (
             setShowConfirmDeleteDialog(false);
             setShowDialog(true);
         }
+    };
+
+    const solveQuestions = async () => {
+        currentScreen(false);
+        selectScreen(QuestionScreen.NOTE_SUBJECT);
+        settingQuestion(true);
     }
 
     const seeDialog = () => {
@@ -259,6 +270,18 @@ export const NoteSubjectDetails = (
                             font_color: Colors.WHITE
                         }}
                         onClickFunction={handleUpdateNoteSubject}
+                    />
+                    <div style={{ height: "12px", width: "100%" }}></div>
+                    <ButtonNew
+                        buttonContent={"Resolver Questões"}
+                        buttonType={HtmlType.BUTTON}
+                        name={"solve-note-subject-questions"}
+                        styles={{
+                            bg_color: Colors.LIGHT_BLUE,
+                            bg_hover: Colors.LIGHT_BLUE_HOVER,
+                            font_color: Colors.WHITE
+                        }}
+                        onClickFunction={solveQuestions}
                     />
                     <div style={{ height: "12px", width: "100%" }}></div>
                     <ButtonNew

@@ -12,16 +12,20 @@ import {Dialog} from "~/dialog/dialog";
 import {ContentTypes, EnvironConstants} from "../../../../../enums/constants";
 import {HTTPTypes} from "../../../../../enums/http-types";
 import {DialogConfirm} from "~/dialog/dialog-confirm";
+import {QuestionScreen} from "../../../../../enums/question-screen";
 
 interface ITopicUpdate {
     topic?: TopicResponse;
     subjectName?: string;
     reflashUser: (value: boolean) => void;
+    settingQuestion: (value: boolean) => void;
+    selectScreen: (value: QuestionScreen) => void;
+    currentScreen: (value: boolean) => void;
     goingToMainPage: () => void;
 }
 
 export const TopicDetails = (
-    { topic, subjectName, reflashUser, goingToMainPage }: ITopicUpdate
+    { topic, subjectName, reflashUser, settingQuestion, selectScreen, currentScreen, goingToMainPage }: ITopicUpdate
 ) => {
     const authUser = useAuth();
 
@@ -174,6 +178,12 @@ export const TopicDetails = (
         }
     };
 
+    const solveQuestions = async () => {
+        currentScreen(false);
+        selectScreen(QuestionScreen.TOPIC);
+        settingQuestion(true);
+    }
+
     const seeDialog = () => {
         const closingFunction = success ? (value: boolean) => {
             setShowDialog(value);
@@ -252,6 +262,18 @@ export const TopicDetails = (
                             font_color: Colors.WHITE
                         }}
                         onClickFunction={handleUpdateTopic}
+                    />
+                    <div style={{ height: "12px", width: "100%" }}></div>
+                    <ButtonNew
+                        buttonContent={"Resolver Questões"}
+                        buttonType={HtmlType.BUTTON}
+                        name={"solve-topic-questions"}
+                        styles={{
+                            bg_color: Colors.LIGHT_BLUE,
+                            bg_hover: Colors.LIGHT_BLUE_HOVER,
+                            font_color: Colors.WHITE
+                        }}
+                        onClickFunction={solveQuestions}
                     />
                     <div style={{ height: "12px", width: "100%" }}></div>
                     <ButtonNew

@@ -9,6 +9,8 @@ import {ContentTypes, EnvironConstants} from "../../../../enums/constants";
 import {HTTPTypes} from "../../../../enums/http-types";
 import {ContentCard} from "~/pages/dashboard/components/content-card";
 import {Select} from "~/pages/dashboard/components/select";
+import {ButtonNew} from "~/pages/dashboard/components/button";
+import {HtmlType} from "../../../../enums/html-type";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -306,6 +308,17 @@ export default function TopicDashboardPage (
                             <option key={index} value={`${index}`}>{subject.name}</option>
                         ))}
                     </Select>
+                    <ButtonNew
+                        buttonContent={"Cadastrar Novo Assunto"}
+                        buttonType={HtmlType.BUTTON}
+                        name={"btn-new-topic"}
+                        styles={{
+                            bg_color: Colors.GREEN,
+                            bg_hover: Colors.GREEN_HOVER,
+                            font_color: Colors.WHITE,
+                        }}
+                        onClickFunction={handleGoingToTopicRegister}
+                    />
                 </ContentCard>
             </ContentWide>
             <div style={{ height: "12px", width: "100%" }}></div>
