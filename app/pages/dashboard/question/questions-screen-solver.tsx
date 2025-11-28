@@ -15,6 +15,7 @@ import {HTTPTypes} from "../../../../enums/http-types";
 import {Dialog} from "~/dialog/dialog";
 import type {QuestionScreen} from "../../../../enums/question-screen";
 import {ButtonNew} from "~/pages/dashboard/components/button";
+import {DialogQuestionInfo} from "~/dialog/dialog-question-info";
 
 type AnswersQuestions = {
     id: number;
@@ -58,6 +59,7 @@ export const QuestionsScreenSolver = (
     const [lengthQuestions, setLengthQuestions] = useState<number>(0);
 
     const [success, setSuccess] = useState<boolean>(false);
+    const [showDialogQuestion, setShowDialogQuestion] = useState(false);
     const [showDialog, setShowDialog] = useState<boolean>(false);
     const [dialogTitle, setDialogTitle] = useState<string>("");
     const [dialogMessage, setDialogMessage] = useState<string>("");
@@ -72,6 +74,19 @@ export const QuestionsScreenSolver = (
         setLengthQuestions(lengthQ);
     }, []);
 
+    const manageAnswers = (question: AnswersQuestions) => {
+        setAnswers(prevAnswers => {
+            const index = prevAnswers.findIndex(answer => answer.id === question.id);
+            if (index !== -1) {
+                return prevAnswers.map(answer =>
+                    answer.id === question.id ? question : answer
+                );
+            } else {
+                return [...prevAnswers, question];
+            }
+        });
+    };
+
     const calculateRateSuccess = async () => {
         if (answers.length === 0) {
             setDialogTitle("Atenção");
@@ -82,15 +97,24 @@ export const QuestionsScreenSolver = (
 
         let correct = 0;
 
-        for (let i = 0; i < lengthQuestions; i += 1) {
-            if (answers[i].answer === questionsGenerated?.questions[i].answer) correct += 1;
-        }
+        questionsGenerated?.questions.forEach((question) => {
+            console.log("question anwser: ", question.answer);
+            for (const answer of answers) {
+                if (question.id === answer.id) {
+                    if ( question.answer === answer.answer ) {
+                        console.log("answer answer: ", answer.answer);
+                        correct += 1;
+                    }
+                }
+            }
+        })
 
         const rate = ( correct / lengthQuestions ) * 10 * 10;
 
         setRateSuccess(rate);
         setCorrects(correct);
         setMistakes(lengthQuestions - correct);
+        setShowDialogQuestion(true);
     };
 
     const handlePDFDownloader = async () => {
@@ -167,9 +191,21 @@ export const QuestionsScreenSolver = (
             closeFunction={closingFunction}
             zIndex={1001}
         />);
-    }
+    };
+
+    const seeDialogQuestionInfo = () => (<DialogQuestionInfo
+        name={"dialog-question-info"}
+        title={"Atenção"}
+        message={"Seu desempenho foi:"}
+        rateSuccess={rateSuccess}
+        corrects={corrects}
+        mistakes={mistakes}
+        registerFunction={() => {}}
+        closeFunction={setShowDialogQuestion}
+    />);
 
     return (<ContentWide>
+        {showDialogQuestion && (seeDialogQuestionInfo())}
         {showDialog && (seeDialog())}
         <StyleQuestions />
         <h1>Resolução de Questões: Acelera Concurso</h1>
@@ -187,13 +223,17 @@ export const QuestionsScreenSolver = (
         <ContentCard>
             {
                 questionsGenerated && questionsGenerated.questions.map((question, index) => {
-                    return (
+                    return (<div>
                         <div key={question.id}>
-                        <h2>{`${question.id} - ${question.question}`}</h2>
+                            <h2>{`${question.id} - ${question.question}`}</h2>
                             <div>
                                 {question.alternatives && question.alternatives.map((value, id) => (
                                     <div key={id}>
-                                        <input className={"radio-resp"} id={"alter-" + id} name={"alters-question-" + question.id} type="radio"/>
+                                        <input
+                                            className={"radio-resp"} id={"alter-" + id}
+                                            name={"alters-question-" + question.id} type="radio"
+                                            onClick={() => manageAnswers({ id: question.id, answer: value })}
+                                        />
                                         <label className={"alternative"} htmlFor={"alter-" + id}>
                                             ({getterLetter(id)}) {value}
                                         </label>
@@ -201,7 +241,8 @@ export const QuestionsScreenSolver = (
                                 ))}
                             </div>
                         </div>
-                    )
+                        <div className={"separator"}></div>
+                    </div>)
                 })
             }
         </ContentCard>
@@ -246,5 +287,8 @@ const StyleQuestions = () => (<style>{`
         font-size: 1.2rem;
         width: 2rem;
         height: 1.2rem;
+    }
+    .separator {
+        height: 30px;
     }
 `}</style>);
