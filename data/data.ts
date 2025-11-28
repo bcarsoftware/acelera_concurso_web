@@ -105,6 +105,7 @@ export interface SubjectResponse {
     name: string;
     category: EnumCategory;
     status?: EnumStatus;
+    fulfillment?: number;
     deleted?: boolean;
     create_at: string;
     update_at?: string | null;
@@ -117,7 +118,7 @@ export interface TopicResponse {
     description?: string | null;
     status: EnumStatus;
     law_link?: string;
-    fulfillment?: number | null;
+    fulfillment?: number;
     deleted?: boolean;
     create_at: string;
     update_at?: string | null;

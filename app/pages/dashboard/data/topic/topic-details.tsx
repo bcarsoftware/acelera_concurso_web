@@ -13,6 +13,7 @@ import {ContentTypes, EnvironConstants} from "../../../../../enums/constants";
 import {HTTPTypes} from "../../../../../enums/http-types";
 import {DialogConfirm} from "~/dialog/dialog-confirm";
 import {QuestionScreen} from "../../../../../enums/question-screen";
+import {InputNumber} from "~/pages/dashboard/components/input-number";
 
 interface ITopicUpdate {
     topic?: TopicResponse;
@@ -33,6 +34,7 @@ export const TopicDetails = (
 
     const [topicName, setTopicName] = useState<string>("");
     const [topicLawLink, setTopicLawLink] = useState<string | undefined>(undefined);
+    const [topicFulfillment, setTopicFulfillment] = useState<number | undefined>(undefined);
 
     const [showConfirmDeleteDialog, setShowConfirmDeleteDialog] = useState<boolean>(false);
     const [topicDescription, setTopicDescription] = useState<string | undefined>(undefined);
@@ -50,6 +52,7 @@ export const TopicDetails = (
 
         setTopicName(topic?.name as string);
         setTopicDescription(topic?.description || undefined);
+        setTopicFulfillment(topic?.fulfillment);
         setStatus(topic?.status as EnumStatus);
         setTopicLawLink(topic?.law_link || undefined)
     }, []);
@@ -136,7 +139,7 @@ export const TopicDetails = (
             name: topicName,
             description: topicDescription,
             law_link: topicLawLink,
-            fulfillment: null,
+            fulfillment: topicFulfillment,
             status: status,
             deleted: false,
         };
@@ -249,6 +252,14 @@ export const TopicDetails = (
                         disabled={false}
                         value={topicLawLink}
                         updateValue={setTopicLawLink}
+                    />
+                    <InputNumber
+                        labelContent={"Completado (%)"}
+                        name={"fullfiment"}
+                        placeholder={"0%"}
+                        required={false}
+                        disabled={true}
+                        value={topicFulfillment}
                     />
                     <SelectStatus value={status} updateValue={setStatus} disable={true} />
 

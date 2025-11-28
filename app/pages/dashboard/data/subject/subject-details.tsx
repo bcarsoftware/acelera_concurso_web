@@ -36,6 +36,7 @@ export const SubjectDetails = (
 
     const [subjectId, setSubjectId] = useState<number>(-1111);
     const [name, setName] = useState<string>("");
+    const [subjectFulfillment, setSubjectFulfillment] = useState<number | undefined>(undefined);
     const [category, setCategory] = useState<EnumCategory | string>("");
     const [status, setStatus] = useState<EnumStatus | string | undefined>("");
 
@@ -58,6 +59,7 @@ export const SubjectDetails = (
 
         setSubjectId(subject.subject_id);
         setName(subject.name);
+        setSubjectFulfillment(subject.fulfillment);
         setCategory(subject.category);
         setStatus(subject.status);
     }, []);
@@ -143,6 +145,7 @@ export const SubjectDetails = (
         const payload = {
             public_tender_id: subject?.public_tender_id,
             name: name,
+            fulfillment: subjectFulfillment,
             status: status,
             category: category,
             delete: false,
@@ -246,6 +249,14 @@ export const SubjectDetails = (
                         disabled={false}
                         value={name}
                         updateValue={setName}
+                    />
+                    <InputNumber
+                        labelContent={"Completado (%)"}
+                        name={"fullfiment"}
+                        placeholder={"0%"}
+                        required={false}
+                        disabled={true}
+                        value={subjectFulfillment}
                     />
                     <SelectCategory value={category} updateValue={setCategory} disable={false} />
                     <SelectStatus value={status} updateValue={setStatus} disable={true} />
