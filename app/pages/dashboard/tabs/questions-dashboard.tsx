@@ -23,6 +23,7 @@ import {
     type SubjectResponse,
     type TopicResponse
 } from "../../../../data/data";
+import {DialogLook} from "~/dialog/dialog-look";
 
 interface IQuestion {
     screen: QuestionScreen;
@@ -79,6 +80,7 @@ export const QuestionsDashboardPage = (
     const [boards, setBoards] = useState<string[]>([]);
 
     const [showDialog, setShowDialog] = useState<boolean>(false);
+    const [showLookDialog, setShowLookDialog] = useState<boolean>(false);
     const [dialogTitle, setDialogTitle] = useState<string>("");
     const [dialogMessage, setDialogMessage] = useState<string>("");
 
@@ -176,6 +178,10 @@ export const QuestionsDashboardPage = (
         }
 
         try {
+            setDialogTitle("Aguarde");
+            setDialogMessage("As questões de Concurso Público estão sendo geradas!");
+            setShowLookDialog(true);
+
             const response = await fetch(url, requestParams);
 
             if (!response.ok) {
@@ -199,6 +205,7 @@ export const QuestionsDashboardPage = (
             settingQuestions(undefined);
         }
         finally {
+            setShowLookDialog(false);
             setShowDialog(true);
         }
     };
@@ -548,8 +555,16 @@ export const QuestionsDashboardPage = (
         zIndex={1001}
     />);
 
+    const seeDialogLook = () => (<DialogLook
+        name={"dialog-look"}
+        title={dialogTitle}
+        message={dialogMessage}
+        zIndex={1001}
+    />);
+
     return (<div>
         {showDialog && (seeDialog())}
+        {showLookDialog && (seeDialogLook())}
         <StyleQuestion />
         <h1>{
             "Gerador de Questões" + {
