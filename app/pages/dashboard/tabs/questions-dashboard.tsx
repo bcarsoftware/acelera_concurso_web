@@ -101,6 +101,37 @@ export const QuestionsDashboardPage = (
         setNoteTopicDescription(noteTopic?.description);
         setNoteSubjectName(noteSubject?.name);
         setNoteSubjectDescription(noteSubject?.description);
+
+        settingQuestions(
+            {
+                "public_tender": "Concurso Banco do Brasil",
+                "board_name": "Cesgranrio: Fundação Cesgranrio",
+                "questions": [
+                    {
+                        "alternatives": [
+                            "Conselho Monetário Nacional, Banco Central do Brasil, Banco do Brasil S.A., Banco Nacional do Desenvolvimento Econômico e as demais instituições financeiras públicas e privadas.",
+                            "Conselho Nacional de Economia, Banco Central do Brasil, Banco do Brasil S.A. e as instituições financeiras estatais.",
+                            "Conselho Monetário Nacional, Ministério da Fazenda, Banco Nacional do Desenvolvimento Econômico e todas as cooperativas de crédito.",
+                            "Banco Central do Brasil, Banco do Brasil S.A., Poder Legislativo e as instituições financeiras privadas."
+                        ],
+                        "answer": "Conselho Monetário Nacional, Banco Central do Brasil, Banco do Brasil S.A., Banco Nacional do Desenvolvimento Econômico e as demais instituições financeiras públicas e privadas.",
+                        "id": 1,
+                        "question": "De acordo com a Lei nº 4.595, de 31 de dezembro de 1964, o Sistema Financeiro Nacional (SFN) é constituído pelos seguintes componentes:"
+                    },
+                    {
+                        "alternatives": [
+                            "Emitir moeda-papel e moeda metálica, estabelecendo suas características gerais, sem a necessidade de limites autorizados por outro órgão.",
+                            "Realizar operações de redesconto e empréstimos a instituições financeiras públicas e privadas, consoante remuneração e prazos por ele definidos.",
+                            "Regular a constituição, funcionamento e fiscalização dos que exercerem atividades subordinadas a esta lei, bem como a aplicação das penalidades previstas.",
+                            "Determinar o recolhimento compulsório de até cem por cento do total dos depósitos à vista das instituições financeiras, na forma e condições que o próprio CMN determinar."
+                        ],
+                        "answer": "Regular a constituição, funcionamento e fiscalização dos que exercerem atividades subordinadas a esta lei, bem como a aplicação das penalidades previstas.",
+                        "id": 2,
+                        "question": "Conforme a Lei nº 4.595, de 31 de dezembro de 1964, compete privativamente ao Conselho Monetário Nacional (CMN):"
+                    }
+                ]
+            }
+        );
     }, []);
 
     const changeOtherBoard = () => {

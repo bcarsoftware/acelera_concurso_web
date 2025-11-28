@@ -7,6 +7,7 @@ export enum HtmlType {
 export enum HtmlFont {
     BOLD = "bold",
     BOLDER = "bolder",
+    NORMAL = "normal",
     FONT_INTER = '"Inter", serif',
 }
 

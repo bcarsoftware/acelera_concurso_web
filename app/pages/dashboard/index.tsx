@@ -281,7 +281,6 @@ export default function Index() {
     const accessQuestionsSolveScreen = () => (<QuestionsScreenSolver
         questionsGenerated={questionsGenerated}
         screen={questionScreen}
-        publicTender={selectedPublicTender}
         subject={selectedSubject}
         topic={selectedTopic}
         noteSubject={selectedNoteSubject}
