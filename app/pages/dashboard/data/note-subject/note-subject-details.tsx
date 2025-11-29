@@ -95,22 +95,12 @@ export const NoteSubjectDetails = (
     };
 
     const handleFinishNoteSubject = async () => {
-        const payload = {
-            subject_id: noteSubject?.subject_id,
-            name: noteName,
-            description: noteDescription,
-            rate_success: rateSuccess,
-            finish: true,
-            deleted: false,
-        };
-
         try {
             const url = (
                 `${EnvironConstants.API_BASE_URL}/note-subject/${noteSubject?.note_subject_id}/finish`
             );
             const response = await fetch(url, {
                 method: HTTPTypes.PATCH,
-                body: JSON.stringify(payload),
                 headers: {
                     "Content-Type": ContentTypes.JSON,
                     "Authorization": `Bearer ${authUser?.token}`,

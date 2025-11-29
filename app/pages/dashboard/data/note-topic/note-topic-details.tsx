@@ -96,21 +96,11 @@ export const NoteTopicDetails = (
     };
 
     const handleFinishNoteTopic = async () => {
-        const payload = {
-            topic_id: noteTopic?.topic_id,
-            name: noteTopicName,
-            description: noteTopicDescription,
-            rate_success: rateSuccess,
-            finish: true,
-            deleted: false,
-        };
-
         try {
             const url = `${EnvironConstants.API_BASE_URL}/note-topic/${noteTopic?.note_topic_id}/finish`;
 
             const response = await fetch(url, {
                 method: HTTPTypes.PATCH,
-                body: JSON.stringify(payload),
                 headers: {
                     "Content-Type": ContentTypes.JSON,
                     "Authorization": `Bearer ${userAuth?.token}`,
