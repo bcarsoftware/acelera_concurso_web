@@ -36,6 +36,23 @@ export const Welcome = () => (
                     </div>
                 </div>
 
+                {/* --- NOVO CARD DE IA (Largura Total) --- */}
+                <div className="feature-card ai-card full-width-card">
+                    <h3>🤖 Potência da IA Generativa</h3>
+                    <p>
+                        Gere questões inéditas com o uso de <strong>Inteligência Artificial</strong>, é possível fazer
+                        isso via configurações da questão, com o uso de <strong>arquivo pdf</strong> ou via link
+                        de <strong>legislação.</strong>
+                    </p>
+                    <p>
+                        Maximize seus estudos com nossa Inteligência Artificial. Faça o <strong>upload de um PDF</strong> (como leis secas ou apostilas) para que a IA extraia os dados e gere questões inéditas automaticamente sobre o tema.
+                    </p>
+                    <p>
+                        Ao final, você pode <strong>baixar um novo PDF</strong> contendo todas as questões geradas e o gabarito completo para estudar onde quiser.
+                    </p>
+                </div>
+                {/* --------------------------------------- */}
+
                 {/* Seção de Gamificação */}
                 <div className="gamification-section">
                     <h3>🏆 O Jogo da Aprovação</h3>
@@ -120,7 +137,6 @@ const Style = () => (<style>{`
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 20px;
-        margin-bottom: 40px;
     }
 
     .feature-card {
@@ -257,6 +273,19 @@ const Style = () => (<style>{`
     .btn-outline:hover {
         background-color: white;
         color: ${Colors.DARK_BLUE};
+    }
+    
+    .feature-card p + p {
+        margin-top: 15px;
+    }
+    
+    .full-width-card {
+        margin: 30px 0 50px 0; /* Espaçamento acima e abaixo */
+    }
+    
+    .ai-card {
+        border-left-color: ${Colors.GOLDEN}; 
+        background: linear-gradient(to right, #fff, #fffdf0);
     }
 
     /* RESPONSIVIDADE */
