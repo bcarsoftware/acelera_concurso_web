@@ -13,9 +13,11 @@ import {useEffect, useState} from "react";
 import {ContentTypes, EnvironConstants} from "../../../../enums/constants";
 import {HTTPTypes} from "../../../../enums/http-types";
 import {Dialog} from "~/dialog/dialog";
-import type {QuestionScreen} from "../../../../enums/question-screen";
+import {QuestionScreen} from "../../../../enums/question-screen";
 import {ButtonNew} from "~/pages/dashboard/components/button";
 import {DialogQuestionInfo} from "~/dialog/dialog-question-info";
+import {QuestionSolverHandler} from "../../../../handlers/questions-screen-solver.handlers";
+import {useAuth} from "../../../../context/auth-context";
 
 type AnswersQuestions = {
     id: number;
@@ -54,6 +56,7 @@ export const QuestionsScreenSolver = (
         goingToMainPage,
     }: IQuestionsScreen
 ) => {
+    const authUser = useAuth();
     const [answers, setAnswers] = useState<AnswersQuestions[]>([]);
 
     const [lengthQuestions, setLengthQuestions] = useState<number>(0);
@@ -69,10 +72,74 @@ export const QuestionsScreenSolver = (
     const [mistakes, setMistakes] = useState<number>(0);
 
     useEffect(() => {
+        if (authUser?.isLoading) return;
+
         const lengthQ = questionsGenerated?.questions.length || 0;
 
         setLengthQuestions(lengthQ);
     }, []);
+
+    const manageRegisterRateSuccess = async () => {
+        setShowDialogQuestion(false);
+
+        const functionResult = {
+            "CUSTOMIZED": async () => {
+                setDialogTitle("Treinamento");
+                setDialogMessage("Você está em modo de treino!");
+                setShowDialog(true);
+            },
+            "SUBJECT": async () => {
+                await QuestionSolverHandler.subjectHandleFulfillment(
+                    subject?.subject_id || 0,
+                    authUser?.user?.user_id || 0,
+                    setDialogTitle,
+                    setDialogMessage,
+                    setSuccess,
+                    setShowDialog,
+                    rateSuccess,
+                    authUser?.token || "test-token",
+                );
+            },
+            "TOPIC": async () => {
+                await QuestionSolverHandler.topicHandleFulfillment(
+                    topic?.topic_id || 0,
+                    authUser?.user?.user_id || 0,
+                    setDialogTitle,
+                    setDialogMessage,
+                    setSuccess,
+                    setShowDialog,
+                    rateSuccess,
+                    authUser?.token || "test-token",
+                );
+            },
+            "NOTE_SUBJECT": async () => {
+                await QuestionSolverHandler.noteSubjectHandleRateSuccess(
+                    noteSubject?.note_subject_id || 0,
+                    authUser?.user?.user_id || 0,
+                    setDialogTitle,
+                    setDialogMessage,
+                    setSuccess,
+                    setShowDialog,
+                    rateSuccess,
+                    authUser?.token || "test-token",
+                );
+            },
+            "NOTE_TOPIC": async () => {
+                await QuestionSolverHandler.noteTopicHandleRateSuccess(
+                    noteTopic?.note_topic_id || 0,
+                    authUser?.user?.user_id || 0,
+                    setDialogTitle,
+                    setDialogMessage,
+                    setSuccess,
+                    setShowDialog,
+                    rateSuccess,
+                    authUser?.token || "test-token",
+                );
+            },
+        }[screen];
+
+        if (functionResult) await functionResult();
+    }
 
     const manageAnswers = (question: AnswersQuestions) => {
         setAnswers(prevAnswers => {
@@ -200,7 +267,7 @@ export const QuestionsScreenSolver = (
         rateSuccess={rateSuccess}
         corrects={corrects}
         mistakes={mistakes}
-        registerFunction={() => {}}
+        registerFunction={manageRegisterRateSuccess}
         closeFunction={setShowDialogQuestion}
     />);
 
