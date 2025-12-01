@@ -238,7 +238,7 @@ export const NoteSubjectDetails = (
                         name={"rate-success"}
                         placeholder={"0% ... 100%"}
                         required={true} disabled={true}
-                        value={`${noteSubject?.rate_success || 0}%`}
+                        value={`${rateSuccess || 0}%`}
                     />
                     <Select
                         name={"finished-note-subject"}
