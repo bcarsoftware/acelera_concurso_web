@@ -11,6 +11,7 @@ import {ContentCard} from "~/pages/dashboard/components/content-card";
 import {Select} from "~/pages/dashboard/components/select";
 import {ButtonNew} from "~/pages/dashboard/components/button";
 import {HtmlType} from "../../../../enums/html-type";
+import {RateLogHandler} from "../../../../handlers/rate-log.handlers";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -63,11 +64,38 @@ export default function TopicDashboardPage (
     const [dialogTitle, setDialogTitle] = useState<string>("");
     const [dialogMessage, setDialogMessage] = useState<string>("");
 
+    const [average, setAverage] = useState<number>(0);
+
     useEffect(() => {
         if (authUser?.isLoading) return;
 
         gettingPublicTenders().then();
     }, []);
+
+    const gettingRateLogs = async (index: number) => {
+        if (index === -1) return;
+
+        const publicTenderId = publicTenders[index].public_tender_id;
+
+        const logs = await RateLogHandler.gettingRateLog(
+            authUser?.token || "test-token",
+            authUser?.user?.user_id || 0,
+            publicTenderId,
+            false,
+            true,
+            false,
+            true,
+        );
+
+        let avg = 0;
+        const length = logs.length;
+
+        for (const log of logs) {
+            avg += Number(log.rate);
+        }
+
+        setAverage((avg / length) || 0);
+    };
 
     const gettingPublicTenders = async () => {
         try {
@@ -226,6 +254,7 @@ export default function TopicDashboardPage (
         setIndexPublicTender(value);
         setIndexSubject("-1");
         await gettingSubjects(index);
+        await gettingRateLogs(index);
     }
 
     const selectingSubjects = async (value: string) => {
@@ -370,6 +399,15 @@ export default function TopicDashboardPage (
                             </section>
                         ))}
                     </ContentCard>
+                </ContentCard>
+            </ContentWide>
+
+            <div style={{ height: "14px" }}></div>
+
+            <ContentWide>
+                <ContentCard>
+                    <h1>Desempenho Resolvendo Questões</h1>
+                    <h2>Desempenho Médio(%) Assunto: {average}</h2>
                 </ContentCard>
             </ContentWide>
         </form>

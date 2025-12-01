@@ -159,3 +159,15 @@ export interface QuestionResponse {
     board_name?: string;
     questions: Question[];
 }
+
+export interface RateLogResponse {
+    rate_log_id: number;
+    user_id: number;
+    rate: number;
+    subject?: boolean;
+    topic?: boolean;
+    note_subject?: boolean;
+    note_topic?: boolean;
+    create_at: string;
+    update_at?: string | null;
+}

@@ -16,6 +16,7 @@ import {Colors} from "../../../../enums/colors";
 import {ButtonNew} from "~/pages/dashboard/components/button";
 import {HtmlType} from "../../../../enums/html-type";
 import {Dialog} from "~/dialog/dialog";
+import {RateLogHandler} from "../../../../handlers/rate-log.handlers";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -64,12 +65,38 @@ export default function SubjectDashboardPage(
     const [showDialog, setShowDialog] = useState<boolean>(false);
     const [dialogTitle, setDialogTitle] = useState<string>("");
     const [dialogMessage, setDialogMessage] = useState<string>("");
+    const [average, setAverage] = useState<number>(0);
 
     useEffect(() => {
         if (authUser?.isLoading) return;
 
         gettingPublicTenders().then();
     }, []);
+
+    const gettingRateLogs = async (index: number) => {
+        if (index === -1) return;
+
+        const publicTenderId = publicTenders[index].public_tender_id;
+
+        const logs = await RateLogHandler.gettingRateLog(
+            authUser?.token || "test-token",
+            authUser?.user?.user_id || 0,
+            publicTenderId,
+            true,
+            false,
+            true,
+            false,
+        );
+
+        let avg = 0;
+        const length = logs.length;
+
+        for (const log of logs) {
+            avg += Number(log.rate);
+        }
+
+        setAverage((avg / length) || 0);
+    };
 
     const gettingNoteSubjects = async (subjectId: number) => {
         try {
@@ -174,6 +201,7 @@ export default function SubjectDashboardPage(
         dashboardPublicTender(publicTenders[index]);
         setIndexPublicTender(value);
         await gettingSubjects(index);
+        await gettingRateLogs(index);
     };
 
     const handleSelectSubject = async (
@@ -338,6 +366,15 @@ export default function SubjectDashboardPage(
                             </section>
                         ))}
                     </ContentCard>
+                </ContentCard>
+            </ContentWide>
+
+            <div style={{ height: "14px" }}></div>
+
+            <ContentWide>
+                <ContentCard>
+                    <h1>Desempenho Resolvendo Questões</h1>
+                    <h2>Desempenho Médio(%) Disciplina: {average}</h2>
                 </ContentCard>
             </ContentWide>
         </form>

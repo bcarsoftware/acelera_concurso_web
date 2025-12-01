@@ -41,6 +41,18 @@ export const MainDashboardPage = (
     const [noteTopics, setNoteTopics] = useState<NoteTopicResponse[]>([]);
     /* Data Arrays */
 
+    useEffect(() => {
+        if (authUser?.isLoading) return;
+
+        const getPubTender = async () => await gettingPublicTenders();
+        getPubTender().then();
+
+        const getStudyTips = async () => await gettingStudyTips();
+        getStudyTips().then();
+
+        props.setSelectedPublicTender(undefined);
+    }, []);
+
     /* Getting Public Tenders */
     const gettingPublicTenders = async () => {
         try {
@@ -207,18 +219,6 @@ export const MainDashboardPage = (
         }
     }
     /* Getting Note Subjects */
-
-    useEffect(() => {
-        if (authUser?.isLoading) return;
-
-        const getPubTender = async () => await gettingPublicTenders();
-        getPubTender().then();
-
-        const getStudyTips = async () => await gettingStudyTips();
-        getStudyTips().then();
-
-        props.setSelectedPublicTender(undefined);
-    }, []);
 
     const checkNoteSubject = async () => {
         if (!noteSubjectChecked) {
