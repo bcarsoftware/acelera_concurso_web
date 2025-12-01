@@ -128,7 +128,7 @@ export default function Index() {
                 <h2><p>Acelera Concurso</p><p>Login</p></h2>
 
                 <DivBackLink>
-                    <nav><a href="/public">Voltar ao Inicio.</a></nav>
+                    <nav><a href="/">Voltar ao Inicio.</a></nav>
                 </DivBackLink>
 
                 <InputTextAccess

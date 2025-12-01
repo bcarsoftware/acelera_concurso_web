@@ -80,7 +80,7 @@ export const Welcome = () => (
                 <div className="cta-section">
                     <div className="cta-box">
                         <p>Já tem uma conta?</p>
-                        <a href="/login" className="btn btn-outline">Entrar</a>
+                        <a href="/dashboard" className="btn btn-outline">Entrar</a>
                     </div>
                     <div className="cta-separate"></div>
                     <div className="cta-box">
