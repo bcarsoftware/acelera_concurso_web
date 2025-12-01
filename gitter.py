@@ -9,7 +9,7 @@ def main() -> None:
     while True:
         line()
 
-        print("Welcome to Gitter!")
+        print("WelcomeExample to Gitter!")
 
         line()
 
