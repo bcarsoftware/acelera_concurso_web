@@ -11,6 +11,8 @@ Também é possível configurar parametros para gerar questões sem subir recurs
 
 Esse sistema de Frontend utiliza em sua construção, [React Router](https://reactrouter.com/).
 
+**Esse projeto faz parte do meu TCC: [abelbarreto-dev](https://github.com/abelbarreto-dev).**
+
 ## Sumário
 1. [Informações Importantes](#informações-importantes)
 2. [Como Funcionar?](#como-funcionar)
